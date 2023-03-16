@@ -11,4 +11,17 @@ namespace Beporsoft.TabularSheet.Csv
         Comma,
         Semicolon
     }
+
+    public static class CsvDelimiterExtensions
+    {
+        public static string GetChar(this CsvDelimiter delimiter)
+        {
+            return delimiter switch
+            {
+                CsvDelimiter.Comma => ",",
+                CsvDelimiter.Semicolon => ";",
+                _ => throw new ArgumentException($"Value invalid",nameof(delimiter)),
+            };
+        }
+    }
 }
