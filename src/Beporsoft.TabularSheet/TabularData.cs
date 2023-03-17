@@ -16,7 +16,8 @@ namespace Beporsoft.TabularSheet
         {
         }
 
-        public ICollection<TabularDataColumn<T>> Columns => _columns;
+        public ICollection<T> Items => _items;
+        public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
         public int Count => _items.Count;
         public bool IsReadOnly => false;
 

@@ -13,7 +13,7 @@ namespace Beporsoft.TabularSheet.Test
 
 
         [Test]
-        public void Create()
+        public void Creation()
         {
             string path = GetPath("BasicCsv.csv");
             TabularCsv<Product> table = new TabularCsv<Product>();
@@ -22,6 +22,22 @@ namespace Beporsoft.TabularSheet.Test
             table.SetColumn(t => t.Name);
             table.SetColumn(t => t.Cost);
             table.SetColumn(t => t.LastPriceUpdate);
+            table.Create(path);
+        }
+
+        [Test]
+        public void CreationPathWrong()
+        {
+            TabularCsv<Product> table = new TabularCsv<Product>();
+            table.AddRange(Product.GenerateProducts());
+            table.SetColumn(t => t.Id);
+            table.SetColumn(t => t.Name);
+            table.SetColumn(t => t.Cost);
+            table.SetColumn(t => t.LastPriceUpdate);
+
+
+            string path = GetPath("BasicCsv");
+
             table.Create(path);
         }
 
