@@ -22,6 +22,7 @@ namespace Beporsoft.TabularSheet
             Owner = parentTabularData;
             ColumnData = columnData;
             Order = Owner.Columns.Any() ? (Owner.Columns.Max(x => x.Order) + 1) : 1;
+            Title = $"{_defaultColumnName}{Order}";
         }
 
         internal TabularDataColumn(string title, TabularData<T> parentTabularData, Func<T, object> columnData) : this(parentTabularData, columnData)
