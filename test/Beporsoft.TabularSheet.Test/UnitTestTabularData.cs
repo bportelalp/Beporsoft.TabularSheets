@@ -1,57 +1,45 @@
-using Beporsoft.TabularSheet.Csv;
+﻿using Beporsoft.TabularSheet.Csv;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheet.Test
 {
-    public class Tests
+    internal class UnitTestTabularData
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
 
+        /// <summary>
+        /// Create a table and verify correct ordering.
+        /// </summary>
         [Test]
-        public void CreateCsv()
+        public void TableCreation()
         {
-            string path = GetPath("BasicCsv.csv");
-            TabularCsv<Product> table = new TabularCsv<Product>();
-            table.AddRange(GenerateProducts());
-            table.SetColumn(t => t.Id);
-            table.SetColumn(t => t.Name);
-            table.SetColumn(t => t.Cost);
-            table.SetColumn(t => t.LastPriceUpdate);
-            table.Create(path);
-        }
+            TabularData<Product> table = Generate();
 
-
-
-
-        private IEnumerable<Product> GenerateProducts()
-        {
-            yield return new Product("Bread", 0.75, new DateTime(2023,1,1));
-            yield return new Product("Milk", 1.10, new DateTime(2023,1,15));
-            yield return new Product("Oranges", 0.75, new DateTime(2023,2,1));
-        }
-
-        private string GetPath(string fileName)
-        {
-            DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
-            return $"{projectDir!.FullName}/Results/{fileName}";
-        }
-
-        private class Product
-        {
-            public Product(string name, double cost, DateTime lastUpdate)
+            TabularDataColumn<Product>? lastCol = null;
+            foreach (var col in table.Columns)
             {
-                Id = Guid.NewGuid();
-                Name = name;
-                Cost = cost;
-                LastUpdate = lastUpdate;
+                if (lastCol is not null)
+                    Assert.That(col.Order, Is.EqualTo(lastCol.Order + 1));
+                Assert.That(col, Is.Not.Null);
             }
-            public Guid Id { get; set; }
-            public string Name { get; set; } = null!;
-            public double Cost { get; set; }
-            public DateTime LastUpdate { get; }
-            public DateTime LastPriceUpdate { get; set; }
         }
+
+
+        private TabularData<Product> Generate()
+        {
+            TabularData<Product> table = new TabularData<Product>();
+            table.AddRange(Product.GenerateProducts());
+
+            TabularDataColumn<Product> col;
+            col = table.SetColumn(t => t.Id);
+            col = table.SetColumn(t => t.Name);
+            col = table.SetColumn(t => t.Cost);
+            col = table.SetColumn(t => t.LastPriceUpdate);
+            return table;
+        }
+
     }
 }

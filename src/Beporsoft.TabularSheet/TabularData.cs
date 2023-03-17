@@ -52,10 +52,16 @@ namespace Beporsoft.TabularSheet
         #endregion
 
         #region Manipulate Columns
-        public TabularDataColumn<T> SetColumn(Func<T, object> predicate)
+        public virtual TabularDataColumn<T> SetColumn(Func<T, object> predicate)
         {
             var column = new TabularDataColumn<T>(this, predicate);
-            int order = _columns.Any() ? (_columns.Max(x => x.Order) + 1) : 0;
+            _columns.Add(column);
+            return column;
+        }
+
+        public virtual TabularDataColumn<T> SetColumn(string title,  Func<T, object> predicate)
+        {
+            var column = new TabularDataColumn<T>(title, this, predicate);
             _columns.Add(column);
             return column;
         }
