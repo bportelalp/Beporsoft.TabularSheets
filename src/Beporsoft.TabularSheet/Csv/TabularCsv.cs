@@ -9,7 +9,8 @@ namespace Beporsoft.TabularSheet.Csv
     public class TabularCsv<T> : TabularData<T>, ITabularDataStorage
     {
         private const string _defaultExtension = ".csv";
-        public CsvDelimiter Delimiter { get; set; }
+
+        public CsvDelimiter Delimiter { get; set; } = CsvDelimiter.Semicolon;
 
         public void Create(string path) => Create(path, Encoding.GetEncoding("latin1"));
         public void Create(string path, Encoding encoding)

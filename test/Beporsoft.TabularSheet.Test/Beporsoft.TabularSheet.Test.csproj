@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\src\Beporsoft.TabularSheet\Beporsoft.TabularSheet.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Results\" />
+  </ItemGroup>
+
 </Project>

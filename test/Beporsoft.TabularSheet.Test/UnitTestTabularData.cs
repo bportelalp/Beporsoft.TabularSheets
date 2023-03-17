@@ -1,3 +1,5 @@
+using Beporsoft.TabularSheet.Csv;
+
 namespace Beporsoft.TabularSheet.Test
 {
     public class Tests
@@ -8,14 +10,16 @@ namespace Beporsoft.TabularSheet.Test
         }
 
         [Test]
-        public void Create()
+        public void CreateCsv()
         {
-            TabularData<Product> table = new TabularData<Product>();
+            string path = GetPath("BasicCsv.csv");
+            TabularCsv<Product> table = new TabularCsv<Product>();
             table.AddRange(GenerateProducts());
             table.SetColumn(t => t.Id);
             table.SetColumn(t => t.Name);
             table.SetColumn(t => t.Cost);
             table.SetColumn(t => t.LastPriceUpdate);
+            table.Create(path);
         }
 
 
@@ -28,6 +32,11 @@ namespace Beporsoft.TabularSheet.Test
             yield return new Product("Oranges", 0.75, new DateTime(2023,2,1));
         }
 
+        private string GetPath(string fileName)
+        {
+            DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
+            return $"{projectDir!.FullName}/Results/{fileName}";
+        }
 
         private class Product
         {
