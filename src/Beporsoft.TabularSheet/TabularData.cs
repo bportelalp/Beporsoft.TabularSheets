@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheet
 {
-    public class TabularData<T> : IList<T>
+    public abstract class TabularData<T> : IList<T>
     {
-        private readonly List<T> _items = new();
         internal readonly List<TabularDataColumn<T>> _columns = new();
+        private List<T> _items = new();
 
         public TabularData()
         {
         }
 
-        public ICollection<T> Items => _items;
+        public ICollection<T> Items { get => _items; protected set => _items = value.ToList(); }
         public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
         public int Count => _items.Count;
         public bool IsReadOnly => false;

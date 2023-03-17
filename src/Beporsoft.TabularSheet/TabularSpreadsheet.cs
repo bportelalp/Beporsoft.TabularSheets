@@ -11,20 +11,29 @@ using DocumentFormat.OpenXml.Drawing;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Beporsoft.TabularSheet.Spreadsheets;
 
-namespace Beporsoft.TabularSheet.Spreadsheets
+namespace Beporsoft.TabularSheet
 {
     public class TabularSpreadsheet<T> : TabularData<T>
     {
         private const string _defaultExtension = ".xlsx";
-        public string Title { get; set; } = "Sheet";
+
+        public TabularSpreadsheet()
+        {
+            
+        }
+
+        public TabularSpreadsheet(IEnumerable<T> items)
+        {
+            Items = items.ToList();
+        }
+
+        public string Title { get; private set; } = "Sheet";
         public HeaderOptions Header { get; set; } = new();
 
         #region Configure Table
-        public TabularSpreadsheet<T> SetSheetTitle(string title)
-        {
-            throw new NotImplementedException();
-        }
+        public void SetSheetTitle(string title) => Title = title;
         #endregion
 
         #region Create
@@ -121,7 +130,7 @@ namespace Beporsoft.TabularSheet.Spreadsheets
         private static UInt32Value FindSuitableSheetId(Sheets sheets)
         {
             UInt32Value? lastId = sheets.Select(s => s as Sheet).Max(s => s?.SheetId);
-            UInt32Value sheetIdValue = lastId is null ? 1 : (lastId + 1);
+            UInt32Value sheetIdValue = lastId is null ? 1 : lastId + 1;
             return sheetIdValue;
         }
 

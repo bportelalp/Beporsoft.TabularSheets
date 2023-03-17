@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beporsoft.TabularSheet.Style;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace Beporsoft.TabularSheet
         public Func<T, object> ColumnData { get; set; }
         public string Title { get; private set; } = null!;
         public int Order { get; private set; } = 1;
+        public ColumnOptions ColumnOptions { get; set; } = new();
         public TabularData<T> Owner { get; }
 
 

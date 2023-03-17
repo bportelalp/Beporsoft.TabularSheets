@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheet.Csv
 {
-    public class TabularCsv<T> : TabularData<T>, ITabularDataStorage
+    public class TabularCsv<T> : TabularData<T>
     {
         private const string _defaultExtension = ".csv";
 
