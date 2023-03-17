@@ -30,7 +30,7 @@ namespace Beporsoft.TabularSheet.Test
 
         private TabularData<Product> Generate()
         {
-            TabularData<Product> table = new TabularData<Product>();
+            TabularSpreadsheet<Product> table = new TabularSpreadsheet<Product>();
             table.AddRange(Product.GenerateProducts());
 
             TabularDataColumn<Product> col;

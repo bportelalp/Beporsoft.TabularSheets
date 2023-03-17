@@ -21,7 +21,6 @@ namespace Beporsoft.TabularSheet
 
         public TabularSpreadsheet()
         {
-            
         }
 
         public TabularSpreadsheet(IEnumerable<T> items)
@@ -29,8 +28,9 @@ namespace Beporsoft.TabularSheet
             Items = items.ToList();
         }
 
-        public string Title { get; private set; } = "Sheet";
+        public string Title { get; set; } = "Sheet";
         public HeaderOptions Header { get; set; } = new();
+
 
         #region Configure Table
         public void SetSheetTitle(string title) => Title = title;
