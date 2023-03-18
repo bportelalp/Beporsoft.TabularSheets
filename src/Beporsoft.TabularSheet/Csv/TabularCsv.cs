@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beporsoft.TabularSheet.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheet.Csv
 {
-    public class TabularCsv<T> : TabularData<T>, ITabularDataStorage
+    public class TabularCsv<T> : TabularData<T>
     {
         private const string _defaultExtension = ".csv";
 
@@ -15,7 +16,7 @@ namespace Beporsoft.TabularSheet.Csv
         public void Create(string path) => Create(path, Encoding.GetEncoding("latin1"));
         public void Create(string path, Encoding encoding)
         {
-            VerifyPath(path);
+            path = FileHelpers.VerifyPath(path, _defaultExtension);
             using var fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             using MemoryStream ms = Create(encoding);
             ms.Seek(0, SeekOrigin.Begin);
@@ -36,22 +37,7 @@ namespace Beporsoft.TabularSheet.Csv
             return stream;
         }
 
-        private static string VerifyPath(string path)
-        {
-            bool hasExtension = Path.HasExtension(path);
-            if (hasExtension)
-            {
-                string extension = Path.GetExtension(path).Trim();
-                if (extension != _defaultExtension)
-                    throw new FileLoadException($"The path provided does not aim a {_defaultExtension} file extension", path);
-                else
-                    return path;
-            }
-            else
-            {
-                return $"{path}{_defaultExtension}";
-            }
-        }
+
 
         #region Create Lines
         private IEnumerable<string> CreateLines()

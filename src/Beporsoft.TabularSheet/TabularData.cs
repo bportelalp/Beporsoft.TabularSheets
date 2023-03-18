@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheet
 {
-    public class TabularData<T> : IList<T>
+    public abstract class TabularData<T> : IList<T>
     {
-        private readonly List<T> _items = new();
         internal readonly List<TabularDataColumn<T>> _columns = new();
+        private List<T> _items = new();
 
         public TabularData()
         {
         }
 
-        public ICollection<TabularDataColumn<T>> Columns => _columns;
+        public ICollection<T> Items { get => _items; protected set => _items = value.ToList(); }
+        public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
         public int Count => _items.Count;
         public bool IsReadOnly => false;
 
@@ -52,10 +53,16 @@ namespace Beporsoft.TabularSheet
         #endregion
 
         #region Manipulate Columns
-        public TabularDataColumn<T> SetColumn(Func<T, object> predicate)
+        public virtual TabularDataColumn<T> SetColumn(Func<T, object> predicate)
         {
             var column = new TabularDataColumn<T>(this, predicate);
-            int order = _columns.Any() ? (_columns.Max(x => x.Order) + 1) : 0;
+            _columns.Add(column);
+            return column;
+        }
+
+        public virtual TabularDataColumn<T> SetColumn(string title,  Func<T, object> predicate)
+        {
+            var column = new TabularDataColumn<T>(title, this, predicate);
             _columns.Add(column);
             return column;
         }
