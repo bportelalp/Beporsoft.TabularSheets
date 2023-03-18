@@ -2,15 +2,8 @@ using Beporsoft.TabularSheet.Csv;
 
 namespace Beporsoft.TabularSheet.Test
 {
-    public class Tests
+    public class TestTabularCsv
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
-
 
         [Test]
         public void Creation()

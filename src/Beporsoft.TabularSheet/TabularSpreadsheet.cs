@@ -206,7 +206,7 @@ namespace Beporsoft.TabularSheet
             }
             else if (type == typeof(DateTime))
             {
-                dataType = CellValues.String;
+                dataType = CellValues.Date;
                 cellContent = new CellValue(Convert.ToString(value) ?? string.Empty);
             }
             else
