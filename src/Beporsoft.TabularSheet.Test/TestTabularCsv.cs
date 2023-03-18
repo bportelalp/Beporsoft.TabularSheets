@@ -11,10 +11,10 @@ namespace Beporsoft.TabularSheet.Test
             string path = GetPath("BasicCsv.csv");
             TabularCsv<Product> table = new TabularCsv<Product>();
             table.AddRange(Product.GenerateProducts());
-            table.SetColumn(t => t.Id);
-            table.SetColumn(t => t.Name);
-            table.SetColumn(t => t.Cost);
-            table.SetColumn(t => t.LastPriceUpdate);
+            table.AddColumn(t => t.Id);
+            table.AddColumn(t => t.Name);
+            table.AddColumn(t => t.Cost);
+            table.AddColumn(t => t.LastPriceUpdate);
             table.Create(path);
         }
 
@@ -23,10 +23,10 @@ namespace Beporsoft.TabularSheet.Test
         {
             TabularCsv<Product> table = new TabularCsv<Product>();
             table.AddRange(Product.GenerateProducts());
-            table.SetColumn(t => t.Id);
-            table.SetColumn(t => t.Name);
-            table.SetColumn(t => t.Cost);
-            table.SetColumn(t => t.LastPriceUpdate);
+            table.AddColumn(t => t.Id);
+            table.AddColumn(t => t.Name);
+            table.AddColumn(t => t.Cost);
+            table.AddColumn(t => t.LastPriceUpdate);
 
 
             string path = GetPath("BasicCsv");

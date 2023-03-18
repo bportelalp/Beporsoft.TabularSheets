@@ -16,7 +16,14 @@ namespace Beporsoft.TabularSheet
         {
         }
 
+        /// <summary>
+        /// Gets the collection of items which will be displayed on rows
+        /// </summary>
         public ICollection<T> Items { get => _items; protected set => _items = value.ToList(); }
+
+        /// <summary>
+        /// Gets the collection of columns which will define which data is displayed on each row, each cell.
+        /// </summary>
         public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
         public int Count => _items.Count;
         public bool IsReadOnly => false;
@@ -53,21 +60,48 @@ namespace Beporsoft.TabularSheet
         #endregion
 
         #region Manipulate Columns
-        public virtual TabularDataColumn<T> SetColumn(Func<T, object> predicate)
+        /// <summary>
+        /// Adds a new column which the information that will be displayed on a column.
+        /// </summary>
+        /// <param name="predicate">A expression which will be evaluated for fill the cell</param>
+        /// <returns>The column created, so additional calls can be chained</returns>
+        public virtual TabularDataColumn<T> AddColumn(Func<T, object> predicate)
         {
             var column = new TabularDataColumn<T>(this, predicate);
             _columns.Add(column);
             return column;
         }
 
-        public virtual TabularDataColumn<T> SetColumn(string title,  Func<T, object> predicate)
+        /// <summary>
+        /// <inheritdoc cref="AddColumn(Func{T, object})"/>
+        /// </summary>
+        /// <param name="title">The title of the column</param>
+        /// <param name="predicate">A expression which will be evaluated for fill the cell</param>
+        /// <returns>The column created, so additional calls can be chained</returns>
+        public virtual TabularDataColumn<T> AddColumn(string title, Func<T, object> predicate)
         {
             var column = new TabularDataColumn<T>(title, this, predicate);
             _columns.Add(column);
             return column;
         }
 
-        public bool RemoveColumn(TabularDataColumn<T> column) => _columns.Remove(column);
+        /// <summary>
+        /// Remove the given column if exists and reorganize the order of the following columns
+        /// </summary>
+        /// <param name="column">The column to remove</param>
+        /// <returns><see langword="true"/> if the column was removed. Otherwise, or if it doesn't exist on collection, <see langword="false"/></returns>
+        public bool RemoveColumn(TabularDataColumn<T> column)
+        {
+            bool removed = Columns.Remove(column);
+            if (removed)
+            {
+                // the next column and avobe will reorganize the column order.
+                int columnPosition = column.Order;
+                TabularDataColumn<T>? nextColumn = Columns.SingleOrDefault(c => c.Order == columnPosition + 1);
+                nextColumn?.SetPosition(columnPosition);
+            }
+            return removed;
+        }
         #endregion
 
         public object Evaluate(int row, int col)

@@ -53,7 +53,7 @@ namespace Beporsoft.TabularSheet.Test
                 Assert.That(table.Columns.Any(c => c.Order == 4), Is.True);
                 Assert.That(table.Columns.Any(c => c.Order == 3), Is.True);
                 Assert.That(table.Columns.Any(c => c.Order == 2), Is.True);
-               
+
                 // The column in position 3 is the column which was previously in position 4
                 Assert.That(table.Columns.Single(c => c.Order == 3), Is.EqualTo(originCol4));
                 // The column in position 2 is the column which was previously in position 3
@@ -68,19 +68,34 @@ namespace Beporsoft.TabularSheet.Test
             });
         }
 
+        [Test]
+        public void RemoveColumn()
+        {
+            TabularData<Product> table = Generate();
+
+            var col3 = table.Columns.Single(c => c.Order == 3);
+            var col4 = table.Columns.Single(c => c.Order == 4);
+            table.RemoveColumn(col3);
+
+            var newCol3 = table.Columns.Single(c => c.Order == 3);
+            Assert.That(table.Columns.Contains(col3), Is.False);
+            Assert.That(newCol3, Is.EqualTo(col4));
+            Assert.That(col4.Order, Is.EqualTo(3));
+        }
+
         private static TabularData<Product> Generate()
         {
             TabularSpreadsheet<Product> table = new();
             table.AddRange(Product.GenerateProducts(50));
 
             TabularDataColumn<Product> col;
-            col = table.SetColumn(t => t.Id);
-            col = table.SetColumn(t => t.Name);
-            col = table.SetColumn(t => t.Vendor);
-            col = table.SetColumn(t => t.CountryOrigin);
-            col = table.SetColumn("Cost by unit", t => t.Cost);
-            col = table.SetColumn(t => t.LastPriceUpdate).SetTitle("Price updated on");
-            col = table.SetColumn(t => t.LastUpdate);
+            col = table.AddColumn(t => t.Id);
+            col = table.AddColumn(t => t.Name);
+            col = table.AddColumn(t => t.Vendor);
+            col = table.AddColumn(t => t.CountryOrigin);
+            col = table.AddColumn("Cost by unit", t => t.Cost);
+            col = table.AddColumn(t => t.LastPriceUpdate).SetTitle("Price updated on");
+            col = table.AddColumn(t => t.LastUpdate);
             return table;
         }
 
