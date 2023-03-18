@@ -1,11 +1,12 @@
-﻿using Beporsoft.TabularSheet.Tools;
+﻿using Beporsoft.TabularSheets;
+using Beporsoft.TabularSheets.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheet.Csv
+namespace Beporsoft.TabularSheets.Csv
 {
     public class TabularCsv<T> : TabularData<T>
     {
