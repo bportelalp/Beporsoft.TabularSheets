@@ -17,7 +17,7 @@ namespace Beporsoft.TabularSheets
     public class TabularDataColumn<T>
     {
         private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
-        private static readonly Regex _regexDefaultColumnName = new(_defaultColumnName + @"\d{0,}"); // Regex to find when a column is named according to its default name.
+        private static readonly Regex _regexDefaultColumnName = new(nameof(T) + _defaultColumnName + @"\d{0,}"); // Regex to find when a column is named according to its default name.
 
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
         {

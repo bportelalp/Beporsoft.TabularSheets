@@ -12,12 +12,14 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Beporsoft.TabularSheets.Tools;
 using Beporsoft.TabularSheets.Style;
+using DocumentFormat.OpenXml.Validation;
+using System.Xml;
 
 namespace Beporsoft.TabularSheets
 {
     public class TabularSpreadsheet<T> : TabularData<T>
     {
-        private const string _defaultExtension = ".xlsx";
+        private static readonly string[] _defaultExtensions = new string[] { ".xlsx", ".xls" };
 
         public TabularSpreadsheet()
         {
@@ -42,7 +44,7 @@ namespace Beporsoft.TabularSheets
         #region Create
         public void Create(string path)
         {
-            string pathCorrected = FileHelpers.VerifyPath(path, _defaultExtension);
+            string pathCorrected = FileHelpers.VerifyPath(path, _defaultExtensions);
             using var fs = new FileStream(pathCorrected, FileMode.Create);
             using MemoryStream ms = Create();
             ms.Seek(0, SeekOrigin.Begin);
@@ -51,14 +53,8 @@ namespace Beporsoft.TabularSheets
         public MemoryStream Create()
         {
             var ms = new MemoryStream();
-            using (var spreadSheet = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook))
-            {
-                WorkbookPart workbookPart = spreadSheet.AddWorkbookPart();
-                workbookPart.Workbook = new Workbook();
-                AppendWorksheetPart(ref workbookPart);
-                workbookPart.Workbook.Save();
-                spreadSheet.Close();
-            }
+            using var spreadSheet = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook);
+            FillSpreadsheetData(spreadSheet);
             return ms;
         }
         #endregion
@@ -66,11 +62,24 @@ namespace Beporsoft.TabularSheets
         #region Build Sheet
 
         /// <summary>
+        /// Fill the given document with the respective parts of OpenXML Sheets
+        /// </summary>
+        /// <param name="spreadsheet"></param>
+        private void FillSpreadsheetData(SpreadsheetDocument spreadsheet)
+        {
+            WorkbookPart workbookPart = spreadsheet.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+            AppendWorksheetPart(ref workbookPart);
+            workbookPart.Workbook.Save();
+            ValidateSpreadSheet(spreadsheet);
+            spreadsheet.Close();
+        }
+
+        /// <summary>
         /// This is for append more than one sheet inside a Worbook. Externally we can pass a WorkbookPart and this method
         /// will add the respective sheet which represent <see langword="this"/>.
         /// </summary>
-        /// <param name="workbookPart"></param>
-        /// <param name="sheetId"></param>
+        /// <param name="workbookPart">The workbookPart where it will be added a new worksheetPart</param>
         private void AppendWorksheetPart(ref WorkbookPart workbookPart)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
@@ -97,6 +106,10 @@ namespace Beporsoft.TabularSheets
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 
+        /// <summary>
+        /// Build the <see cref="SheetData"/> which contains the data represented by <see langword="this"/>
+        /// </summary>
+        /// <returns></returns>
         private SheetData BuildSheetData()
         {
             var sheetData = new SheetData();
@@ -163,6 +176,30 @@ namespace Beporsoft.TabularSheets
             }
             return nameSheet;
         }
+
+
+        //protected Columns CreateColumnsWithWidth(SheetData sheetData)
+        //{
+        //    var columns = new Columns();
+        //    foreach (var item in Columns)
+        //    {
+        //        uint index = (uint)(item.Order + 1);
+        //        columns.Append(new Column() { Min = index, Max = index, Width = item.Value, CustomWidth = true });
+        //    }
+        //    return columns;
+        //}
+
+
+        #endregion
+
+        #region Validation
+        private static void ValidateSpreadSheet(SpreadsheetDocument spreadsheet)
+        {
+            OpenXmlValidator validator = new OpenXmlValidator();
+            IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
+            if (errors.Any())
+                throw new XmlException("Errors validating Xml");
+        }
         #endregion
 
         #region Data handling
@@ -207,8 +244,8 @@ namespace Beporsoft.TabularSheets
             }
             else if (type == typeof(DateTime))
             {
-                dataType = CellValues.Date;
-                cellContent = new CellValue(Convert.ToString(value) ?? string.Empty);
+                dataType = CellValues.Number;
+                cellContent = new CellValue(Convert.ToDateTime(value).ToOADate().ToString());
             }
             else
             {
