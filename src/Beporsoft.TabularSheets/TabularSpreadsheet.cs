@@ -28,6 +28,9 @@ namespace Beporsoft.TabularSheets
             Items = items.ToList();
         }
 
+        /// <summary>
+        /// The title of the current sheet
+        /// </summary>
         public string Title { get; set; } = "Sheet";
         public HeaderOptions Header { get; set; } = new();
 
@@ -40,12 +43,10 @@ namespace Beporsoft.TabularSheets
         public void Create(string path)
         {
             string pathCorrected = FileHelpers.VerifyPath(path, _defaultExtension);
-            using (var fs = new FileStream(pathCorrected, FileMode.Create))
-            using (MemoryStream ms = Create())
-            {
-                ms.Seek(0, SeekOrigin.Begin);
-                ms.CopyTo(fs);
-            }
+            using var fs = new FileStream(pathCorrected, FileMode.Create);
+            using MemoryStream ms = Create();
+            ms.Seek(0, SeekOrigin.Begin);
+            ms.CopyTo(fs);
         }
         public MemoryStream Create()
         {

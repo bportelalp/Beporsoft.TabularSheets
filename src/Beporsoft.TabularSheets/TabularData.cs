@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +104,32 @@ namespace Beporsoft.TabularSheets
             return removed;
         }
         #endregion
+
+
+        /// <summary>
+        /// Method invoked from columns which belongs to this table to reorganize the list of column order
+        /// </summary>
+        internal void ReallocateColumn(TabularDataColumn<T> column, int newPosition)
+        {
+            if (newPosition > Columns.Count)
+                throw new ArgumentOutOfRangeException(nameof(newPosition), newPosition, "The value of position cannot be higher than the amount of columns");
+            Columns.Remove(column);
+            var cols = Columns.OrderBy(x => x.Order);
+            int idx = 0;
+            foreach (var col in cols)
+            {
+                if (idx >= newPosition)
+                    col.Order = idx + 1;
+                else
+                    col.Order = idx;
+                idx++;
+                col.SetDefaultName();
+            }
+            column.Order = newPosition;
+            column.SetDefaultName();
+            Columns.Add(column);
+        }
+
 
         public object Evaluate(int row, int col)
         {

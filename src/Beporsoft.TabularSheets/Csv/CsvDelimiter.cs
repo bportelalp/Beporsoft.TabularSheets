@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheet.Csv
+namespace Beporsoft.TabularSheets.Csv
 {
     public enum CsvDelimiter
     {
@@ -20,7 +20,7 @@ namespace Beporsoft.TabularSheet.Csv
             {
                 CsvDelimiter.Comma => ",",
                 CsvDelimiter.Semicolon => ";",
-                _ => throw new ArgumentException($"Value invalid",nameof(delimiter)),
+                _ => throw new ArgumentException($"Value invalid", nameof(delimiter)),
             };
         }
     }

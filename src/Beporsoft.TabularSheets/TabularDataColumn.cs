@@ -16,7 +16,7 @@ namespace Beporsoft.TabularSheets
     [DebuggerDisplay("{Title} | {Order} | {ColumnData}")]
     public class TabularDataColumn<T>
     {
-        private const string _defaultColumnName = "Column"; // Default name for unnamed columns, adding order number.
+        private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
         private static readonly Regex _regexDefaultColumnName = new(_defaultColumnName + @"\d{0,}"); // Regex to find when a column is named according to its default name.
 
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
@@ -45,45 +45,39 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// The position where the column will be displayed.
         /// </summary>
-        public int Order { get; private set; } = 0;
+        public int Order { get; internal set; } = 0;
         public ColumnOptions ColumnOptions { get; set; } = new();
         public TabularData<T> Owner { get; }
 
-
+        #region Edition
+        /// <summary>
+        /// Sets the title of the column
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns>The same column instance, so additional calls can be chained</returns>
         public TabularDataColumn<T> SetTitle(string title)
         {
             Title = title;
             return this;
         }
 
+        /// <summary>
+        /// Reassign the current order position of the column inside the parent table and reorganice the previous items
+        /// </summary>
+        /// <returns>The same column instance, so additional calls can be chained</returns>
+        public TabularDataColumn<T> SetPosition(int position)
+        {
+            Owner.ReallocateColumn(this, position);
+            return this;
+        }
+        #endregion
+
         public object Apply(T value)
         {
             return ColumnData.Invoke(value);
         }
 
-        /// <summary>
-        /// Reassign the current order position of the column inside the parennt table
-        /// </summary>
-        public void SetPosition(int position)
-        {
-            if (position > Owner.Columns.Count)
-                throw new ArgumentOutOfRangeException(nameof(position), position, "The value of position cannot be higher than the amount of columns");
-            Owner.Columns.Remove(this);
-            var cols = Owner.Columns.OrderBy(x => x.Order);
-            int idx = 0;
-            foreach (var col in cols)
-            {
-                if (idx >= position)
-                    col.Order = idx + 1;
-                else
-                    col.Order = idx;
-                idx++;
-                col.SetDefaultName();
-            }
-            Order = position;
-            SetDefaultName();
-            Owner.Columns.Add(this);
-        }
+
 
         /// <summary>
         /// When no title is provided, set the column title to {_defaultColumnName}{Order}.
@@ -93,7 +87,7 @@ namespace Beporsoft.TabularSheets
             Match match = _regexDefaultColumnName.Match(Title ?? string.Empty); // Avoid Exception when title null
             if (string.IsNullOrWhiteSpace(Title) || match.Success)
             {
-                Title = $"{_defaultColumnName}{Order}";
+                Title = $"{nameof(T)}{_defaultColumnName}{Order}";
             }
         }
 
