@@ -1,4 +1,4 @@
-﻿using Beporsoft.TabularSheet.Style;
+﻿using Beporsoft.TabularSheets.Style;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheet
+namespace Beporsoft.TabularSheets
 {
     /// <summary>
     /// Represent a column inside a <see cref="TabularData{T}"/>
@@ -23,7 +23,7 @@ namespace Beporsoft.TabularSheet
         {
             Owner = parentTabularData;
             ColumnData = columnData;
-            Order = Owner.Columns.Any() ? (Owner.Columns.Max(x => x.Order) + 1) : 0;
+            Order = Owner.Columns.Any() ? Owner.Columns.Max(x => x.Order) + 1 : 0;
             SetDefaultName();
         }
 
@@ -80,8 +80,8 @@ namespace Beporsoft.TabularSheet
                 idx++;
                 col.SetDefaultName();
             }
-            this.Order = position;
-            this.SetDefaultName();
+            Order = position;
+            SetDefaultName();
             Owner.Columns.Add(this);
         }
 

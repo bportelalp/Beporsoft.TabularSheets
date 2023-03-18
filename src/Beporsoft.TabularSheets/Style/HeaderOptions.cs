@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheet.Spreadsheets
+namespace Beporsoft.TabularSheets.Style
 {
     public class HeaderOptions
     {

@@ -8,8 +8,8 @@ namespace Beporsoft.TabularSheet.Csv
 {
     public enum CsvDelimiter
     {
-        Comma,
-        Semicolon
+        Semicolon,
+        Comma
     }
 
     public static class CsvDelimiterExtensions

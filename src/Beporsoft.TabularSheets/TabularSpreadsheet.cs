@@ -1,5 +1,4 @@
-﻿using Beporsoft.TabularSheet.Tools;
-using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml;
 using System;
@@ -11,9 +10,10 @@ using DocumentFormat.OpenXml.Drawing;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using Beporsoft.TabularSheet.Spreadsheets;
+using Beporsoft.TabularSheets.Tools;
+using Beporsoft.TabularSheets.Style;
 
-namespace Beporsoft.TabularSheet
+namespace Beporsoft.TabularSheets
 {
     public class TabularSpreadsheet<T> : TabularData<T>
     {

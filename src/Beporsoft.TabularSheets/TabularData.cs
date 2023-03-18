@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheet
+namespace Beporsoft.TabularSheets
 {
     public abstract class TabularData<T> : IList<T>
     {
@@ -106,7 +106,7 @@ namespace Beporsoft.TabularSheet
 
         public object Evaluate(int row, int col)
         {
-            if (this.Count >= row)
+            if (Count >= row)
                 throw new ArgumentOutOfRangeException(nameof(row), row, $"The value of row is outside the bounds of the collection length");
             if (_columns.Count >= col)
                 throw new ArgumentOutOfRangeException(nameof(col), col, $"The value of col is outside the bounds of the columns length");

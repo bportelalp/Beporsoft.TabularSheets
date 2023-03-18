@@ -1,6 +1,6 @@
-using Beporsoft.TabularSheet.Csv;
+using Beporsoft.TabularSheets.Csv;
 
-namespace Beporsoft.TabularSheet.Test
+namespace Beporsoft.TabularSheets.Test
 {
     public class TestTabularCsv
     {

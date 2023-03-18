@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheet.Test
+namespace Beporsoft.TabularSheets.Test
 {
     /// <summary>
     /// Example of class to fill tests
@@ -41,8 +41,8 @@ namespace Beporsoft.TabularSheet.Test
                     Vendor = new string(Enumerable.Repeat(letters, 10).Select(s => s[rnd.Next(s.Length)]).ToArray()),
                     CountryOrigin = new string(Enumerable.Repeat(letters, 8).Select(s => s[rnd.Next(s.Length)]).ToArray()),
                     Cost = rnd.NextDouble() * 10.0,
-                    LastUpdate = new DateTime(2010,1,1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010,1,1)).Days)),
-                    LastPriceUpdate = new DateTime(2010,1,1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010,1,1)).Days))
+                    LastUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days)),
+                    LastPriceUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days))
                 };
                 yield return product;
             }
