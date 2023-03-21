@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Drawing;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -14,13 +13,14 @@ using Beporsoft.TabularSheets.Tools;
 using Beporsoft.TabularSheets.Style;
 using DocumentFormat.OpenXml.Validation;
 using System.Xml;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
 
 namespace Beporsoft.TabularSheets
 {
     public class TabularSpreadsheet<T> : TabularData<T>
     {
         private static readonly string[] _defaultExtensions = new string[] { ".xlsx", ".xls" };
-
+        private readonly StylesheetBuilder _styleBuilder = new();
         public TabularSpreadsheet()
         {
         }
@@ -68,6 +68,7 @@ namespace Beporsoft.TabularSheets
         private void FillSpreadsheetData(SpreadsheetDocument spreadsheet)
         {
             WorkbookPart workbookPart = spreadsheet.AddWorkbookPart();
+            BuildStyleSheet(ref workbookPart);
             workbookPart.Workbook = new Workbook();
             AppendWorksheetPart(ref workbookPart);
             workbookPart.Workbook.Save();
@@ -101,7 +102,6 @@ namespace Beporsoft.TabularSheets
                 Name = nameSheet
             };
             sheets.Append(sheet);
-
             SheetData sheetData = BuildSheetData();
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
@@ -116,7 +116,11 @@ namespace Beporsoft.TabularSheets
             //Header
             var row = new Row();
             foreach (var column in _columns)
-                row.Append(CreateCell(column.Title, CellValues.String));
+            {
+                var cell = CreateCell(column.Title, CellValues.String);
+                cell.StyleIndex = 0;
+                row.Append(cell);
+            }
             sheetData.AppendChild(row);
 
             //Rows
@@ -177,19 +181,6 @@ namespace Beporsoft.TabularSheets
             return nameSheet;
         }
 
-
-        //protected Columns CreateColumnsWithWidth(SheetData sheetData)
-        //{
-        //    var columns = new Columns();
-        //    foreach (var item in Columns)
-        //    {
-        //        uint index = (uint)(item.Order + 1);
-        //        columns.Append(new Column() { Min = index, Max = index, Width = item.Value, CustomWidth = true });
-        //    }
-        //    return columns;
-        //}
-
-
         #endregion
 
         #region Validation
@@ -214,49 +205,73 @@ namespace Beporsoft.TabularSheets
 
         protected static Cell CreateCell(object value)
         {
-            CellValue cellContent;
             Type type = value.GetType();
-            CellValues dataType;
+            Cell cell = new Cell();
             if (type == typeof(string))
             {
-                dataType = CellValues.String;
-                cellContent = new CellValue(Convert.ToString(value) ?? string.Empty);
+                cell.DataType = CellValues.String;
+                cell.CellValue = new CellValue(Convert.ToString(value) ?? string.Empty);
             }
             else if (type == typeof(int))
             {
-                dataType = CellValues.Number;
-                cellContent = new CellValue(Convert.ToInt32(value));
+                cell.DataType = CellValues.Number;
+                cell.CellValue = new CellValue(Convert.ToInt32(value));
             }
             else if (type == typeof(double))
             {
-                dataType = CellValues.Number;
-                cellContent = new CellValue(Convert.ToDouble(value));
+                cell.DataType = CellValues.Number;
+                cell.CellValue = new CellValue(Convert.ToDouble(value));
             }
             else if (type == typeof(float))
             {
-                dataType = CellValues.Number;
-                cellContent = new CellValue(Convert.ToDecimal(value));
+                cell.DataType = CellValues.Number;
+                cell.CellValue = new CellValue(Convert.ToDecimal(value));
             }
             else if (type == typeof(bool))
             {
-                dataType = CellValues.Boolean;
-                cellContent = new CellValue(Convert.ToBoolean(value));
+                cell.DataType = CellValues.Boolean;
+                cell.CellValue = new CellValue(Convert.ToBoolean(value));
             }
             else if (type == typeof(DateTime))
             {
-                dataType = CellValues.Number;
-                cellContent = new CellValue(Convert.ToDateTime(value).ToOADate().ToString());
+                cell.DataType = CellValues.Number;
+                cell.StyleIndex = 1;
+                cell.CellValue = new CellValue(Convert.ToDateTime(value).ToOADate().ToString());
             }
             else
             {
-                dataType = CellValues.String;
-                cellContent = new CellValue(Convert.ToString(value) ?? string.Empty);
+                cell.DataType = CellValues.String;
+                cell.CellValue = new CellValue(Convert.ToString(value) ?? string.Empty);
             }
 
-            return new Cell()
+            return cell;
+        }
+        #endregion
+
+        #region Style Handling
+        private void BuildStyleSheet(ref WorkbookPart workbookPart)
+        {
+            WorkbookStylesPart stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+            stylesPart.Stylesheet = new Stylesheet()
             {
-                CellValue = cellContent,
-                DataType = dataType
+                
+                Fonts = new Fonts(new Font()),
+                Fills = new Fills(),
+                Borders = new Borders(new Border()),
+                CellStyleFormats = new CellStyleFormats(new CellFormat()),
+                CellFormats =
+                new CellFormats(
+                    new CellFormat()
+                    {
+                        FillId = 0,
+                        ApplyFill = true,
+                    },
+                    new CellFormat
+                    {
+                        NumberFormatId = 14,
+                        FillId = 0,
+                        ApplyNumberFormat = true
+                    })
             };
         }
         #endregion
