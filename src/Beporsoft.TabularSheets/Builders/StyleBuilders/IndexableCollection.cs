@@ -12,21 +12,27 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
     /// Represent a collection of <see cref="IIndexableStyle"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class IndexableCollection<T> where T : IEquatable<T>, IIndexableStyle
+    internal class IndexableStyleCollection<T> where T : IEquatable<T>, IIndexableStyle
     {
         private readonly List<T> _items = new();
         public int Register(T style)
         {
-            if (_items.Contains(style))
+            if (!_items.Contains(style))
             {
-                var founded = _items.Single(i => i.Equals(style));
-                return _items.IndexOf(founded);
-            }
-            else
-            {
+                int index = _items.Count;
+                style.Index = index;
                 _items.Add(style);
-                return _items.IndexOf(style);
             }
+            var registerEqual = _items.Single(i => i.Equals(style));
+            return registerEqual.Index;
+        }
+
+        public TContainer GetContainer<TContainer>() where TContainer : OpenXmlElement, new()
+        {
+            var container = new TContainer();
+            var builtItems = _items.Select(i => i.Build());
+            container.Append(builtItems);
+            return container;
         }
 
         public IEnumerable<T> GetRegisteredItems()

@@ -20,6 +20,16 @@ namespace Beporsoft.TabularSheets.Test
             });
         }
 
+        [Test]
+        public void TestToDebug()
+        {
+
+            TabularSpreadsheet<Product> table = Generate();
+            string path = GetPath("DebugTest.xlsx");
+            table.Create(path);
+        }
+
+
         private static TabularSpreadsheet<Product> Generate()
         {
             TabularSpreadsheet<Product> table = new();

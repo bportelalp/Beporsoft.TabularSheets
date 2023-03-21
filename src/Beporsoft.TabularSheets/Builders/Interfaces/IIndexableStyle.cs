@@ -13,6 +13,8 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
     /// </summary>
     internal interface IIndexableStyle
     {
+        int Index { get; set; }
+
         /// <summary>
         /// Generates the <see cref="OpenXmlElement"/> to fill the Stylesheet tree.
         /// </summary>

@@ -68,9 +68,9 @@ namespace Beporsoft.TabularSheets
         private void FillSpreadsheetData(SpreadsheetDocument spreadsheet)
         {
             WorkbookPart workbookPart = spreadsheet.AddWorkbookPart();
-            BuildStyleSheet(ref workbookPart);
             workbookPart.Workbook = new Workbook();
             AppendWorksheetPart(ref workbookPart);
+            BuildStyleSheet(ref workbookPart);
             workbookPart.Workbook.Save();
             ValidateSpreadSheet(spreadsheet);
             spreadsheet.Close();
@@ -118,7 +118,8 @@ namespace Beporsoft.TabularSheets
             foreach (var column in _columns)
             {
                 var cell = CreateCell(column.Title, CellValues.String);
-                cell.StyleIndex = 0;
+                int formatId = _styleBuilder.RegisterFormat(System.Drawing.Color.Red);
+                cell.StyleIndex = new UInt32Value(Convert.ToUInt32(formatId));
                 row.Append(cell);
             }
             sheetData.AppendChild(row);
@@ -130,10 +131,12 @@ namespace Beporsoft.TabularSheets
                 foreach (var column in _columns)
                 {
                     object value = column.Apply(item);
-                    if (value is null)
-                        row.Append(new Cell());
-                    else
-                        row.Append(CreateCell(value));
+                    var cell = new Cell();
+                    if (value is not null)
+                    {
+                        cell = CreateCell(value);
+                    }
+                    row.Append(cell);
                 }
                 sheetData.AppendChild(row);
             }
@@ -252,27 +255,17 @@ namespace Beporsoft.TabularSheets
         private void BuildStyleSheet(ref WorkbookPart workbookPart)
         {
             WorkbookStylesPart stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
-            stylesPart.Stylesheet = new Stylesheet()
+            var stylesheet = new Stylesheet();
+            stylesheet.CellStyleFormats = new CellStyleFormats(new CellFormat());
+            stylesheet.Fills = _styleBuilder.GetFills();
+            stylesheet.Fonts = new Fonts(new Font());
+            stylesheet.CellFormats = _styleBuilder.GetFormats();
+            stylesheet.CellFormats.Append(new CellFormat
             {
-                
-                Fonts = new Fonts(new Font()),
-                Fills = new Fills(),
-                Borders = new Borders(new Border()),
-                CellStyleFormats = new CellStyleFormats(new CellFormat()),
-                CellFormats =
-                new CellFormats(
-                    new CellFormat()
-                    {
-                        FillId = 0,
-                        ApplyFill = true,
-                    },
-                    new CellFormat
-                    {
-                        NumberFormatId = 14,
-                        FillId = 0,
-                        ApplyNumberFormat = true
-                    })
-            };
+                NumberFormatId = 14,
+                ApplyNumberFormat = true
+            });
+            stylesPart.Stylesheet = stylesheet;
         }
         #endregion
     }

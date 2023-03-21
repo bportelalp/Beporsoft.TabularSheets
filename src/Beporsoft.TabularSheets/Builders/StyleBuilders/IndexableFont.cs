@@ -19,6 +19,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             FontSize = fontSize;
         }
 
+        public int Index { get; set; }
         public System.Drawing.Color? FontColor { get; init; }
         public int? FontSize { get; init; } = 10;
 

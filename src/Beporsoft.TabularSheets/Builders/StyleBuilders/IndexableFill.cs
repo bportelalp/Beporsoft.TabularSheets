@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Helpers;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -11,22 +12,23 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
     internal class IndexableFill : IEquatable<IndexableFill?>, IIndexableStyle
     {
-        public IndexableFill(System.Drawing.Color backgroundColor)
+        public IndexableFill(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
         {
+            ForegroundColor = foregroundColor;
             BackgroundColor = backgroundColor;
-
         }
-        public System.Drawing.Color BackgroundColor { get; }
+
+        public int Index { get; set; }
+        public System.Drawing.Color ForegroundColor { get; init; }
+        public System.Drawing.Color? BackgroundColor { get; init; }
 
 
         public OpenXmlElement Build()
         {
-            var hex = $"FF{BackgroundColor.R:X}{BackgroundColor.G:X}{BackgroundColor.B:X}";
-            var bgCol = new ForegroundColor()
-            {
-                Rgb = new HexBinaryValue(hex) //TODO-Fill the color
-            };
-            var patternFill = new PatternFill(bgCol);
+            var patternFill = new PatternFill();
+            patternFill.ForegroundColor = GetForegroundColor();
+            if (BackgroundColor is not null)
+                patternFill.BackgroundColor = GetBackgroundColor();
             patternFill.PatternType = PatternValues.Solid;
             var fill = new Fill(patternFill);
             return fill;
@@ -46,6 +48,22 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public override int GetHashCode()
         {
             return HashCode.Combine(BackgroundColor);
+        }
+
+
+        private ForegroundColor GetForegroundColor()
+        {
+            return new ForegroundColor()
+            {
+                Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(ForegroundColor),
+            };
+        }
+        private BackgroundColor GetBackgroundColor()
+        {
+            return new BackgroundColor()
+            {
+                Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(BackgroundColor!.Value),
+            };
         }
     }
 }
