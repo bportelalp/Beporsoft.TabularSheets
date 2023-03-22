@@ -35,14 +35,8 @@ namespace Beporsoft.TabularSheets.Builder
 
         public void AddWorkbookPartFromTable<T>(ref WorkbookPart workbookPart, TabularSpreadsheet<T> table)
         {
-            
-        }
-
-        public SheetData BuildSheetData<T>(TabularSpreadsheet<T> table)
-        {
 
         }
 
-        private Row CreateHeader()
     }
 }
