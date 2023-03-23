@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders;
+using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
@@ -20,12 +21,14 @@ namespace Beporsoft.TabularSheets.Builder
     /// </summary>
     internal sealed class SpreadsheetBuilder
     {
+        private StylesheetBuilder _styleBuilder;
+
         /// <summary>
         /// Build spreadsheets.
         /// </summary>
         public SpreadsheetBuilder()
         {
-            StyleBuilder = new StylesheetBuilder();
+            _styleBuilder = new StylesheetBuilder();
         }
 
         /// <summary>
@@ -35,18 +38,18 @@ namespace Beporsoft.TabularSheets.Builder
         public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder)
         {
 
-            StyleBuilder = stylesheetBuilder;
+            _styleBuilder = stylesheetBuilder;
 
         }
 
-        public StylesheetBuilder StyleBuilder { get; }
+        public StylesheetBuilder StyleBuilder => _styleBuilder;
 
         #region Create Spreadsheet
 
         #endregion
 
         #region
-        public void Create<T>(string path, params TabularSpreadsheet<T>[] tables)
+        public void Create(string path, params ISheet[] tables)
         {
             string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetsFileExtension.AllowedExtensions);
             using var fs = new FileStream(pathCorrected, FileMode.Create);
@@ -54,7 +57,7 @@ namespace Beporsoft.TabularSheets.Builder
             ms.Seek(0, SeekOrigin.Begin);
             ms.CopyTo(fs);
         }
-        public MemoryStream Create<T>(params TabularSpreadsheet<T>[] tables)
+        public MemoryStream Create(params ISheet[] tables)
         {
             MemoryStream stream = new();
             using var spreadsheet = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
@@ -70,7 +73,7 @@ namespace Beporsoft.TabularSheets.Builder
         }
         #endregion
 
-        public void AddWorkbookPartFromTable<T>(ref WorkbookPart workbookPart, TabularSpreadsheet<T> table)
+        public void AddWorkbookPartFromTable(ref WorkbookPart workbookPart, ISheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet();
@@ -82,7 +85,7 @@ namespace Beporsoft.TabularSheets.Builder
                 sheets = workbookPart.Workbook.Sheets;
 
             UInt32Value sheetIdValue = FindSuitableSheetId(sheets);
-            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? typeof(T).Name : table.Title;
+            string nameSheet = string.IsNullOrWhiteSpace(table.Title)? table.ItemType.Name : table.Title;
             nameSheet = BuildSuitableSheetName(sheets, nameSheet);
 
             var sheet = new Sheet()
@@ -93,9 +96,7 @@ namespace Beporsoft.TabularSheets.Builder
             };
             sheets.Append(sheet);
 
-            SheetBuilder<T> sheetBuilder = new(table, StyleBuilder);
-
-            SheetData sheetData = sheetBuilder.BuildSheetData();
+            SheetData sheetData = table.BuildData(ref _styleBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 

@@ -11,16 +11,16 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
     internal class StylesheetBuilder
     {
-        private readonly IndexableStyleCollection<IndexableFill> _fills = new();
-        private readonly IndexableStyleCollection<IndexableFont> _fonts = new();
-        private readonly IndexableStyleCollection<IndexableFormat> _formats = new();
+        private readonly StyleSetupCollection<FillSetup> _fills = new();
+        private readonly StyleSetupCollection<FontSetup> _fonts = new();
+        private readonly StyleSetupCollection<FormatSetup> _formats = new();
 
 
         public int RegisterFormat(System.Drawing.Color color)
         {
-            var fill = new IndexableFill(color, null);
+            var fill = new FillSetup(color, null);
             _fills.Register(fill);
-            var format = new IndexableFormat(fill, null);
+            var format = new FormatSetup(fill, null);
             var formatId = _formats.Register(format);
             return formatId;
         }

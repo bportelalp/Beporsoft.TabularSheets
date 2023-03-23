@@ -15,10 +15,12 @@ using DocumentFormat.OpenXml.Validation;
 using System.Xml;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Builder;
+using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders;
 
 namespace Beporsoft.TabularSheets
 {
-    public class TabularSpreadsheet<T> : TabularData<T>
+    public class TabularSpreadsheet<T> : TabularData<T>, ISheet
     {
         public TabularSpreadsheet()
         {
@@ -34,6 +36,8 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public string Title { get; set; } = "Sheet";
         public HeaderOptions Header { get; set; } = new();
+
+        Type ISheet.ItemType => typeof(T);
 
 
         #region Configure Table
@@ -52,6 +56,15 @@ namespace Beporsoft.TabularSheets
             SpreadsheetBuilder builder = new();
             MemoryStream stream = builder.Create(this);
             return stream;
+        }
+        #endregion
+
+
+        #region ISheet
+        SheetData ISheet.BuildData(ref StylesheetBuilder stylesheetBuilder)
+        {
+            SheetBuilder<T> builder = new(this, stylesheetBuilder);
+            return builder.BuildSheetData();
         }
         #endregion
     }

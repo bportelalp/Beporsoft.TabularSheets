@@ -9,10 +9,10 @@ using Beporsoft.TabularSheets.Builders.Interfaces;
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
     /// <summary>
-    /// Represent a collection of <see cref="IIndexableStyle"/>
+    /// Represent a collection of <see cref="IStyleSetup"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class IndexableStyleCollection<T> where T : IEquatable<T>, IIndexableStyle
+    internal class StyleSetupCollection<T> where T : IEquatable<T>, IStyleSetup
     {
         private readonly List<T> _items = new();
         public int Register(T style)

@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class IndexableFont : IEquatable<IndexableFont?>, IIndexableStyle
+    internal class FontSetup : IEquatable<FontSetup?>, IStyleSetup
     {
 
-        public IndexableFont(System.Drawing.Color fontColor, int fontSize)
+        public FontSetup(System.Drawing.Color fontColor, int fontSize)
         {
             FontColor = fontColor;
             FontSize = fontSize;
@@ -37,10 +37,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as IndexableFont);
+            return Equals(obj as FontSetup);
         }
 
-        public bool Equals(IndexableFont? other)
+        public bool Equals(FontSetup? other)
         {
             return other is not null &&
                    EqualityComparer<System.Drawing.Color?>.Default.Equals(FontColor, other.FontColor) &&

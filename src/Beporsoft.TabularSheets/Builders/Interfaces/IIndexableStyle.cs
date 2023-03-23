@@ -11,8 +11,11 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
     /// Provides an abstractions of generate syles configurations which must be indexed inside the stylesheet to assign
     /// correctly to cells.
     /// </summary>
-    internal interface IIndexableStyle
+    internal interface IStyleSetup
     {
+        /// <summary>
+        /// The index of the style inside the collection stored on the OpenXml Tree
+        /// </summary>
         int Index { get; set; }
 
         /// <summary>

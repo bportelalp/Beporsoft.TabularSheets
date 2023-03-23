@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class IndexableFill : IEquatable<IndexableFill?>, IIndexableStyle
+    internal class FillSetup : IEquatable<FillSetup?>, IStyleSetup
     {
-        public IndexableFill(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
+        public FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
         {
             ForegroundColor = foregroundColor;
             BackgroundColor = backgroundColor;
@@ -36,10 +36,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as IndexableFill);
+            return Equals(obj as FillSetup);
         }
 
-        public bool Equals(IndexableFill? other)
+        public bool Equals(FillSetup? other)
         {
             return other is not null &&
                    BackgroundColor.Equals(other.BackgroundColor);

@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class IndexableFormat : IEquatable<IndexableFormat?>, IIndexableStyle
+    internal class FormatSetup : IEquatable<FormatSetup?>, IStyleSetup
     {
-        public IndexableFormat(IndexableFill? fill, IndexableFont? font)
+        public FormatSetup(FillSetup? fill, FontSetup? font)
         {
             Fill = fill;
             Font = font;
         }
 
         public int Index { get; set; }
-        public IndexableFill? Fill { get; init; }
-        public IndexableFont? Font { get; init; }
+        public FillSetup? Fill { get; init; }
+        public FontSetup? Font { get; init; }
 
         public OpenXmlElement Build()
         {
@@ -33,14 +33,14 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as IndexableFormat);
+            return Equals(obj as FormatSetup);
         }
 
-        public bool Equals(IndexableFormat? other)
+        public bool Equals(FormatSetup? other)
         {
             return other is not null &&
-                   EqualityComparer<IndexableFill?>.Default.Equals(Fill, other.Fill) &&
-                   EqualityComparer<IndexableFont?>.Default.Equals(Font, other.Font);
+                   EqualityComparer<FillSetup?>.Default.Equals(Fill, other.Fill) &&
+                   EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font);
         }
 
         public override int GetHashCode()

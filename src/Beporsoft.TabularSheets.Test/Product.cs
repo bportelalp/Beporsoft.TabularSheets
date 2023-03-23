@@ -18,8 +18,8 @@ namespace Beporsoft.TabularSheets.Test
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public double Cost { get; set; }
-        public string Vendor { get; set; }
-        public string CountryOrigin { get; set; }
+        public string Vendor { get; set; } = null!;
+        public string CountryOrigin { get; set; } = null!;
         public DateTime LastUpdate { get; set; }
         public DateTime LastPriceUpdate { get; set; }
 
