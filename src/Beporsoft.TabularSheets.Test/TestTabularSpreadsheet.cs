@@ -1,4 +1,5 @@
 using Beporsoft.TabularSheets.Csv;
+using System.Drawing;
 
 namespace Beporsoft.TabularSheets.Test
 {
@@ -19,6 +20,17 @@ namespace Beporsoft.TabularSheets.Test
                 Assert.That(() => table.Create(pathWrongExtension), Throws.Exception);
             });
         }
+
+        [Test]
+        public void TestToDebug()
+        {
+
+            TabularSpreadsheet<Product> table = Generate();
+            table.Header.Color = Color.Purple;
+            string path = GetPath("DebugTest.xlsx");
+            table.Create(path);
+        }
+
 
         private static TabularSpreadsheet<Product> Generate()
         {

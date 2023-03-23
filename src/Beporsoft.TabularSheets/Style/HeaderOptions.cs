@@ -10,7 +10,7 @@ namespace Beporsoft.TabularSheets.Style
     public class HeaderOptions
     {
         public bool DynamicFilter { get; set; } = false;
-        public Color Color { get; set; } = Color.Transparent;
+        public Color? Color { get; set; } = null;
 
     }
 }

@@ -25,4 +25,20 @@ namespace Beporsoft.TabularSheets.Tools
             }
         }
     }
+
+    internal struct SpreadsheetsFileExtension
+    {
+        public static string Excel2007_365 = ".xlsx";
+        public static string MIME_Excel2007_365 = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public static string Excel97_2003 = ".xls";
+        public static string MIME_Excel97_2003 = "application/vnd.ms-excel";
+        public static string[] AllowedExtensions = new string[] { Excel2007_365, Excel97_2003 };
+        public static string[] AllowedMimeTypes = new string[] { MIME_Excel2007_365, Excel97_2003 };
+    }
+
+    internal struct CsvFileExtension
+    {
+        public static string Csv = ".csv";
+        public static string MIME_Csv = "text/csv";
+    }
 }
