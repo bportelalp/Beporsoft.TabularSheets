@@ -1,4 +1,5 @@
 using Beporsoft.TabularSheets.Csv;
+using System.Drawing;
 
 namespace Beporsoft.TabularSheets.Test
 {
@@ -25,6 +26,7 @@ namespace Beporsoft.TabularSheets.Test
         {
 
             TabularSpreadsheet<Product> table = Generate();
+            table.Header.Color = Color.Purple;
             string path = GetPath("DebugTest.xlsx");
             table.Create(path);
         }

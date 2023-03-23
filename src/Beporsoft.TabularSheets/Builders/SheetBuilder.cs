@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Helpers;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -30,13 +30,13 @@ namespace Beporsoft.TabularSheets.Builders
         /// <returns>An instance of the OpenXml element <see cref="SheetData"/></returns>
         public SheetData BuildSheetData()
         {
-            SheetData sheetData = new SheetData();
-            Row header = CreateHeader();
+            SheetData sheetData = new();
+            Row header = CreateHeaderRow();
             sheetData.AppendChild(header);
 
             foreach (var item in Table.Items)
             {
-                Row row = CreateRow(item);
+                Row row = CreateItemRow(item);
                 sheetData.AppendChild(row);
             }
             return sheetData;
@@ -46,14 +46,14 @@ namespace Beporsoft.TabularSheets.Builders
         /// Create the <see cref="Row"/> which represents the header of the table, including the registry of
         /// styles inside <see cref="StyleBuilder"/>
         /// </summary>
-        private Row CreateHeader()
+        private Row CreateHeaderRow()
         {
-            Row header = new Row();
+            Row header = new();
             System.Drawing.Color colorHeader = Table.Header.Color;
             int formatId = StyleBuilder.RegisterFormat(colorHeader);
             foreach (var col in Table.Columns)
             {
-                Cell cell = CreateCell(col.Title, CellValues.String);
+                Cell cell = CreateCell(col.Title);
                 cell.StyleIndex = OpenXMLHelpers.ToUint32Value(formatId);
                 header.Append(cell);
             }
@@ -64,13 +64,13 @@ namespace Beporsoft.TabularSheets.Builders
         /// Create the <see cref="Row"/> which represents one item of <see cref="{T}"/> of the table, including the registry of
         /// styles inside <see cref="StyleBuilder"/>
         /// </summary>
-        private Row CreateRow(T item)
+        private Row CreateItemRow(T item)
         {
             Row row = new Row();
             foreach (var col in Table.Columns)
             {
                 object value = col.Apply(item);
-                Cell cell = new Cell();
+                Cell cell = new();
                 if (value is not null)
                     cell = CreateCell(value);
 

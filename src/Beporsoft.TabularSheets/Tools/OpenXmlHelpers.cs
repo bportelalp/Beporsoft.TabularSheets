@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Helpers
+namespace Beporsoft.TabularSheets.Tools
 {
     internal static class OpenXMLHelpers
     {
