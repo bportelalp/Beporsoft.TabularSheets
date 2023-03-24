@@ -46,7 +46,6 @@ namespace Beporsoft.TabularSheets
         /// The position where the column will be displayed.
         /// </summary>
         public int Order { get; internal set; } = 0;
-        public ColumnOptions ColumnOptions { get; set; } = new();
         public TabularData<T> Owner { get; }
 
         #region Edition

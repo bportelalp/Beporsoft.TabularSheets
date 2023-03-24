@@ -12,7 +12,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
     internal class FillSetup : IEquatable<FillSetup?>, IStyleSetup
     {
-        public FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
+        internal FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
         {
             ForegroundColor = foregroundColor;
             BackgroundColor = backgroundColor;

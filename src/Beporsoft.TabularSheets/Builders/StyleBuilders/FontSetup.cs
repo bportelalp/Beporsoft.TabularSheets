@@ -13,7 +13,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
     internal class FontSetup : IEquatable<FontSetup?>, IStyleSetup
     {
 
-        public FontSetup(System.Drawing.Color fontColor, int fontSize)
+        internal FontSetup(System.Drawing.Color fontColor, int fontSize)
         {
             FontColor = fontColor;
             FontSize = fontSize;

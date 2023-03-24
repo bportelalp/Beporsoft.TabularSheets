@@ -16,7 +16,7 @@ using System.Xml;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Builder;
 using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders;
+using Beporsoft.TabularSheets.Builders.Sheets;
 
 namespace Beporsoft.TabularSheets
 {
