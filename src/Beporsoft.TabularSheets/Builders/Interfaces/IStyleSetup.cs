@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
 
 namespace Beporsoft.TabularSheets.Builders.Interfaces
 {
@@ -14,7 +15,7 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
     internal interface IStyleSetup
     {
         /// <summary>
-        /// The index of the style inside the collection stored on the OpenXml Tree
+        /// The index of the style inside the collection stored on the OpenXml Tree. It must be only edited by <see cref="StylesheetBuilder"/>
         /// </summary>
         int Index { get; set; }
 

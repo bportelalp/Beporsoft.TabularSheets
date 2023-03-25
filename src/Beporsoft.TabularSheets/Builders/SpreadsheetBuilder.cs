@@ -1,5 +1,4 @@
-﻿using Beporsoft.TabularSheets.Builders;
-using Beporsoft.TabularSheets.Builders.Interfaces;
+﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
@@ -15,7 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Beporsoft.TabularSheets.Builder
+namespace Beporsoft.TabularSheets.Builders
 {
     /// <summary>
     /// A class which build a spreadsheets from instance(s) of <see cref="TabularSpreadsheet{T}"/>
@@ -86,7 +85,7 @@ namespace Beporsoft.TabularSheets.Builder
                 sheets = workbookPart.Workbook.Sheets;
 
             UInt32Value sheetIdValue = FindSuitableSheetId(sheets);
-            string nameSheet = string.IsNullOrWhiteSpace(table.Title)? table.ItemType.Name : table.Title;
+            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.ItemType.Name : table.Title;
             nameSheet = BuildSuitableSheetName(sheets, nameSheet);
 
             var sheet = new Sheet()
@@ -156,7 +155,7 @@ namespace Beporsoft.TabularSheets.Builder
             var stylesheet = new Stylesheet();
             stylesheet.CellStyleFormats = new CellStyleFormats(new CellFormat());
             stylesheet.Fills = StyleBuilder.GetFills();
-            stylesheet.Fonts = new Fonts(new Font());
+            stylesheet.Fonts = StyleBuilder.GetFonts();
             stylesheet.CellFormats = StyleBuilder.GetFormats();
             stylesheet.CellFormats.Append(new CellFormat
             {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Builders.Sheets
+namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
     internal class SheetBuilder<T>
     {
@@ -49,12 +49,7 @@ namespace Beporsoft.TabularSheets.Builders.Sheets
         private Row CreateHeaderRow()
         {
             Row header = new();
-            int? formatId = null;
-            if (Table.Header.Color is not null)
-            {
-                System.Drawing.Color colorHeader = Table.Header.Color.Value;
-                formatId = StyleBuilder.RegisterFormat(colorHeader);
-            }
+            int? formatId = RegisterHeaderStyle();
             foreach (var col in Table.Columns)
             {
                 Cell cell = CreateCell(col.Title);
@@ -137,6 +132,23 @@ namespace Beporsoft.TabularSheets.Builders.Sheets
             }
 
             return cell;
+        }
+
+        private int? RegisterHeaderStyle()
+        {
+            int? formatId = null;
+            FillSetup? fill = null;
+            FontSetup? font = null;
+            if (Table.HeaderStyle.BackgroundColor is not null)
+                fill = new FillSetup(Table.HeaderStyle.BackgroundColor.Value, null);
+            font = new FontSetup(Table.HeaderStyle.FontColor, Table.HeaderStyle.FontSize);
+
+            if (font is null && fill is null)
+                return null;
+
+            formatId = StyleBuilder.RegisterFormat(fill, font, null);
+
+            return formatId;
         }
     }
 }

@@ -9,7 +9,7 @@
 		<PackageProjectUrl>https://github.com/bportelalp/tabular-data-sheets</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/bportelalp/tabular-data-sheets</RepositoryUrl>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>bportelalp</Authors>
 		<Description>Tools to create basic data tables inside spreadsheets.</Description>
 		<LangVersion>10.0</LangVersion>
@@ -33,12 +33,12 @@
 		<PackageReference Include="DocumentFormat.OpenXml" Version="2.19.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition ="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1"/>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition ="'$(TargetFramework)' == 'net48'">
-		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1"/>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
 	</ItemGroup>
 
 </Project>

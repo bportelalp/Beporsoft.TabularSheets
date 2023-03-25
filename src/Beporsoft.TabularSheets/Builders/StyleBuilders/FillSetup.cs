@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FillSetup : IEquatable<FillSetup?>, IStyleSetup
+    internal class FillSetup : Setup, IEquatable<FillSetup?>, IStyleSetup
     {
         internal FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
         {
@@ -18,12 +18,11 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             BackgroundColor = backgroundColor;
         }
 
-        public int Index { get; set; }
         public System.Drawing.Color ForegroundColor { get; set; }
         public System.Drawing.Color? BackgroundColor { get; set; }
 
 
-        public OpenXmlElement Build()
+        public override OpenXmlElement Build()
         {
             var patternFill = new PatternFill();
             patternFill.ForegroundColor = GetForegroundColor();
@@ -42,12 +41,13 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public bool Equals(FillSetup? other)
         {
             return other is not null &&
-                   BackgroundColor.Equals(other.BackgroundColor);
+                   BackgroundColor.Equals(other.BackgroundColor) &&
+                   ForegroundColor.Equals(other.ForegroundColor);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(BackgroundColor);
+            return HashCode.Combine(BackgroundColor, ForegroundColor);
         }
 
 

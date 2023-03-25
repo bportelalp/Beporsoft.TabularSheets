@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -9,25 +10,28 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FormatSetup : IEquatable<FormatSetup?>, IStyleSetup
+    internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IStyleSetup
     {
-        public FormatSetup(FillSetup? fill, FontSetup? font)
+        public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border)
         {
             Fill = fill;
             Font = font;
+            Border = border;
         }
 
-        public int Index { get; set; }
         public FillSetup? Fill { get; set; }
         public FontSetup? Font { get; set; }
+        public BorderSetup? Border { get; set; }
 
-        public OpenXmlElement Build()
+        public override OpenXmlElement Build()
         {
             var format = new CellFormat();
             if (Font is not null)
-                format.FontId = new UInt32Value(Convert.ToUInt32(Font.Index));
+                format.FontId = OpenXMLHelpers.ToUint32Value(Font.Index);
             if (Fill is not null)
-                format.FillId = new UInt32Value(Convert.ToUInt32(Fill.Index));
+                format.FillId = OpenXMLHelpers.ToUint32Value(Fill.Index);
+            if (Border is not null)
+                format.BorderId = OpenXMLHelpers.ToUint32Value(Border.Index);
             return format;
         }
 
@@ -40,12 +44,13 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             return other is not null &&
                    EqualityComparer<FillSetup?>.Default.Equals(Fill, other.Fill) &&
-                   EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font);
+                   EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font) &&
+                   EqualityComparer<BorderSetup?>.Default.Equals(Border, other.Border); ;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Index, Fill, Font);
+            return HashCode.Combine(Fill, Font, Border);
         }
     }
 }

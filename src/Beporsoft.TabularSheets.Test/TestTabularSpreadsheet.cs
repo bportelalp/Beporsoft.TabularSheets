@@ -26,7 +26,8 @@ namespace Beporsoft.TabularSheets.Test
         {
 
             TabularSpreadsheet<Product> table = Generate();
-            table.Header.Color = Color.Purple;
+            table.HeaderStyle.BackgroundColor = Color.Purple;
+            table.HeaderStyle.FontColor = Color.White;
             string path = GetPath("DebugTest.xlsx");
             table.Create(path);
         }

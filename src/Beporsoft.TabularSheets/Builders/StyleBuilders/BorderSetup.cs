@@ -8,17 +8,32 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class BorderSetup : IStyleSetup
+    internal class BorderSetup : Setup, IStyleSetup, IEquatable<BorderSetup?>
     {
         internal BorderSetup()
         {
             
         }
-        public int Index { get; set; }
 
-        public OpenXmlElement Build()
+        public override OpenXmlElement Build()
         {
             throw new NotImplementedException();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as BorderSetup);
+        }
+
+        public bool Equals(BorderSetup? other)
+        {
+            return other is not null &&
+                   Index == other.Index;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Index);
         }
     }
 }

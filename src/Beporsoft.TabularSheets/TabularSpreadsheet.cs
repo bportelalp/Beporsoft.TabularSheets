@@ -14,10 +14,10 @@ using Beporsoft.TabularSheets.Style;
 using DocumentFormat.OpenXml.Validation;
 using System.Xml;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Builder;
 using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders.Sheets;
 using System.IO;
+using Beporsoft.TabularSheets.Builders;
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
 
 namespace Beporsoft.TabularSheets
 {
@@ -31,15 +31,14 @@ namespace Beporsoft.TabularSheets
         {
             Items = items.ToList();
         }
-
+        #region Properties
         /// <summary>
         /// The title of the current sheet
         /// </summary>
         public string Title { get; set; } = "Sheet";
-        public HeaderOptions Header { get; set; } = new();
+        public HeaderStyle HeaderStyle { get; private set; } = new();
 
-        Type ISheet.ItemType => typeof(T);
-
+        #endregion
 
         #region Configure Table
         public void SetSheetTitle(string title) => Title = title;
@@ -60,8 +59,9 @@ namespace Beporsoft.TabularSheets
         }
         #endregion
 
-
         #region ISheet
+        Type ISheet.ItemType => typeof(T);
+
         SheetData ISheet.BuildData(ref StylesheetBuilder stylesheetBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder);

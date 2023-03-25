@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FontSetup : IEquatable<FontSetup?>, IStyleSetup
+    internal class FontSetup : Setup, IEquatable<FontSetup?>, IStyleSetup
     {
 
         internal FontSetup(System.Drawing.Color fontColor, int fontSize)
@@ -19,11 +19,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             FontSize = fontSize;
         }
 
-        public int Index { get; set; }
         public System.Drawing.Color? FontColor { get; set; }
         public int? FontSize { get; set; } = 10;
 
-        public OpenXmlElement Build()
+        public override OpenXmlElement Build()
         {
             var font = new Font();
 

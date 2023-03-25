@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Builders.Sheets
+namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
     /// <summary>
     /// A class to build cell reference values from row and col indexes
@@ -34,13 +34,14 @@ namespace Beporsoft.TabularSheets.Builders.Sheets
             string colReference = string.Empty;
             foreach (var index in indexes)
                 colReference += AllowedChars[index];
-            
+
             int rowReference = zeroBasedIndex ? row + 1 : row;
             string result = colReference + rowReference.ToString();
             return result;
         }
 
-        public static int GetColumnIndex(string colReference, bool zeroBasedIndex = true) {
+        public static int GetColumnIndex(string colReference, bool zeroBasedIndex = true)
+        {
             colReference = colReference.Trim().ToUpper();
 
             int sum = 0;
@@ -48,7 +49,7 @@ namespace Beporsoft.TabularSheets.Builders.Sheets
             for (int i = 0; i < colReference.Length; i++)
             {
                 sum *= 26;
-                sum += (colReference[i] - 'A' + 1);
+                sum += colReference[i] - 'A' + 1;
             }
             return HandleZeroIndex(sum, zeroBasedIndex);
         }
