@@ -35,7 +35,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// The function which will be evaluated to fill the respective column for each item.
         /// </summary>
-        public Func<T, object> ColumnData { get; init; }
+        public Func<T, object> ColumnData { get; set; }
 
         /// <summary>
         /// The title of the column. It must be set throught constructor or <see cref="SetTitle(string)"/>

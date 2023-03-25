@@ -18,8 +18,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         }
 
         public int Index { get; set; }
-        public FillSetup? Fill { get; init; }
-        public FontSetup? Font { get; init; }
+        public FillSetup? Fill { get; set; }
+        public FontSetup? Font { get; set; }
 
         public OpenXmlElement Build()
         {
@@ -45,7 +45,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Fill, Font);
+            return HashCode.Combine(Index, Fill, Font);
         }
     }
 }

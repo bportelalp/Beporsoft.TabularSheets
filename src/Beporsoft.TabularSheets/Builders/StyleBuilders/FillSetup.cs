@@ -19,8 +19,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         }
 
         public int Index { get; set; }
-        public System.Drawing.Color ForegroundColor { get; init; }
-        public System.Drawing.Color? BackgroundColor { get; init; }
+        public System.Drawing.Color ForegroundColor { get; set; }
+        public System.Drawing.Color? BackgroundColor { get; set; }
 
 
         public OpenXmlElement Build()

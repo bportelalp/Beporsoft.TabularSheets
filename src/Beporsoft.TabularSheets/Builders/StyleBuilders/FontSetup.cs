@@ -20,8 +20,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         }
 
         public int Index { get; set; }
-        public System.Drawing.Color? FontColor { get; init; }
-        public int? FontSize { get; init; } = 10;
+        public System.Drawing.Color? FontColor { get; set; }
+        public int? FontSize { get; set; } = 10;
 
         public OpenXmlElement Build()
         {
