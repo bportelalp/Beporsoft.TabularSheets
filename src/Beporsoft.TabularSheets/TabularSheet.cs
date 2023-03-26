@@ -1,33 +1,23 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using Beporsoft.TabularSheets.Builders;
+using Beporsoft.TabularSheets.Builders.Shared;
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
+using Beporsoft.TabularSheets.Style;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using Beporsoft.TabularSheets.Tools;
-using Beporsoft.TabularSheets.Style;
-using DocumentFormat.OpenXml.Validation;
-using System.Xml;
-using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using System.IO;
-using Beporsoft.TabularSheets.Builders;
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
-using Beporsoft.TabularSheets.Builders.Shared;
+using System.Linq;
 
 namespace Beporsoft.TabularSheets
 {
-    public class TabularSpreadsheet<T> : TabularData<T>, ISheet
+    public class TabularSheet<T> : TabularData<T>, ISheet
     {
-        public TabularSpreadsheet()
+        public TabularSheet()
         {
         }
 
-        public TabularSpreadsheet(IEnumerable<T> items)
+        public TabularSheet(IEnumerable<T> items)
         {
             Items = items.ToList();
         }

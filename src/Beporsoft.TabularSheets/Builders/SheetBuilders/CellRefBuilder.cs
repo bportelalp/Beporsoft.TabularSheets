@@ -97,7 +97,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         public static (int Row, int Col) GetIndexes(string cellRef, bool zeroBasedIndex = true)
         {
             string rowRef = GetRowPart(cellRef);
-            string colRef = GetColumnPart(cellRef);
+            string colRef = GetColPart(cellRef);
             int row = GetRowIndex(rowRef, zeroBasedIndex);
             int col = GetColIndex(colRef, zeroBasedIndex);
             return (row, col);
@@ -110,14 +110,14 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 throw new ArgumentException($"The cell reference isn't in the correct format. Value={reference}");
         }
 
-        private static string GetColumnPart(string reference)
+        public static string GetColPart(string reference)
         {
             CheckFormat(reference);
             Match match = RegexReferenceColumn.Match(reference);
             return match.Value;
         }
 
-        private static string GetRowPart(string reference)
+        public static string GetRowPart(string reference)
         {
             CheckFormat(reference);
             Match match = RegexReferenceRow.Match(reference);

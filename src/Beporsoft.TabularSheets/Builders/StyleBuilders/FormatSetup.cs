@@ -2,6 +2,7 @@
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +26,12 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public override OpenXmlElement Build()
         {
-            var format = new CellFormat();
-            if (Font is not null)
-                format.FontId = OpenXMLHelpers.ToUint32Value(Font.Index);
-            if (Fill is not null)
-                format.FillId = OpenXMLHelpers.ToUint32Value(Fill.Index);
-            if (Border is not null)
-                format.BorderId = OpenXMLHelpers.ToUint32Value(Border.Index);
+            var format = new CellFormat
+            {
+                FillId = GetSetupId(Fill),
+                FontId = GetSetupId(Font),
+                BorderId = GetSetupId(Border)
+            };
             return format;
         }
 
@@ -52,5 +52,15 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             return HashCode.Combine(Fill, Font, Border);
         }
+
+        #region Assign Ids
+        private static UInt32Value? GetSetupId(Setup? setup)
+        {
+            UInt32Value? value = null;
+            if (setup is not null)
+                value = OpenXMLHelpers.ToUint32Value(setup.Index);
+            return value;
+        }
+        #endregion
     }
 }

@@ -24,12 +24,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public override OpenXmlElement Build()
         {
-            var patternFill = new PatternFill();
-            patternFill.ForegroundColor = GetForegroundColor();
-            if (BackgroundColor is not null)
-                patternFill.BackgroundColor = GetBackgroundColor();
-            patternFill.PatternType = PatternValues.Solid;
-            var fill = new Fill(patternFill);
+            var fill = new Fill()
+            {
+                PatternFill = BuildPatternFill()
+            };
             return fill;
         }
 
@@ -50,6 +48,17 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return HashCode.Combine(BackgroundColor, ForegroundColor);
         }
 
+        #region Build child elements
+        private PatternFill BuildPatternFill()
+        {
+            var patternFill = new PatternFill
+            {
+                ForegroundColor = GetForegroundColor(),
+                BackgroundColor = GetBackgroundColor(),
+                PatternType = PatternValues.Solid
+            };
+            return patternFill;
+        }
 
         private ForegroundColor GetForegroundColor()
         {
@@ -58,12 +67,19 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(ForegroundColor),
             };
         }
-        private BackgroundColor GetBackgroundColor()
+
+        private BackgroundColor? GetBackgroundColor()
         {
-            return new BackgroundColor()
+            BackgroundColor? bg = null;
+            if (BackgroundColor is not null)
             {
-                Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(BackgroundColor!.Value),
-            };
+                bg = new BackgroundColor()
+                {
+                    Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(BackgroundColor!.Value),
+                };
+            }
+            return bg;
         }
+        #endregion
     }
 }

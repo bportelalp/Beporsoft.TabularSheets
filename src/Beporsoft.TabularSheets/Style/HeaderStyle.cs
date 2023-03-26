@@ -9,10 +9,10 @@ namespace Beporsoft.TabularSheets.Style
 {
     public class HeaderStyle
     {
-        public bool DynamicFilter { get; set; } = false;
         public Color? BackgroundColor { get; set; } = null;
         public Color FontColor { get; set; } = Color.Black;
         public int FontSize { get; set; } = 10;
+        public string FontFamily { get; set; } = null!;
 
     }
 }

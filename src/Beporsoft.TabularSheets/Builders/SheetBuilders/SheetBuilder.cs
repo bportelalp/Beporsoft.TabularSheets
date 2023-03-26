@@ -14,7 +14,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     internal class SheetBuilder<T>
     {
         private readonly CellRefIterator _cellRefIterator = new CellRefIterator();
-        public SheetBuilder(TabularSpreadsheet<T> table, StylesheetBuilder styleBuilder, SharedStringBuilder sharedStrings)
+        public SheetBuilder(TabularSheet<T> table, StylesheetBuilder styleBuilder, SharedStringBuilder sharedStrings)
         {
             Table = table;
             StyleBuilder = styleBuilder;
@@ -22,7 +22,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             CellBuilder = new CellBuilder(SharedStrings);
         }
 
-        public TabularSpreadsheet<T> Table { get; }
+        public TabularSheet<T> Table { get; }
         public StylesheetBuilder StyleBuilder { get; }
         public SharedStringBuilder SharedStrings { get; }
         public CellBuilder CellBuilder { get; }

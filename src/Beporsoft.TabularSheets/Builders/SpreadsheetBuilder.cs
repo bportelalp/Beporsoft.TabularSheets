@@ -18,7 +18,7 @@ using System.Xml;
 namespace Beporsoft.TabularSheets.Builders
 {
     /// <summary>
-    /// A class which build a spreadsheets from instance(s) of <see cref="TabularSpreadsheet{T}"/>
+    /// A class which build a spreadsheets from instance(s) of <see cref="TabularSheet{T}"/>
     /// </summary>
     internal sealed class SpreadsheetBuilder
     {
@@ -87,7 +87,7 @@ namespace Beporsoft.TabularSheets.Builders
         /// using shared resources.
         /// </summary>
         /// <param name="workbookPart">A reference to the <see cref="WorkbookPart"/> where to append the <see cref="WorkbookStylesPart"/></param>
-        /// <param name="table">The <see cref="TabularSpreadsheet{T}"/> which will populate the <see cref="SheetData"/></param>
+        /// <param name="table">The <see cref="TabularSheet{T}"/> which will populate the <see cref="SheetData"/></param>
         public void AppendWorksheetPart(ref WorkbookPart workbookPart, ISheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();

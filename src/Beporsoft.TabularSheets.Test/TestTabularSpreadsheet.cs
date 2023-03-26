@@ -9,7 +9,7 @@ namespace Beporsoft.TabularSheets.Test
         [Test]
         public void CheckFileName()
         {
-            TabularSpreadsheet<Product> table = Generate();
+            TabularSheet<Product> table = Generate();
             string pathOk = GetPath("ExcelCheckFileName.xlsx");
             string pathOkAlternative = GetPath("ExcelCheckFileName.xls");
             string pathWrongExtension = GetPath("ExcelCheckFileName.csv");
@@ -25,7 +25,7 @@ namespace Beporsoft.TabularSheets.Test
         public void TestToDebug()
         {
 
-            TabularSpreadsheet<Product> table = Generate();
+            TabularSheet<Product> table = Generate();
             table.HeaderStyle.BackgroundColor = Color.Purple;
             table.HeaderStyle.FontColor = Color.White;
             string path = GetPath("DebugTest.xlsx");
@@ -33,9 +33,9 @@ namespace Beporsoft.TabularSheets.Test
         }
 
 
-        private static TabularSpreadsheet<Product> Generate()
+        private static TabularSheet<Product> Generate()
         {
-            TabularSpreadsheet<Product> table = new();
+            TabularSheet<Product> table = new();
             table.AddRange(Product.GenerateProducts(50));
 
             table.AddColumn(t => t.Id).SetTitle("Product Id");

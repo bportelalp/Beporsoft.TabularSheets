@@ -106,7 +106,7 @@ namespace Beporsoft.TabularSheets.Test
 
         private static TabularData<Product> Generate()
         {
-            TabularSpreadsheet<Product> table = new();
+            TabularSheet<Product> table = new();
             table.AddRange(Product.GenerateProducts(50));
 
             TabularDataColumn<Product> col;

@@ -57,15 +57,6 @@ namespace Beporsoft.TabularSheets.Test.TestsCellRefBuilder
             Assert.That(iterator.Current, Is.EqualTo("A1"));
         }
 
-        private static IEnumerable<object> GetIndexColumnCases()
-        {
-            yield return new object[] { "A", 0 };
-            yield return new object[] { "I", 8 };
-            yield return new object[] { "DQ", 120 };
-            yield return new object[] { "LP", 327 };
-            yield return new object[] { "AAJ", 711 };
-        }
-
         /// <summary>
         /// Test cases [ref, expectedRow, expectedCol, zeroBasedIndex]
         /// </summary>

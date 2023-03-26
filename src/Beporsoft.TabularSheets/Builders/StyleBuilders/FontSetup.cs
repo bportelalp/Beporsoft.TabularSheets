@@ -21,16 +21,16 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public System.Drawing.Color? FontColor { get; set; }
         public int? FontSize { get; set; } = 10;
+        public string FontName { get; set; } = null!;
 
         public override OpenXmlElement Build()
         {
-            var font = new Font();
-
-            if (FontSize is not null)
-                font.FontSize = BuildFontSize();
-            if(FontColor is not null)
-                font.Color = BuildColor();
-
+            var font = new Font
+            {
+                FontSize = BuildFontSize(),
+                FontName = BuildFontName(),
+                Color = BuildColor()
+            };
             return font;
         }
 
@@ -43,15 +43,46 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             return other is not null &&
                    EqualityComparer<System.Drawing.Color?>.Default.Equals(FontColor, other.FontColor) &&
-                   FontSize == other.FontSize;
+                   FontSize == other.FontSize &&
+                   FontName == other.FontName;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(FontColor, FontSize);
+            return HashCode.Combine(FontColor, FontSize, FontName);
         }
 
-        private FontSize BuildFontSize() => new FontSize() { Val = FontSize };
-        private Color BuildColor() => new Color() { Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(FontColor!.Value) };
+        #region Build Child properties
+        private FontSize? BuildFontSize()
+        {
+            FontSize? fontSize = null;
+            if (FontSize is not null)
+            {
+                fontSize = new FontSize() { Val = FontSize };
+            }
+            return fontSize;
+        }
+        private Color? BuildColor()
+        {
+            Color? color = null;
+            if (FontColor is not null)
+            {
+                color = new Color() { Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(FontColor.Value) };
+            }
+            return color;
+        }
+        private FontName? BuildFontName()
+        {
+            FontName? fontName = null;
+            if (!string.IsNullOrWhiteSpace(FontName))
+            {
+                fontName = new FontName()
+                {
+                    Val = FontName
+                };
+            }
+            return fontName;
+        }
+        #endregion
     }
 }
