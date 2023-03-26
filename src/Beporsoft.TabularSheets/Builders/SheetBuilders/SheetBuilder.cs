@@ -1,4 +1,5 @@
-﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
+﻿using Beporsoft.TabularSheets.Builders.Shared;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -12,14 +13,19 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
     internal class SheetBuilder<T>
     {
-        public SheetBuilder(TabularSpreadsheet<T> table, StylesheetBuilder styleBuilder)
+        private readonly CellRefIterator _cellRefIterator = new CellRefIterator();
+        public SheetBuilder(TabularSpreadsheet<T> table, StylesheetBuilder styleBuilder, SharedStringBuilder sharedStrings)
         {
             Table = table;
             StyleBuilder = styleBuilder;
+            SharedStrings = sharedStrings;
+            CellBuilder = new CellBuilder(SharedStrings);
         }
 
         public TabularSpreadsheet<T> Table { get; }
         public StylesheetBuilder StyleBuilder { get; }
+        public SharedStringBuilder SharedStrings { get; }
+        public CellBuilder CellBuilder { get; }
 
 
         /// <summary>
@@ -31,11 +37,13 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         public SheetData BuildSheetData()
         {
             SheetData sheetData = new();
+            _cellRefIterator.Reset();
             Row header = CreateHeaderRow();
             sheetData.AppendChild(header);
 
             foreach (var item in Table.Items)
             {
+                _cellRefIterator.MoveNextRow();
                 Row row = CreateItemRow(item);
                 sheetData.AppendChild(row);
             }
@@ -50,11 +58,16 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         {
             Row header = new();
             int? formatId = RegisterHeaderStyle();
+
+            _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
-                Cell cell = CreateCell(col.Title);
+                Cell cell = CellBuilder.CreateCell(col.Title);
                 if (formatId is not null)
                     cell.StyleIndex = OpenXMLHelpers.ToUint32Value(formatId.Value);
+
+                cell.CellReference = _cellRefIterator.MoveNextColAfter();
+
                 header.Append(cell);
             }
             return header;
@@ -67,14 +80,15 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private Row CreateItemRow(T item)
         {
             Row row = new Row();
+            _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
                 object value = col.Apply(item);
                 Cell cell = new();
                 if (value is not null)
-                    cell = CreateCell(value);
+                    cell = CellBuilder.CreateCell(value);
 
-                // Apply StyleIndex
+                cell.CellReference = _cellRefIterator.MoveNextColAfter();
                 row.Append(cell);
             }
             return row;

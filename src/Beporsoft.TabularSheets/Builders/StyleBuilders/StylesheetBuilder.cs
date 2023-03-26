@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml;
+﻿using Beporsoft.TabularSheets.Builders.Shared;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
     internal class StylesheetBuilder
     {
-        private readonly StyleSetupCollection<FillSetup> _fills = new();
-        private readonly StyleSetupCollection<FontSetup> _fonts = new();
-        private readonly StyleSetupCollection<BorderSetup> _borders = new();
-        private readonly StyleSetupCollection<FormatSetup> _formats = new();
+        private readonly IndexedSetupCollection<FillSetup> _fills = new();
+        private readonly IndexedSetupCollection<FontSetup> _fonts = new();
+        private readonly IndexedSetupCollection<BorderSetup> _borders = new();
+        private readonly IndexedSetupCollection<FormatSetup> _formats = new();
 
         public int RegisterFormat(FillSetup fill) => RegisterFormat(fill, null, null);
         public int RegisterFormat(FontSetup font) => RegisterFormat(null, font, null);
@@ -41,9 +42,9 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return formatId;
         }
 
-        public Fills GetFills() => _fills.GetContainer<Fills>();
-        public CellFormats GetFormats() => _formats.GetContainer<CellFormats>();
-        public Fonts GetFonts() => _fonts.GetContainer<Fonts>();
+        public Fills GetFills() => _fills.BuildContainer<Fills>();
+        public CellFormats GetFormats() => _formats.BuildContainer<CellFormats>();
+        public Fonts GetFonts() => _fonts.BuildContainer<Fonts>();
 
 
 

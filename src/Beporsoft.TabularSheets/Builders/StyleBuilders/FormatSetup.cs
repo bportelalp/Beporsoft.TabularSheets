@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.Shared;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IStyleSetup
+    internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IIndexedSetup
     {
         public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border)
         {

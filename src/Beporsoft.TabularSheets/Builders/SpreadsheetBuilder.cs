@@ -1,4 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.Shared;
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
@@ -22,6 +24,7 @@ namespace Beporsoft.TabularSheets.Builders
     internal sealed class SpreadsheetBuilder
     {
         private StylesheetBuilder _styleBuilder;
+        private SharedStringBuilder _sharedStringBuilder;
 
         /// <summary>
         /// Build spreadsheets.
@@ -29,20 +32,22 @@ namespace Beporsoft.TabularSheets.Builders
         public SpreadsheetBuilder()
         {
             _styleBuilder = new StylesheetBuilder();
+            _sharedStringBuilder = new SharedStringBuilder();
         }
 
         /// <summary>
         /// Build spreadsheets using a shared <see cref="StylesheetBuilder"/>. This is ideal when build spreadsheets with more than one table.
         /// </summary>
         /// <param name="stylesheetBuilder"></param>
-        public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder)
+        public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
 
             _styleBuilder = stylesheetBuilder;
-
+            _sharedStringBuilder = sharedStringBuilder;
         }
 
         public StylesheetBuilder StyleBuilder => _styleBuilder;
+        public SharedStringBuilder SharedStringBuilder => _sharedStringBuilder;
 
         #region Create Spreadsheet
 
@@ -68,6 +73,7 @@ namespace Beporsoft.TabularSheets.Builders
                 AddWorkbookPartFromTable(ref workbookPart, table);
             }
             BuildStyleSheet(ref workbookPart);
+            BuildSharedStringTable(ref workbookPart);
             workbookPart.Workbook.Save();
             return stream;
         }
@@ -96,7 +102,7 @@ namespace Beporsoft.TabularSheets.Builders
             };
             sheets.Append(sheet);
 
-            SheetData sheetData = table.BuildData(ref _styleBuilder);
+            SheetData sheetData = table.BuildData(ref _styleBuilder, ref _sharedStringBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 
@@ -163,6 +169,13 @@ namespace Beporsoft.TabularSheets.Builders
                 ApplyNumberFormat = true
             });
             stylesPart.Stylesheet = stylesheet;
+        }
+
+        private void BuildSharedStringTable(ref WorkbookPart workbookPart)
+        {
+            SharedStringTablePart sharedStringTablePart = workbookPart.AddNewPart<SharedStringTablePart>();
+            var sharedStringTable = _sharedStringBuilder.GetSharedStringTable();
+            sharedStringTablePart.SharedStringTable = sharedStringTable;
         }
 
     }

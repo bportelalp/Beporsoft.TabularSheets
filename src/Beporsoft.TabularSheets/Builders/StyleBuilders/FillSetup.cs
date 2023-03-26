@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.Shared;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FillSetup : Setup, IEquatable<FillSetup?>, IStyleSetup
+    internal class FillSetup : Setup, IEquatable<FillSetup?>, IIndexedSetup
     {
         internal FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
         {

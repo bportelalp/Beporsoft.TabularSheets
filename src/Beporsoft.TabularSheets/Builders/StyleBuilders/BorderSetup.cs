@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.Shared;
 using DocumentFormat.OpenXml;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class BorderSetup : Setup, IStyleSetup, IEquatable<BorderSetup?>
+    internal class BorderSetup : Setup, IIndexedSetup, IEquatable<BorderSetup?>
     {
         internal BorderSetup()
         {

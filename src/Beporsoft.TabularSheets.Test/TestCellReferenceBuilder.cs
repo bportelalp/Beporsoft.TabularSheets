@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Test
 {
+    /// <summary>
+    /// Test class to create cell references
+    /// </summary>
     internal class TestCellReferenceBuilder
     {
 
@@ -14,7 +17,7 @@ namespace Beporsoft.TabularSheets.Test
         [TestCaseSource(nameof(GetIndexColumnCases))]
         public void GetIndexColumn(string col, int expected)
         {
-            int colNumber = CellReferenceBuilder.GetColumnIndex(col);
+            int colNumber = CellRefBuilder.GetColIndex(col);
             Assert.That(colNumber, Is.EqualTo(expected));
         }
 
@@ -22,7 +25,7 @@ namespace Beporsoft.TabularSheets.Test
         [TestCaseSource(nameof(GetPositionCellFromReferenceCases))]
         public void GetPositionCellFromReference(string reference, int expectedRow, int expectedCol, bool zeroBasedIndex)
         {
-            var position = CellReferenceBuilder.GetIndexes(reference, zeroBasedIndex);
+            var position = CellRefBuilder.GetIndexes(reference, zeroBasedIndex);
             Assert.Multiple(() =>
             {
                 Assert.That(position.Row, Is.EqualTo(expectedRow));
@@ -35,7 +38,7 @@ namespace Beporsoft.TabularSheets.Test
         [TestCaseSource(nameof(CreateCellReferenceCases))]
         public void CreateReference(string expected, int row, int col, bool zeroBasedIndex )
         {
-            string reference = CellReferenceBuilder.Build(row, col, zeroBasedIndex);
+            string reference = CellRefBuilder.BuildRef(row, col, zeroBasedIndex);
             Assert.That(reference, Is.EqualTo(expected));
         }
 
