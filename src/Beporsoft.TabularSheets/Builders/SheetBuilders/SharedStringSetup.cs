@@ -1,5 +1,4 @@
-﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders.Shared;
+﻿using Beporsoft.TabularSheets.Builders.Shared;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -41,7 +40,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Index, Text);
+            return HashCode.Combine(Text);
         }
     }
 }

@@ -7,7 +7,7 @@ using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Beporsoft.TabularSheets.Builders.Interfaces
+namespace Beporsoft.TabularSheets.Builders.Shared
 {
     /// <summary>
     /// Provides an abstraction of making the adequate <see cref="SheetData"/> which represent the current instance

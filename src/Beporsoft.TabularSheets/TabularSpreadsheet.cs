@@ -14,10 +14,10 @@ using Beporsoft.TabularSheets.Style;
 using DocumentFormat.OpenXml.Validation;
 using System.Xml;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Builders.Interfaces;
 using System.IO;
 using Beporsoft.TabularSheets.Builders;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.Shared;
 
 namespace Beporsoft.TabularSheets
 {

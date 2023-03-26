@@ -17,6 +17,11 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private readonly IndexedSetupCollection<BorderSetup> _borders = new();
         private readonly IndexedSetupCollection<FormatSetup> _formats = new();
 
+        public int RegisteredFills => _fills.Count;
+        public int RegisteredFonts => _fonts.Count;
+        public int RegisteredBorders => _borders.Count;
+        public int RegisteredFormats => _formats.Count;
+
         public int RegisterFormat(FillSetup fill) => RegisterFormat(fill, null, null);
         public int RegisterFormat(FontSetup font) => RegisterFormat(null, font, null);
         public int RegisterFormat(BorderSetup border) => RegisterFormat(null, null, border);

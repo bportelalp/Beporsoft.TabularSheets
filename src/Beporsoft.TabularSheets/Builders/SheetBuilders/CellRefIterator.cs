@@ -14,7 +14,15 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     {
         private int _currentRow = 0;
         private int _currentCol = 0;
-        public string Current => CellRefBuilder.BuildRef(_currentRow, _currentCol);
+        private readonly bool zeroBasedIndex;
+
+        public CellRefIterator(bool zeroBasedIndex = true)
+        {
+            this.zeroBasedIndex = zeroBasedIndex;
+            Reset();
+        }
+
+        public string Current => CellRefBuilder.BuildRef(_currentRow, _currentCol, zeroBasedIndex);
 
         /// <summary>
         /// Increment the col iterator and return the new state
@@ -56,12 +64,12 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
 
 
-        public void ResetCol() => _currentCol = 0;
-        public void ResetRow() => _currentRow = 0;
+        public void ResetCol() => _currentCol = zeroBasedIndex? 0 : 1;
+        public void ResetRow() => _currentRow = zeroBasedIndex? 0 : 1;
         public void Reset()
         {
-            _currentRow = 0;
-            _currentCol = 0;
+            ResetCol();
+            ResetRow();
         }
     }
 }

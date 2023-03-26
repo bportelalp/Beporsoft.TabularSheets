@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 
-namespace Beporsoft.TabularSheets.Builders.Interfaces
+namespace Beporsoft.TabularSheets.Builders.Shared
 {
     /// <summary>
     /// Provides an abstractions of nodes which must be indexed inside a parent container to assign

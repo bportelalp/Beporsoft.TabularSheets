@@ -5,7 +5,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Text;
 using System.Threading.Tasks;
-using Beporsoft.TabularSheets.Builders.Interfaces;
 
 namespace Beporsoft.TabularSheets.Builders.Shared
 {
@@ -21,6 +20,7 @@ namespace Beporsoft.TabularSheets.Builders.Shared
     {
         private readonly List<T> _items = new();
 
+        public int Count => _items.Count;
 
         /// <summary>
         /// Register a new <paramref name="setup"/> f there isn't a equivalent one and return the index to the collection.<br/>
