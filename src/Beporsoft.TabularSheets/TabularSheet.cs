@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders;
-using Beporsoft.TabularSheets.Builders.Shared;
+using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Style;

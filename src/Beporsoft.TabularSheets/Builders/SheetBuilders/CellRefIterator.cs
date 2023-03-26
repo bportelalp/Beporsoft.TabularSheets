@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Beporsoft.TabularSheets.Builders.SheetBuilders
+﻿namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
     /// <summary>
     /// Allow to iterate over a table, resetting and moving next row and col independently.

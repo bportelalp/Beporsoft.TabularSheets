@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System;
 
-namespace Beporsoft.TabularSheets.Builders.Shared
+namespace Beporsoft.TabularSheets.Builders.Interfaces
 {
     /// <summary>
     /// Provides an abstraction of making the adequate <see cref="SheetData"/> which represent the current instance

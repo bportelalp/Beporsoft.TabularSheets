@@ -1,13 +1,9 @@
-﻿using DocumentFormat.OpenXml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+using DocumentFormat.OpenXml;
 
-namespace Beporsoft.TabularSheets.Builders.Shared
+namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal abstract class Setup : IIndexedSetup
+    internal abstract class Setup
     {
         public int Index { get; private set; }
 

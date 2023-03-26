@@ -1,28 +1,26 @@
-﻿using Beporsoft.TabularSheets.Builders.Shared;
+﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
     internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IIndexedSetup
     {
-        public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border)
+        public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat)
         {
             Fill = fill;
             Font = font;
             Border = border;
+            NumberingFormat = numberingFormat;
         }
 
         public FillSetup? Fill { get; set; }
         public FontSetup? Font { get; set; }
         public BorderSetup? Border { get; set; }
+        public NumberingFormatSetup? NumberingFormat { get; set; }
 
         public override OpenXmlElement Build()
         {
@@ -30,7 +28,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             {
                 FillId = GetSetupId(Fill),
                 FontId = GetSetupId(Font),
-                BorderId = GetSetupId(Border)
+                BorderId = GetSetupId(Border),
+                NumberFormatId = GetSetupId(NumberingFormat)
             };
             return format;
         }

@@ -1,13 +1,7 @@
-﻿using Beporsoft.TabularSheets.Builders.Shared;
-using Beporsoft.TabularSheets.Builders.StyleBuilders;
+﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
@@ -86,7 +80,18 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 object value = col.Apply(item);
                 Cell cell = new();
                 if (value is not null)
+                {
                     cell = CellBuilder.CreateCell(value);
+                    // Apply date style
+                    if(value.GetType() == typeof(DateTime))
+                    {
+                        // TODO - Give specific format
+                        string datePattern = "mm-dd-yy";//System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern;
+                        var numFormat = new NumberingFormatSetup(datePattern);
+                        int nunFmtId = StyleBuilder.RegisterFormat(numFormat);
+                        cell.StyleIndex = OpenXMLHelpers.ToUint32Value(nunFmtId);
+                    }
+                }
 
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
                 row.Append(cell);

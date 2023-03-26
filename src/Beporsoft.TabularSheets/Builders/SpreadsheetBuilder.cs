@@ -1,4 +1,4 @@
-﻿using Beporsoft.TabularSheets.Builders.Shared;
+﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
@@ -10,9 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Beporsoft.TabularSheets.Builders
@@ -131,14 +129,10 @@ namespace Beporsoft.TabularSheets.Builders
                 stylesheet.Fills = StyleBuilder.GetFills();
             if (StyleBuilder.RegisteredFonts > 0)
                 stylesheet.Fonts = StyleBuilder.GetFonts();
+            if(StyleBuilder.RegisteredNumberingFormats > 0)
+                stylesheet.NumberingFormats = StyleBuilder.GetNumberingFormats();
             // TODO - uncomment when add suport to number formatting
-            //if (StyleBuilder.RegisteredFormats > 0)
             stylesheet.CellFormats = StyleBuilder.GetFormats();
-            stylesheet.CellFormats.Append(new CellFormat
-            {
-                NumberFormatId = 14,
-                ApplyNumberFormat = true
-            });
             stylesPart.Stylesheet = stylesheet;
         }
 
@@ -207,11 +201,5 @@ namespace Beporsoft.TabularSheets.Builders
                 throw new XmlException("Errors validating Xml");
         }
         #endregion
-
-
-
-
-
-
     }
 }

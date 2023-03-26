@@ -1,13 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Beporsoft.TabularSheets.Builders.StyleBuilders;
 
-namespace Beporsoft.TabularSheets.Builders.Shared
+namespace Beporsoft.TabularSheets.Builders.Interfaces
 {
     /// <summary>
     /// Provides an abstractions of nodes which must be indexed inside a parent container to assign

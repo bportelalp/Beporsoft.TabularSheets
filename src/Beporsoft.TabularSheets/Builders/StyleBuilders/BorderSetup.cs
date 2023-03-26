@@ -1,10 +1,6 @@
-﻿using Beporsoft.TabularSheets.Builders.Shared;
+﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using DocumentFormat.OpenXml;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
