@@ -11,11 +11,24 @@ namespace Beporsoft.TabularSheets.Style
     [DebuggerDisplay("Size={FontSize} | Color={FontColor} | Family={FontFamily}")]
     public class FontStyle : IEquatable<FontStyle?>
     {
-        internal static readonly FontStyle Default = new FontStyle();
 
+        /// <summary>
+        /// The font color, or <see langword="null"/> for default color, normally black.
+        /// </summary>
         public Color? FontColor { get; set; } = null;
+
+        /// <summary>
+        /// The font size, or <see langword="null"/> for default size.
+        /// </summary>
         public int? FontSize { get; set; } = null;
+
+        /// <summary>
+        /// The font family name, or <see langword="null"/> for default font
+        /// </summary>
         public string? FontFamily { get; set; }
+
+
+        internal static readonly FontStyle Default = new FontStyle();
 
         #region IEquatable
         public override bool Equals(object? obj)

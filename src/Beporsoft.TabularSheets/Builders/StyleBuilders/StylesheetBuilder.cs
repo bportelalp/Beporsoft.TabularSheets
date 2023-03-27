@@ -51,6 +51,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public Fills GetFills() => _fills.BuildContainer<Fills>();
         public CellFormats GetFormats() => _formats.BuildContainer<CellFormats>();
         public Fonts GetFonts() => _fonts.BuildContainer<Fonts>();
+        public Borders GetBorders() => _borders.BuildContainer<Borders>();
         public NumberingFormats GetNumberingFormats() => _numFormats.BuildContainer<NumberingFormats>();
 
 

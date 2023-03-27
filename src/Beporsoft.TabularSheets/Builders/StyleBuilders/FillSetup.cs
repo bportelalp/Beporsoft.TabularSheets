@@ -50,14 +50,14 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             var patternFill = new PatternFill
             {
-                ForegroundColor = GetForegroundColor(),
+                ForegroundColor = BuildForegroundColor(),
                 PatternType = PatternValues.Solid
             };
             return patternFill;
         }
 
 
-        private ForegroundColor? GetForegroundColor()
+        private ForegroundColor? BuildForegroundColor()
         {
             ForegroundColor? bg = null;
             if(Fill.BackgroundColor is not null)

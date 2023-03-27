@@ -30,9 +30,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
             table.Options.DefaultFont.FontColor = Color.Red;
             table.HeaderStyle.Font.FontColor = Color.White;
-            //table.HeaderStyle.Font.FontSize = 8;
-            //table.Options.DefaultFont.FontSize = 14;
             table.Options.DefaultFill.BackgroundColor = Color.AliceBlue;
+            table.Options.DefaultBorder.SetAll(Style.BorderStyle.BorderType.Thin);
             string path = GetPath("DebugTest.xlsx");
             table.Create(path);
         }
