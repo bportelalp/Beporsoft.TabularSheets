@@ -1,21 +1,23 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Style;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    [DebuggerDisplay("Id={Index}")]
     internal class FillSetup : Setup, IEquatable<FillSetup?>, IIndexedSetup
     {
-        internal FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
+        internal FillSetup(FillStyle fill)
         {
-            ForegroundColor = foregroundColor;
-            BackgroundColor = backgroundColor;
+            Fill = fill;
         }
 
-        public System.Drawing.Color ForegroundColor { get; set; }
-        public System.Drawing.Color? BackgroundColor { get; set; }
+        public FillStyle Fill { get; set; }
 
 
         public override OpenXmlElement Build()
@@ -35,13 +37,12 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public bool Equals(FillSetup? other)
         {
             return other is not null &&
-                   BackgroundColor.Equals(other.BackgroundColor) &&
-                   ForegroundColor.Equals(other.ForegroundColor);
+                EqualityComparer<FillStyle>.Default.Equals(Fill, other.Fill);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(BackgroundColor, ForegroundColor);
+            return HashCode.Combine(Fill);
         }
 
         #region Build child elements
@@ -50,28 +51,24 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             var patternFill = new PatternFill
             {
                 ForegroundColor = GetForegroundColor(),
-                BackgroundColor = GetBackgroundColor(),
                 PatternType = PatternValues.Solid
             };
             return patternFill;
         }
 
-        private ForegroundColor GetForegroundColor()
-        {
-            return new ForegroundColor()
-            {
-                Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(ForegroundColor),
-            };
-        }
 
-        private BackgroundColor? GetBackgroundColor()
+        private ForegroundColor? GetForegroundColor()
         {
-            BackgroundColor? bg = null;
-            if (BackgroundColor is not null)
+            ForegroundColor? bg = null;
+            if(Fill.BackgroundColor is not null)
             {
-                bg = new BackgroundColor()
+
+            }
+            if (Fill.BackgroundColor is not null)
+            {
+                bg = new ForegroundColor()
                 {
-                    Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(BackgroundColor!.Value),
+                    Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(Fill.BackgroundColor!.Value),
                 };
             }
             return bg;

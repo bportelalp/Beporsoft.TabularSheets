@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
+using Beporsoft.TabularSheets.Style;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -81,37 +82,48 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 Cell cell = new();
                 if (value is not null)
                 {
-                    cell = CellBuilder.CreateCell(value);
-                    // Apply date style
-                    if(value.GetType() == typeof(DateTime))
-                    {
-                        // TODO - Give specific format
-                        string datePattern = "mm-dd-yy";//System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern;
-                        var numFormat = new NumberingFormatSetup(datePattern);
-                        int nunFmtId = StyleBuilder.RegisterFormat(numFormat);
-                        cell.StyleIndex = OpenXMLHelpers.ToUint32Value(nunFmtId);
-                    }
+                    cell = BuildDataCell(value);
                 }
-
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
                 row.Append(cell);
             }
             return row;
         }
+        private Cell BuildDataCell(object value)
+        {
+            FillSetup? fillSetup = null;
+            NumberingFormatSetup? numberingFormatSetup = null;
+            if (!Table.Options.DefaultFill.Equals(FillStyle.Default))
+            {
+                fillSetup = new FillSetup(Table.Options.DefaultFill);
+            }
+            Cell cell = CellBuilder.CreateCell(value);
+            if (value.GetType() == typeof(DateTime))
+            {
+                numberingFormatSetup = new NumberingFormatSetup(Table.Options.DefaultDateTimeFormat);
+            }
+            int formatId = StyleBuilder.RegisterFormat(fillSetup, null, null, numberingFormatSetup);
+            cell.StyleIndex = OpenXMLHelpers.ToUint32Value(formatId);
+            return cell;
+        }
 
         private int? RegisterHeaderStyle()
         {
-            int? formatId = null;
             FillSetup? fill = null;
             FontSetup? font = null;
-            if (Table.HeaderStyle.BackgroundColor is not null)
-                fill = new FillSetup(Table.HeaderStyle.BackgroundColor.Value, null);
-            font = new FontSetup(Table.HeaderStyle.FontColor, Table.HeaderStyle.FontSize);
+
+            FillStyle combinedFill = StyleCombiner.Combine(Table.HeaderStyle.Fill, Table.Options.DefaultFill);
+            if (!combinedFill.Equals(FillStyle.Default))
+                fill = new FillSetup(combinedFill);
+
+            FontStyle combinedFont = StyleCombiner.Combine(Table.HeaderStyle.Font, Table.Options.DefaultFont);
+            if (!combinedFill.Equals(FontStyle.Default))
+                font = new FontSetup(combinedFont);
 
             if (font is null && fill is null)
                 return null;
 
-            formatId = StyleBuilder.RegisterFormat(fill, font, null);
+            int? formatId = StyleBuilder.RegisterFormat(fill, font, null);
 
             return formatId;
         }

@@ -42,6 +42,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             if(numberingFormat is not null)
                 _numFormats.Register(numberingFormat);
 
+
             var format = new FormatSetup(fill, font, border, numberingFormat);
             var formatId = _formats.Register(format);
             return formatId;

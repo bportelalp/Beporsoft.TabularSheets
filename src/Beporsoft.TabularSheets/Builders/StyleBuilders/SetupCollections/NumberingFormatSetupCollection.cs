@@ -36,6 +36,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
                 }
             }
             var registerEqual = _items.Single(i => i.Equals(setup));
+            setup.SetIndex(registerEqual.Index);
             return registerEqual.Index;
         }
         public TContainer BuildContainer<TContainer>() where TContainer : OpenXmlElement, new()

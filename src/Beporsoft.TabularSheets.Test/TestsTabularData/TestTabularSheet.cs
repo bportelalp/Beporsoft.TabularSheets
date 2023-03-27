@@ -1,9 +1,10 @@
 using Beporsoft.TabularSheets.Csv;
 using System.Drawing;
+using System.Globalization;
 
-namespace Beporsoft.TabularSheets.Test
+namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
-    public class TestTabularSpreadsheet
+    public class TestTabularSheet
     {
 
         [Test]
@@ -26,8 +27,11 @@ namespace Beporsoft.TabularSheets.Test
         {
 
             TabularSheet<Product> table = Generate();
-            table.HeaderStyle.BackgroundColor = Color.Purple;
-            table.HeaderStyle.FontColor = Color.White;
+            table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
+            //table.HeaderStyle.Font.FontColor = Color.White;
+            //table.HeaderStyle.Font.FontSize = 8;
+            //table.Options.DefaultFont.FontSize = 14;
+            table.Options.DefaultFill.BackgroundColor = Color.AliceBlue;
             string path = GetPath("DebugTest.xlsx");
             table.Create(path);
         }

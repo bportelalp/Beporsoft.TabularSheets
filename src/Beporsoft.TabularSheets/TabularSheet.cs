@@ -27,6 +27,7 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public string Title { get; set; } = "Sheet";
         public HeaderStyle HeaderStyle { get; private set; } = new();
+        public TabularSheetOptions Options { get; private set; } = new();
 
         #endregion
 

@@ -4,9 +4,11 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    [DebuggerDisplay("Id={Index} | Fill={Fill is not null} | Font={Font is not null} | Border={Border is not null} | Numb={NumberingFormat is not null}")]
     internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IIndexedSetup
     {
         public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat)
@@ -44,7 +46,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return other is not null &&
                    EqualityComparer<FillSetup?>.Default.Equals(Fill, other.Fill) &&
                    EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font) &&
-                   EqualityComparer<BorderSetup?>.Default.Equals(Border, other.Border); ;
+                   EqualityComparer<BorderSetup?>.Default.Equals(Border, other.Border) &&
+                   EqualityComparer<NumberingFormatSetup?>.Default.Equals(NumberingFormat, other.NumberingFormat);
         }
 
         public override int GetHashCode()

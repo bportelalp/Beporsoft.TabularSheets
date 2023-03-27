@@ -1,24 +1,24 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Style;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    [DebuggerDisplay("Id={Index}")]
     internal class FontSetup : Setup, IEquatable<FontSetup?>, IIndexedSetup
     {
 
-        internal FontSetup(System.Drawing.Color fontColor, int fontSize)
+        internal FontSetup(FontStyle fontStyle)
         {
-            FontColor = fontColor;
-            FontSize = fontSize;
+            FontStyle = fontStyle;
         }
 
-        public System.Drawing.Color? FontColor { get; set; }
-        public int? FontSize { get; set; } = 10;
-        public string FontName { get; set; } = null!;
+        public FontStyle FontStyle { get; set; }
 
         public override OpenXmlElement Build()
         {
@@ -31,6 +31,39 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return font;
         }
 
+
+        #region Build Child properties
+        private FontSize? BuildFontSize()
+        {
+            FontSize? fontSize = null;
+            if (FontStyle.FontSize is not null)
+            {
+                fontSize = new FontSize() { Val = FontStyle.FontSize };
+            }
+            return fontSize;
+        }
+        private Color? BuildColor()
+        {
+            Color? color = null;
+            if (FontStyle.FontColor is not null)
+            {
+                color = new Color() { Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(FontStyle.FontColor.Value) };
+            }
+            return color;
+        }
+        private FontName? BuildFontName()
+        {
+            FontName? fontName = null;
+            if (!string.IsNullOrWhiteSpace(FontStyle.FontFamily))
+            {
+                fontName = new FontName()
+                {
+                    Val = FontStyle.FontFamily
+                };
+            }
+            return fontName;
+        }
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as FontSetup);
@@ -38,48 +71,17 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public bool Equals(FontSetup? other)
         {
-            return other is not null &&
-                   EqualityComparer<System.Drawing.Color?>.Default.Equals(FontColor, other.FontColor) &&
-                   FontSize == other.FontSize &&
-                   FontName == other.FontName;
+            return other is not null  &&
+                   EqualityComparer<FontStyle>.Default.Equals(FontStyle, other.FontStyle);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(FontColor, FontSize, FontName);
+            return HashCode.Combine(FontStyle);
         }
 
-        #region Build Child properties
-        private FontSize? BuildFontSize()
-        {
-            FontSize? fontSize = null;
-            if (FontSize is not null)
-            {
-                fontSize = new FontSize() { Val = FontSize };
-            }
-            return fontSize;
-        }
-        private Color? BuildColor()
-        {
-            Color? color = null;
-            if (FontColor is not null)
-            {
-                color = new Color() { Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(FontColor.Value) };
-            }
-            return color;
-        }
-        private FontName? BuildFontName()
-        {
-            FontName? fontName = null;
-            if (!string.IsNullOrWhiteSpace(FontName))
-            {
-                fontName = new FontName()
-                {
-                    Val = FontName
-                };
-            }
-            return fontName;
-        }
+
+
         #endregion
     }
 }

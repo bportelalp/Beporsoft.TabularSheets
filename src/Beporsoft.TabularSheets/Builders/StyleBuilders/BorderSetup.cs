@@ -1,15 +1,21 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Style;
 using DocumentFormat.OpenXml;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    [DebuggerDisplay("Id={Index}")]
     internal class BorderSetup : Setup, IIndexedSetup, IEquatable<BorderSetup?>
     {
-        internal BorderSetup()
+        internal BorderSetup(BorderStyle borderStyle)
         {
-            
+            BorderStyle = borderStyle;
         }
+
+        public BorderStyle BorderStyle { get; set; }
 
         public override OpenXmlElement Build()
         {
@@ -24,12 +30,12 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public bool Equals(BorderSetup? other)
         {
             return other is not null &&
-                   Index == other.Index;
+                EqualityComparer<BorderStyle>.Default.Equals(BorderStyle, other.BorderStyle);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Index);
+            return HashCode.Combine(BorderStyle);
         }
     }
 }

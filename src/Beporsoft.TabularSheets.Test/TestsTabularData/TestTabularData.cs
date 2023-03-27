@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Test
+namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
     internal class TestTabularData
     {

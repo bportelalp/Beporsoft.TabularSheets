@@ -21,6 +21,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
                 _items.Add(setup);
             }
             var registerEqual = _items.Single(i => i.Equals(setup));
+            setup.SetIndex(registerEqual.Index);
             return registerEqual.Index;
         }
 

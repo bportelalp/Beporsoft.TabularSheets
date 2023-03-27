@@ -9,10 +9,8 @@ namespace Beporsoft.TabularSheets.Style
 {
     public class HeaderStyle
     {
-        public Color? BackgroundColor { get; set; } = null;
-        public Color FontColor { get; set; } = Color.Black;
-        public int FontSize { get; set; } = 10;
-        public string FontFamily { get; set; } = null!;
+        public FillStyle Fill { get; set; } = new FillStyle();
+        public FontStyle Font { get; set; } = new FontStyle();
 
     }
 }

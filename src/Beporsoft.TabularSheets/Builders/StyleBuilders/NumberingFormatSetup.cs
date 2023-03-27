@@ -3,9 +3,11 @@ using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    [DebuggerDisplay("Id={Index} | Pattern={Pattern}")]
     internal class NumberingFormatSetup : Setup, IEquatable<NumberingFormatSetup?>, IIndexedSetup
     {
         public static int StartIndexNotBuiltin = 164;
