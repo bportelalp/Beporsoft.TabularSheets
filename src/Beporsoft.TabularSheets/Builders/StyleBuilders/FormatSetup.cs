@@ -1,33 +1,38 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FormatSetup : IEquatable<FormatSetup?>, IStyleSetup
+    [DebuggerDisplay("Id={Index} | Fill={Fill is not null} | Font={Font is not null} | Border={Border is not null} | Numb={NumberingFormat is not null}")]
+    internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IIndexedSetup
     {
-        public FormatSetup(FillSetup? fill, FontSetup? font)
+        public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat)
         {
             Fill = fill;
             Font = font;
+            Border = border;
+            NumberingFormat = numberingFormat;
         }
 
-        public int Index { get; set; }
-        public FillSetup? Fill { get; init; }
-        public FontSetup? Font { get; init; }
+        public FillSetup? Fill { get; set; }
+        public FontSetup? Font { get; set; }
+        public BorderSetup? Border { get; set; }
+        public NumberingFormatSetup? NumberingFormat { get; set; }
 
-        public OpenXmlElement Build()
+        public override OpenXmlElement Build()
         {
-            var format = new CellFormat();
-            if (Font is not null)
-                format.FontId = new UInt32Value(Convert.ToUInt32(Font.Index));
-            if (Fill is not null)
-                format.FillId = new UInt32Value(Convert.ToUInt32(Fill.Index));
+            var format = new CellFormat
+            {
+                FillId = GetSetupId(Fill),
+                FontId = GetSetupId(Font),
+                BorderId = GetSetupId(Border),
+                NumberFormatId = GetSetupId(NumberingFormat)
+            };
             return format;
         }
 
@@ -40,12 +45,24 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             return other is not null &&
                    EqualityComparer<FillSetup?>.Default.Equals(Fill, other.Fill) &&
-                   EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font);
+                   EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font) &&
+                   EqualityComparer<BorderSetup?>.Default.Equals(Border, other.Border) &&
+                   EqualityComparer<NumberingFormatSetup?>.Default.Equals(NumberingFormat, other.NumberingFormat);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Fill, Font);
+            return HashCode.Combine(Fill, Font, Border);
         }
+
+        #region Assign Ids
+        private static UInt32Value? GetSetupId(Setup? setup)
+        {
+            UInt32Value? value = null;
+            if (setup is not null)
+                value = OpenXMLHelpers.ToUint32Value(setup.Index);
+            return value;
+        }
+        #endregion
     }
 }

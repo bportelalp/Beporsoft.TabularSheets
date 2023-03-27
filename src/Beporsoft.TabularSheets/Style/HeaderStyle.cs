@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Style
 {
-    public class HeaderOptions
+    public class HeaderStyle
     {
-        public bool DynamicFilter { get; set; } = false;
-        public Color? Color { get; set; } = null;
+        public FillStyle Fill { get; set; } = new FillStyle();
+        public FontStyle Font { get; set; } = new FontStyle();
 
     }
 }

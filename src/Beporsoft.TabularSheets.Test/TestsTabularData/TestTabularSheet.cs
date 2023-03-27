@@ -1,15 +1,16 @@
 using Beporsoft.TabularSheets.Csv;
 using System.Drawing;
+using System.Globalization;
 
-namespace Beporsoft.TabularSheets.Test
+namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
-    public class TestTabularSpreadsheet
+    public class TestTabularSheet
     {
 
         [Test]
         public void CheckFileName()
         {
-            TabularSpreadsheet<Product> table = Generate();
+            TabularSheet<Product> table = Generate();
             string pathOk = GetPath("ExcelCheckFileName.xlsx");
             string pathOkAlternative = GetPath("ExcelCheckFileName.xls");
             string pathWrongExtension = GetPath("ExcelCheckFileName.csv");
@@ -25,16 +26,20 @@ namespace Beporsoft.TabularSheets.Test
         public void TestToDebug()
         {
 
-            TabularSpreadsheet<Product> table = Generate();
-            table.Header.Color = Color.Purple;
+            TabularSheet<Product> table = Generate();
+            table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
+            //table.HeaderStyle.Font.FontColor = Color.White;
+            //table.HeaderStyle.Font.FontSize = 8;
+            //table.Options.DefaultFont.FontSize = 14;
+            table.Options.DefaultFill.BackgroundColor = Color.AliceBlue;
             string path = GetPath("DebugTest.xlsx");
             table.Create(path);
         }
 
 
-        private static TabularSpreadsheet<Product> Generate()
+        private static TabularSheet<Product> Generate()
         {
-            TabularSpreadsheet<Product> table = new();
+            TabularSheet<Product> table = new();
             table.AddRange(Product.GenerateProducts(50));
 
             table.AddColumn(t => t.Id).SetTitle("Product Id");

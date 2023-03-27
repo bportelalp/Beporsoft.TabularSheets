@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Test
+namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
     internal class TestTabularData
     {
@@ -106,7 +106,7 @@ namespace Beporsoft.TabularSheets.Test
 
         private static TabularData<Product> Generate()
         {
-            TabularSpreadsheet<Product> table = new();
+            TabularSheet<Product> table = new();
             table.AddRange(Product.GenerateProducts(50));
 
             TabularDataColumn<Product> col;

@@ -1,5 +1,5 @@
-﻿using Beporsoft.TabularSheets.Builders;
-using Beporsoft.TabularSheets.Builders.Interfaces;
+﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
@@ -8,20 +8,20 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Validation;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
-namespace Beporsoft.TabularSheets.Builder
+namespace Beporsoft.TabularSheets.Builders
 {
     /// <summary>
-    /// A class which build a spreadsheets from instance(s) of <see cref="TabularSpreadsheet{T}"/>
+    /// A class which build a spreadsheets from instance(s) of <see cref="TabularSheet{T}"/>
     /// </summary>
     internal sealed class SpreadsheetBuilder
     {
         private StylesheetBuilder _styleBuilder;
+        private SharedStringBuilder _sharedStringBuilder;
 
         /// <summary>
         /// Build spreadsheets.
@@ -29,26 +29,24 @@ namespace Beporsoft.TabularSheets.Builder
         public SpreadsheetBuilder()
         {
             _styleBuilder = new StylesheetBuilder();
+            _sharedStringBuilder = new SharedStringBuilder();
         }
 
         /// <summary>
         /// Build spreadsheets using a shared <see cref="StylesheetBuilder"/>. This is ideal when build spreadsheets with more than one table.
         /// </summary>
         /// <param name="stylesheetBuilder"></param>
-        public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder)
+        public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
 
             _styleBuilder = stylesheetBuilder;
-
+            _sharedStringBuilder = sharedStringBuilder;
         }
 
         public StylesheetBuilder StyleBuilder => _styleBuilder;
+        public SharedStringBuilder SharedStringBuilder => _sharedStringBuilder;
 
         #region Create Spreadsheet
-
-        #endregion
-
-        #region
         public void Create(string path, params ISheet[] tables)
         {
             string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetsFileExtension.AllowedExtensions);
@@ -65,15 +63,30 @@ namespace Beporsoft.TabularSheets.Builder
             workbookPart.Workbook = new Workbook();
             foreach (var table in tables)
             {
-                AddWorkbookPartFromTable(ref workbookPart, table);
+                AppendWorksheetPart(ref workbookPart, table);
             }
-            BuildStyleSheet(ref workbookPart);
+            AppendWorkbookStylePart(ref workbookPart);
+            AppendSharedStringTablePart(ref workbookPart);
             workbookPart.Workbook.Save();
+            ValidateSpreadSheet(spreadsheet);
             return stream;
         }
         #endregion
 
-        public void AddWorkbookPartFromTable(ref WorkbookPart workbookPart, ISheet table)
+        #region Append OpenXml Parts
+
+        /// <summary>
+        /// Append a <see cref="WorksheetPart"/> to <paramref name="workbookPart"/> based on the
+        /// content of the provided <see cref="ISheet"/>.<br/><br/>
+        /// The <see cref="SharedStringItem"/>s located and the <see cref="CellFormat"/> of each cell when it is required will be 
+        /// registered on <see cref="SharedStringBuilder"/> and <see cref="StyleBuilder"/> to include them subsequently inside a 
+        /// common <see cref="SharedStringTable"/> and <see cref="Stylesheet"/>, respectively.<br/><br/>
+        /// This architecture allows to include more than one <see cref="ISheet"/> on the same <see cref="SpreadsheetDocument"/> 
+        /// using shared resources.
+        /// </summary>
+        /// <param name="workbookPart">A reference to the <see cref="WorkbookPart"/> where to append the <see cref="WorkbookStylesPart"/></param>
+        /// <param name="table">The <see cref="TabularSheet{T}"/> which will populate the <see cref="SheetData"/></param>
+        public void AppendWorksheetPart(ref WorkbookPart workbookPart, ISheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet();
@@ -85,7 +98,7 @@ namespace Beporsoft.TabularSheets.Builder
                 sheets = workbookPart.Workbook.Sheets;
 
             UInt32Value sheetIdValue = FindSuitableSheetId(sheets);
-            string nameSheet = string.IsNullOrWhiteSpace(table.Title)? table.ItemType.Name : table.Title;
+            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.ItemType.Name : table.Title;
             nameSheet = BuildSuitableSheetName(sheets, nameSheet);
 
             var sheet = new Sheet()
@@ -96,19 +109,48 @@ namespace Beporsoft.TabularSheets.Builder
             };
             sheets.Append(sheet);
 
-            SheetData sheetData = table.BuildData(ref _styleBuilder);
+            SheetData sheetData = table.BuildData(ref _styleBuilder, ref _sharedStringBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 
-        private static void ValidateSpreadSheet(SpreadsheetDocument spreadsheet)
+        /// <summary>
+        /// Append a  <see cref="WorkbookStylesPart"/> to <paramref name="workbookPart"/> based on the
+        /// content of <see cref="StyleBuilder"/>
+        /// </summary>
+        /// <param name="workbookPart">A reference to the <see cref="WorkbookPart"/> where to append the <see cref="WorkbookStylesPart"/></param>
+        private void AppendWorkbookStylePart(ref WorkbookPart workbookPart)
         {
-            OpenXmlValidator validator = new OpenXmlValidator();
-            IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
-            if (errors.Any())
-                throw new XmlException("Errors validating Xml");
+            WorkbookStylesPart stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+            var stylesheet = new Stylesheet();
+            stylesheet.CellStyleFormats = new CellStyleFormats(new CellFormat());
+
+            // Protect the SpreadsheetML Schema adding containers only if there is any registered item
+            if (StyleBuilder.RegisteredFills > 0)
+                stylesheet.Fills = StyleBuilder.GetFills();
+            if (StyleBuilder.RegisteredFonts > 0)
+                stylesheet.Fonts = StyleBuilder.GetFonts();
+            if(StyleBuilder.RegisteredNumberingFormats > 0)
+                stylesheet.NumberingFormats = StyleBuilder.GetNumberingFormats();
+            // TODO - uncomment when add suport to number formatting
+            stylesheet.CellFormats = StyleBuilder.GetFormats();
+            stylesPart.Stylesheet = stylesheet;
         }
 
+        /// <summary>
+        /// Append a <see cref="SharedStringTablePart"/> to <paramref name="workbookPart"/> based on the content
+        /// of <see cref="SharedStringBuilder"/>
+        /// </summary>
+        /// <param name="workbookPart">A reference to the <see cref="WorkbookPart"/> where to append the <see cref="SharedStringTablePart"/></param>
+        private void AppendSharedStringTablePart(ref WorkbookPart workbookPart)
+        {
+            SharedStringTablePart sharedStringTablePart = workbookPart.AddNewPart<SharedStringTablePart>();
+            var sharedStringTable = _sharedStringBuilder.GetSharedStringTable();
+            sharedStringTablePart.SharedStringTable = sharedStringTable;
+        }
 
+        #endregion
+
+        #region Helpers for Sheet Naming
         /// <summary>
         /// Automatic find a SheetId based on current sheets ids, creating a new incremental value
         /// </summary>
@@ -148,22 +190,16 @@ namespace Beporsoft.TabularSheets.Builder
             }
             return nameSheet;
         }
+        #endregion
 
-        private void BuildStyleSheet(ref WorkbookPart workbookPart)
+        #region OpenXml Validation
+        private static void ValidateSpreadSheet(SpreadsheetDocument spreadsheet)
         {
-            WorkbookStylesPart stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
-            var stylesheet = new Stylesheet();
-            stylesheet.CellStyleFormats = new CellStyleFormats(new CellFormat());
-            stylesheet.Fills = StyleBuilder.GetFills();
-            stylesheet.Fonts = new Fonts(new Font());
-            stylesheet.CellFormats = StyleBuilder.GetFormats();
-            stylesheet.CellFormats.Append(new CellFormat
-            {
-                NumberFormatId = 14,
-                ApplyNumberFormat = true
-            });
-            stylesPart.Stylesheet = stylesheet;
+            OpenXmlValidator validator = new OpenXmlValidator();
+            IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
+            if (errors.Any())
+                throw new XmlException("Errors validating Xml");
         }
-
+        #endregion
     }
 }

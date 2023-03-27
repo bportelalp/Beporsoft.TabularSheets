@@ -1,44 +1,35 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using Beporsoft.TabularSheets.Builders;
+using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
+using Beporsoft.TabularSheets.Style;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using Beporsoft.TabularSheets.Tools;
-using Beporsoft.TabularSheets.Style;
-using DocumentFormat.OpenXml.Validation;
-using System.Xml;
-using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Builder;
-using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders;
 
 namespace Beporsoft.TabularSheets
 {
-    public class TabularSpreadsheet<T> : TabularData<T>, ISheet
+    public class TabularSheet<T> : TabularData<T>, ISheet
     {
-        public TabularSpreadsheet()
+        public TabularSheet()
         {
         }
 
-        public TabularSpreadsheet(IEnumerable<T> items)
+        public TabularSheet(IEnumerable<T> items)
         {
             Items = items.ToList();
         }
-
+        #region Properties
         /// <summary>
         /// The title of the current sheet
         /// </summary>
         public string Title { get; set; } = "Sheet";
-        public HeaderOptions Header { get; set; } = new();
+        public HeaderStyle HeaderStyle { get; private set; } = new();
+        public TabularSheetOptions Options { get; private set; } = new();
 
-        Type ISheet.ItemType => typeof(T);
-
+        #endregion
 
         #region Configure Table
         public void SetSheetTitle(string title) => Title = title;
@@ -59,11 +50,12 @@ namespace Beporsoft.TabularSheets
         }
         #endregion
 
-
         #region ISheet
-        SheetData ISheet.BuildData(ref StylesheetBuilder stylesheetBuilder)
+        Type ISheet.ItemType => typeof(T);
+
+        SheetData ISheet.BuildData(ref StylesheetBuilder stylesheetBuilder, ref SharedStringBuilder sharedStringBuilder)
         {
-            SheetBuilder<T> builder = new(this, stylesheetBuilder);
+            SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
             return builder.BuildSheetData();
         }
         #endregion

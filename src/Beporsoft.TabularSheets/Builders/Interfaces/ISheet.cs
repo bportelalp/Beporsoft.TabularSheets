@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System;
 
 namespace Beporsoft.TabularSheets.Builders.Interfaces
 {
@@ -20,7 +17,8 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         /// Build the object <see cref="SheetData"/> which represent the data.
         /// </summary>
         /// <param name="stylesheetBuilder">A reference to the object which handles the compilation of stylesheet</param>
+        /// <param name="sharedStringBuilder">A reference to the object which handles the compilation of shared strings</param>
         /// <returns></returns>
-        internal SheetData BuildData(ref StylesheetBuilder stylesheetBuilder);
+        internal SheetData BuildData(ref StylesheetBuilder stylesheetBuilder, ref SharedStringBuilder sharedStringBuilder);
     }
 }

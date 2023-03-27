@@ -1,11 +1,7 @@
-﻿using Beporsoft.TabularSheets.Style;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets
 {
@@ -35,7 +31,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// The function which will be evaluated to fill the respective column for each item.
         /// </summary>
-        public Func<T, object> ColumnData { get; init; }
+        public Func<T, object> ColumnData { get; set; }
 
         /// <summary>
         /// The title of the column. It must be set throught constructor or <see cref="SetTitle(string)"/>
@@ -46,7 +42,6 @@ namespace Beporsoft.TabularSheets
         /// The position where the column will be displayed.
         /// </summary>
         public int Order { get; internal set; } = 0;
-        public ColumnOptions ColumnOptions { get; set; } = new();
         public TabularData<T> Owner { get; }
 
         #region Edition

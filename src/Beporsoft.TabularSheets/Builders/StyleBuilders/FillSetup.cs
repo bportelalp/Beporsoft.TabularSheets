@@ -1,36 +1,31 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Style;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
-    internal class FillSetup : IEquatable<FillSetup?>, IStyleSetup
+    [DebuggerDisplay("Id={Index}")]
+    internal class FillSetup : Setup, IEquatable<FillSetup?>, IIndexedSetup
     {
-        public FillSetup(System.Drawing.Color foregroundColor, System.Drawing.Color? backgroundColor)
+        internal FillSetup(FillStyle fill)
         {
-            ForegroundColor = foregroundColor;
-            BackgroundColor = backgroundColor;
+            Fill = fill;
         }
 
-        public int Index { get; set; }
-        public System.Drawing.Color ForegroundColor { get; init; }
-        public System.Drawing.Color? BackgroundColor { get; init; }
+        public FillStyle Fill { get; set; }
 
 
-        public OpenXmlElement Build()
+        public override OpenXmlElement Build()
         {
-            var patternFill = new PatternFill();
-            patternFill.ForegroundColor = GetForegroundColor();
-            if (BackgroundColor is not null)
-                patternFill.BackgroundColor = GetBackgroundColor();
-            patternFill.PatternType = PatternValues.Solid;
-            var fill = new Fill(patternFill);
+            var fill = new Fill()
+            {
+                PatternFill = BuildPatternFill()
+            };
             return fill;
         }
 
@@ -42,28 +37,42 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public bool Equals(FillSetup? other)
         {
             return other is not null &&
-                   BackgroundColor.Equals(other.BackgroundColor);
+                EqualityComparer<FillStyle>.Default.Equals(Fill, other.Fill);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(BackgroundColor);
+            return HashCode.Combine(Fill);
+        }
+
+        #region Build child elements
+        private PatternFill BuildPatternFill()
+        {
+            var patternFill = new PatternFill
+            {
+                ForegroundColor = GetForegroundColor(),
+                PatternType = PatternValues.Solid
+            };
+            return patternFill;
         }
 
 
-        private ForegroundColor GetForegroundColor()
+        private ForegroundColor? GetForegroundColor()
         {
-            return new ForegroundColor()
+            ForegroundColor? bg = null;
+            if(Fill.BackgroundColor is not null)
             {
-                Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(ForegroundColor),
-            };
-        }
-        private BackgroundColor GetBackgroundColor()
-        {
-            return new BackgroundColor()
+
+            }
+            if (Fill.BackgroundColor is not null)
             {
-                Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(BackgroundColor!.Value),
-            };
+                bg = new ForegroundColor()
+                {
+                    Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(Fill.BackgroundColor!.Value),
+                };
+            }
+            return bg;
         }
+        #endregion
     }
 }
