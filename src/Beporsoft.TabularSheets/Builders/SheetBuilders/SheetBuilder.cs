@@ -2,6 +2,7 @@
 using Beporsoft.TabularSheets.Style;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
@@ -52,8 +53,12 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private Row CreateHeaderRow()
         {
             Row header = new();
-            int? formatId = RegisterHeaderStyle();
 
+            header.RowIndex = OpenXMLHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
+
+
+            int? formatId = RegisterHeaderStyle();
+            
             _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
@@ -75,6 +80,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private Row CreateItemRow(T item)
         {
             Row row = new Row();
+            row.RowIndex = OpenXMLHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
             _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
@@ -91,18 +97,19 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
         private Cell BuildDataCell(object value)
         {
+            Cell cell = CellBuilder.CreateCell(value);
             FillSetup? fillSetup = null;
+            FontSetup? fontSetup = null;
             NumberingFormatSetup? numberingFormatSetup = null;
             if (!Table.Options.DefaultFill.Equals(FillStyle.Default))
-            {
                 fillSetup = new FillSetup(Table.Options.DefaultFill);
-            }
-            Cell cell = CellBuilder.CreateCell(value);
+            if(!Table.Options.DefaultFont.Equals(FontStyle.Default))
+                fontSetup = new FontSetup(Table.Options.DefaultFont);
             if (value.GetType() == typeof(DateTime))
             {
                 numberingFormatSetup = new NumberingFormatSetup(Table.Options.DefaultDateTimeFormat);
             }
-            int formatId = StyleBuilder.RegisterFormat(fillSetup, null, null, numberingFormatSetup);
+            int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, null, numberingFormatSetup);
             cell.StyleIndex = OpenXMLHelpers.ToUint32Value(formatId);
             return cell;
         }

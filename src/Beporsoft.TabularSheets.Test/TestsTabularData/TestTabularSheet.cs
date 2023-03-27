@@ -28,7 +28,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
             TabularSheet<Product> table = Generate();
             table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
-            //table.HeaderStyle.Font.FontColor = Color.White;
+            table.Options.DefaultFont.FontColor = Color.Red;
+            table.HeaderStyle.Font.FontColor = Color.White;
             //table.HeaderStyle.Font.FontSize = 8;
             //table.Options.DefaultFont.FontSize = 14;
             table.Options.DefaultFill.BackgroundColor = Color.AliceBlue;
