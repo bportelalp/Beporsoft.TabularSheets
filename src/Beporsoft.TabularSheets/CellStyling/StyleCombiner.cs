@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Style
+namespace Beporsoft.TabularSheets.Styling
 {
     /// <summary>
     /// Allow to create a instance with the properties filled from the values of two instances, 

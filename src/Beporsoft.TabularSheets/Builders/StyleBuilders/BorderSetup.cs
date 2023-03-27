@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Style;
+using Beporsoft.TabularSheets.Styling;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;

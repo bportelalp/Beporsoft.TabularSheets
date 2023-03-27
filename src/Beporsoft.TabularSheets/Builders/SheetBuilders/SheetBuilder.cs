@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Style;
+using Beporsoft.TabularSheets.Styling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -80,7 +80,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         {
             Row header = new();
 
-            header.RowIndex = OpenXMLHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
+            header.RowIndex = OpenXmlHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
 
 
             int? formatId = RegisterHeaderStyle();
@@ -90,7 +90,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 Cell cell = CellBuilder.CreateCell(col.Title);
                 if (formatId is not null)
-                    cell.StyleIndex = OpenXMLHelpers.ToUint32Value(formatId.Value);
+                    cell.StyleIndex = OpenXmlHelpers.ToUint32Value(formatId.Value);
 
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
 
@@ -106,7 +106,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private Row CreateItemRow(T item)
         {
             Row row = new Row();
-            row.RowIndex = OpenXMLHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
+            row.RowIndex = OpenXmlHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
             _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
@@ -131,21 +131,21 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             BorderSetup? borderSetup = null;
             NumberingFormatSetup? numberingFormatSetup = null;
 
-            if (!Table.Options.DefaultFill.Equals(FillStyle.Default))
-                fillSetup = new FillSetup(Table.Options.DefaultFill);
+            if (!Table.DefaultStyle.Fill.Equals(FillStyle.Default))
+                fillSetup = new FillSetup(Table.DefaultStyle.Fill);
 
-            if (!Table.Options.DefaultFont.Equals(FontStyle.Default))
-                fontSetup = new FontSetup(Table.Options.DefaultFont);
+            if (!Table.DefaultStyle.Font.Equals(FontStyle.Default))
+                fontSetup = new FontSetup(Table.DefaultStyle.Font);
 
-            if (!Table.Options.DefaultBorder.Equals(BorderStyle.Default))
-                borderSetup = new BorderSetup(Table.Options.DefaultBorder);
+            if (!Table.DefaultStyle.Border.Equals(BorderStyle.Default))
+                borderSetup = new BorderSetup(Table.DefaultStyle.Border);
 
             if (value.GetType() == typeof(DateTime))
             {
-                numberingFormatSetup = new NumberingFormatSetup(Table.Options.DefaultDateTimeFormat);
+                numberingFormatSetup = new NumberingFormatSetup(Table.DefaultStyle.DefaultDateTimeFormat);
             }
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numberingFormatSetup);
-            cell.StyleIndex = OpenXMLHelpers.ToUint32Value(formatId);
+            cell.StyleIndex = OpenXmlHelpers.ToUint32Value(formatId);
             return cell;
         }
 
@@ -155,15 +155,15 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             FontSetup? font = null;
             BorderSetup? border = null;
 
-            FillStyle combinedFill = StyleCombiner.Combine(Table.HeaderStyle.Fill, Table.Options.DefaultFill);
+            FillStyle combinedFill = StyleCombiner.Combine(Table.HeaderStyle.Fill, Table.DefaultStyle.Fill);
             if (!combinedFill.Equals(FillStyle.Default))
                 fill = new FillSetup(combinedFill);
 
-            FontStyle combinedFont = StyleCombiner.Combine(Table.HeaderStyle.Font, Table.Options.DefaultFont);
+            FontStyle combinedFont = StyleCombiner.Combine(Table.HeaderStyle.Font, Table.DefaultStyle.Font);
             if (!combinedFill.Equals(FontStyle.Default))
                 font = new FontSetup(combinedFont);
 
-            BorderStyle combinedBorder = StyleCombiner.Combine(Table.HeaderStyle.Border, Table.Options.DefaultBorder);
+            BorderStyle combinedBorder = StyleCombiner.Combine(Table.HeaderStyle.Border, Table.DefaultStyle.Border);
             if (!combinedBorder.Equals(BorderStyle.Default))
                 border = new BorderSetup(combinedBorder);
 

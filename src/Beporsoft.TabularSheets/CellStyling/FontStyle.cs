@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Style
+namespace Beporsoft.TabularSheets.Styling
 {
     [DebuggerDisplay("Size={FontSize} | Color={FontColor} | Family={FontFamily}")]
     public class FontStyle : IEquatable<FontStyle?>
