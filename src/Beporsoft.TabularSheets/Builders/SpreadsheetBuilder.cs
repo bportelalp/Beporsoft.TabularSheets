@@ -129,10 +129,13 @@ namespace Beporsoft.TabularSheets.Builders
                 stylesheet.Fills = StyleBuilder.GetFills();
             if (StyleBuilder.RegisteredFonts > 0)
                 stylesheet.Fonts = StyleBuilder.GetFonts();
-            if(StyleBuilder.RegisteredNumberingFormats > 0)
+            if (StyleBuilder.RegisteredBorders > 0)
+                stylesheet.Borders = StyleBuilder.GetBorders();
+            if (StyleBuilder.RegisteredNumberingFormats > 0)
                 stylesheet.NumberingFormats = StyleBuilder.GetNumberingFormats();
-            // TODO - uncomment when add suport to number formatting
-            stylesheet.CellFormats = StyleBuilder.GetFormats();
+            if (StyleBuilder.RegisteredFormats > 0)
+                stylesheet.CellFormats = StyleBuilder.GetFormats();
+
             stylesPart.Stylesheet = stylesheet;
         }
 

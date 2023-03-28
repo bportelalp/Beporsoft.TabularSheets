@@ -65,14 +65,14 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// Get the col index from reference
         /// </summary>
         /// <param name="zeroBasedIndex">Whether start index on <paramref name="row"/> and <paramref name="col"/> is 0 or 1</param>
-        public static int GetColIndex(string colRef, bool zeroBasedIndex = true)
+        public static int GetColIndex(string reference, bool zeroBasedIndex = true)
         {
-            string @ref = colRef.Trim().ToUpper();
+            string colRef = GetColPart(reference);
             int sum = 0;
-            for (int i = 0; i < @ref.Length; i++)
+            for (int i = 0; i < colRef.Length; i++)
             {
                 sum *= 26;
-                sum += @ref[i] - 'A' + 1;
+                sum += colRef[i] - 'A' + 1;
             }
             return zeroBasedIndex ? sum - 1 : sum;
         }
@@ -81,8 +81,9 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// Get the row index from reference
         /// </summary>
         /// <param name="zeroBasedIndex">Whether start index on <paramref name="row"/> and <paramref name="col"/> is 0 or 1</param>
-        public static int GetRowIndex(string rowRef, bool zeroBasedIndex = true)
+        public static int GetRowIndex(string reference, bool zeroBasedIndex = true)
         {
+            string rowRef = GetRowPart(reference);
             int row = Convert.ToInt32(rowRef);
             return zeroBasedIndex ? row - 1 : row;
         }
@@ -93,10 +94,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// <param name="zeroBasedIndex">Whether start index on <paramref name="row"/> and <paramref name="col"/> is 0 or 1</param>
         public static (int Row, int Col) GetIndexes(string cellRef, bool zeroBasedIndex = true)
         {
-            string rowRef = GetRowPart(cellRef);
-            string colRef = GetColPart(cellRef);
-            int row = GetRowIndex(rowRef, zeroBasedIndex);
-            int col = GetColIndex(colRef, zeroBasedIndex);
+            int row = GetRowIndex(cellRef, zeroBasedIndex);
+            int col = GetColIndex(cellRef, zeroBasedIndex);
             return (row, col);
         }
 

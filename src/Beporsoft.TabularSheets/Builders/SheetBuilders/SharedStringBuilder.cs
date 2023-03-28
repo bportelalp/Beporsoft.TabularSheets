@@ -1,11 +1,12 @@
-﻿using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
     internal class SharedStringBuilder
     {
-        private readonly IndexedSetupCollection<SharedStringSetup> _strings = new();
+        private readonly ISetupCollection<SharedStringSetup> _strings = new IndexedSetupCollection<SharedStringSetup>();
 
         public int RegisterString(string str)
         {

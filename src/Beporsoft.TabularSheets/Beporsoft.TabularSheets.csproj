@@ -10,9 +10,13 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/bportelalp/tabular-data-sheets</RepositoryUrl>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Authors>bportelalp</Authors>
+		<Authors>Bruno Portela</Authors>
 		<Description>Tools to create basic data tables inside spreadsheets.</Description>
 		<LangVersion>10.0</LangVersion>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionSuffix>alpha</VersionSuffix>
+		<AssemblyVersion>${VersionPrefix}.0</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -43,5 +47,8 @@
 
 	<PropertyGroup>
 		<NoWarn>1701;1702;IDE0090</NoWarn>
+		<FileVersion>0.1.0.0</FileVersion>
+		<AssemblyVersion>0.1.0.0</AssemblyVersion>
+		<AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
 	</PropertyGroup>
 </Project>

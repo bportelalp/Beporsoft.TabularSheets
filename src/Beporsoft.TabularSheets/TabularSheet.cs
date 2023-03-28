@@ -2,7 +2,7 @@
 using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Style;
+using Beporsoft.TabularSheets.Styling;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -26,8 +26,14 @@ namespace Beporsoft.TabularSheets
         /// The title of the current sheet
         /// </summary>
         public string Title { get; set; } = "Sheet";
-        public HeaderStyle HeaderStyle { get; private set; } = new();
-        public TabularSheetOptions Options { get; private set; } = new();
+
+        /// <summary>
+        /// Defines the style of every cell of the heading of <see cref="TabularSheet{T}"/> inside a 
+        /// Spreadsheet document.<br/> Initially all styles are the default ones.
+        /// </summary>
+        public Style HeaderStyle { get; private set; } = new();
+
+        public DefaultStyle DefaultStyle { get; private set; } = new();
 
         #endregion
 

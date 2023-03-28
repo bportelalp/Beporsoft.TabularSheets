@@ -1,4 +1,5 @@
 using Beporsoft.TabularSheets.Csv;
+using Beporsoft.TabularSheets.Styling;
 using System.Drawing;
 using System.Globalization;
 
@@ -28,10 +29,10 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
             TabularSheet<Product> table = Generate();
             table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
-            //table.HeaderStyle.Font.FontColor = Color.White;
-            //table.HeaderStyle.Font.FontSize = 8;
-            //table.Options.DefaultFont.FontSize = 14;
-            table.Options.DefaultFill.BackgroundColor = Color.AliceBlue;
+            table.DefaultStyle.Font.FontColor = Color.Red;
+            table.HeaderStyle.Font.FontColor = Color.White;
+            table.DefaultStyle.Fill.BackgroundColor = Color.AliceBlue;
+            table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
             string path = GetPath("DebugTest.xlsx");
             table.Create(path);
         }

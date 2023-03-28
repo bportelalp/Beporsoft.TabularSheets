@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Style
+namespace Beporsoft.TabularSheets.Styling
 {
     [DebuggerDisplay("Bg={BackgroundColor}")]
     public class FillStyle : IEquatable<FillStyle?>

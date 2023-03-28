@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Style;
+using Beporsoft.TabularSheets.Styling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -47,7 +47,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             Color? color = null;
             if (FontStyle.FontColor is not null)
             {
-                color = new Color() { Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(FontStyle.FontColor.Value) };
+                color = new Color() { Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(FontStyle.FontColor.Value) };
             }
             return color;
         }

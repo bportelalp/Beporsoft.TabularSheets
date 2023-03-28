@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Style;
+using Beporsoft.TabularSheets.Styling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -50,14 +50,14 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             var patternFill = new PatternFill
             {
-                ForegroundColor = GetForegroundColor(),
+                ForegroundColor = BuildForegroundColor(),
                 PatternType = PatternValues.Solid
             };
             return patternFill;
         }
 
 
-        private ForegroundColor? GetForegroundColor()
+        private ForegroundColor? BuildForegroundColor()
         {
             ForegroundColor? bg = null;
             if(Fill.BackgroundColor is not null)
@@ -68,7 +68,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             {
                 bg = new ForegroundColor()
                 {
-                    Rgb = OpenXMLHelpers.BuildHexBinaryFromColor(Fill.BackgroundColor!.Value),
+                    Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(Fill.BackgroundColor!.Value),
                 };
             }
             return bg;

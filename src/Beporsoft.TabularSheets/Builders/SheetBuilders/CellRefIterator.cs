@@ -16,6 +16,8 @@
         }
 
         public string Current => CellRefBuilder.BuildRef(_currentRow, _currentCol, zeroBasedIndex);
+        public int CurrentRow => _currentRow;
+        public int CurrentCol => _currentCol;
 
         /// <summary>
         /// Increment the col iterator and return the new state

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.Command;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -28,6 +29,7 @@ namespace Beporsoft.TabularSheets
             Title = title;
         }
 
+        #region Properties
         /// <summary>
         /// The function which will be evaluated to fill the respective column for each item.
         /// </summary>
@@ -42,7 +44,32 @@ namespace Beporsoft.TabularSheets
         /// The position where the column will be displayed.
         /// </summary>
         public int Order { get; internal set; } = 0;
+
+
+/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
+Antes:
+        public Style.CellStyle Style { get; set; }
+Después:
+        public CellStyle Style { get; set; }
+*/
+        public Styling.Style Style { get; set; }
+
+        /// <summary>
+        /// The <see cref="TabularData{T}"/> to whom belongs this <see cref="TabularDataColumn{T}"/>
+        /// </summary>
         public TabularData<T> Owner { get; }
+
+        private Func<T, bool> ConditionalStyleFunc { get; set; }
+
+
+/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
+Antes:
+        private Style.CellStyle ConditionalStyle { get; set; }
+Después:
+        private CellStyle ConditionalStyle { get; set; }
+*/
+        private Styling.Style ConditionalStyle { get; set; }
+        #endregion
 
         #region Edition
         /// <summary>
@@ -57,6 +84,46 @@ namespace Beporsoft.TabularSheets
         }
 
         /// <summary>
+        /// Set the style of all the column. Header is excluded
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns>The same column instance, so additional calls can be chained</returns>
+
+/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
+Antes:
+        public TabularDataColumn<T> SetStyle(Style.CellStyle style)
+Después:
+        public TabularDataColumn<T> SetStyle(CellStyle style)
+*/
+        public TabularDataColumn<T> SetStyle(Styling.Style style)
+        {
+            Style = style;
+            return this;
+        }
+
+        /// <summary>
+        /// Apply the <paramref name="style"/> to the cell of this column which matches the specific <paramref name="condition"/>.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="style"></param>
+        /// <returns>The same column instance, so additional calls can be chained</returns>
+
+/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
+Antes:
+        public TabularDataColumn<T> SetConditionalStyle(Func<T, bool> condition, Style.CellStyle style)
+Después:
+        public TabularDataColumn<T> SetConditionalStyle(Func<T, bool> condition, CellStyle style)
+*/
+        public TabularDataColumn<T> SetConditionalStyle(Func<T, bool> condition, Styling.Style style)
+        {
+            ConditionalStyleFunc = condition;
+            ConditionalStyle = style;
+            return this;
+        }
+
+
+
+        /// <summary>
         /// Reassign the current order position of the column inside the parent table and reorganice the previous items
         /// </summary>
         /// <returns>The same column instance, so additional calls can be chained</returns>
@@ -67,7 +134,7 @@ namespace Beporsoft.TabularSheets
         }
         #endregion
 
-        public object Apply(T value)
+        internal object Apply(T value)
         {
             return ColumnData.Invoke(value);
         }
