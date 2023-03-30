@@ -69,16 +69,30 @@ namespace Beporsoft.TabularSheets
             return this;
         }
 
+
         /// <summary>
         /// Set the style of all the column. Header is excluded
         /// </summary>
         /// <param name="style"></param>
         /// <returns>The same column instance, so additional calls can be chained</returns>
-
-
         public TabularDataColumn<T> SetStyle(Style style)
         {
             Style = style;
+            return this;
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="SetStyle(Style)"/>
+        /// </summary>
+        /// <param name="styleActionEdition">An action to use the given object and edit the fields</param>
+        /// <returns></returns>
+        public TabularDataColumn<T> SetStyle(Action<Style> styleActionEdition)
+        {
+            Style editionStyle = Style;
+            if (Style.Equals(Style.Default))
+                editionStyle = new();
+
+            styleActionEdition.Invoke(editionStyle);
             return this;
         }
 

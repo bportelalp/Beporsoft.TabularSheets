@@ -1,5 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -61,6 +62,13 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                     {
                         Style = style,
                     };
+                    if (BorderStyle.Color is not null)
+                    {
+                        border.Color = new Color()
+                        {
+                            Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(BorderStyle.Color.Value)
+                        };
+                    }
                 }
             }
             return border;
