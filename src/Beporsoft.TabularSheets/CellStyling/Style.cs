@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Styling
+namespace Beporsoft.TabularSheets.CellStyling
 {
     public class Style : IEquatable<Style?>
     {
         public FontStyle Font { get; set; } = new();
         public FillStyle Fill { get; set; } = new();
         public BorderStyle Border { get; set; } = new();
+
+        public string? NumberingPattern { get; set; } = null;
 
         internal static Style Default = new();
 

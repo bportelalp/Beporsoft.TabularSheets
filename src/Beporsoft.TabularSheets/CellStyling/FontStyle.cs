@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Styling
+namespace Beporsoft.TabularSheets.CellStyling
 {
     [DebuggerDisplay("Size={FontSize} | Color={FontColor} | Family={FontFamily}")]
     public class FontStyle : IEquatable<FontStyle?>
@@ -15,20 +15,19 @@ namespace Beporsoft.TabularSheets.Styling
         /// <summary>
         /// The font color, or <see langword="null"/> for default color, normally black.
         /// </summary>
-        public Color? FontColor { get; set; } = null;
+        public Color? Color { get; set; } = null;
 
         /// <summary>
         /// The font size, or <see langword="null"/> for default size.
         /// </summary>
-        public int? FontSize { get; set; } = null;
+        public int? Size { get; set; } = null;
 
         /// <summary>
         /// The font family name, or <see langword="null"/> for default font
         /// </summary>
-        public string? FontFamily { get; set; }
+        public string? Font { get; set; }
 
-
-        internal static readonly FontStyle Default = new FontStyle();
+        internal static FontStyle Default { get; } = new FontStyle();
 
         #region IEquatable
         public override bool Equals(object? obj)
@@ -39,14 +38,14 @@ namespace Beporsoft.TabularSheets.Styling
         public bool Equals(FontStyle? other)
         {
             return other is not null &&
-                  EqualityComparer<Color?>.Default.Equals(FontColor, other.FontColor) &&
-                  FontSize == other.FontSize &&
-                  FontFamily == other.FontFamily;
+                  EqualityComparer<Color?>.Default.Equals(Color, other.Color) &&
+                  Size == other.Size &&
+                  Font == other.Font;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(FontColor, FontSize, FontFamily);
+            return HashCode.Combine(Color, Size, Font);
         }
 
 
