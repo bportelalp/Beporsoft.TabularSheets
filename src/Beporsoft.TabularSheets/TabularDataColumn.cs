@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2016.Drawing.Command;
+﻿using Beporsoft.TabularSheets.CellStyling;
+using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -45,30 +46,15 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public int Order { get; internal set; } = 0;
 
-
-/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
-Antes:
-        public Style.CellStyle Style { get; set; }
-Después:
-        public CellStyle Style { get; set; }
-*/
-        public Styling.Style Style { get; set; }
+        /// <summary>
+        /// The style to apply to all the column excluding the header
+        /// </summary>
+        public Style Style { get; set; } = Style.Default;
 
         /// <summary>
         /// The <see cref="TabularData{T}"/> to whom belongs this <see cref="TabularDataColumn{T}"/>
         /// </summary>
         public TabularData<T> Owner { get; }
-
-        private Func<T, bool> ConditionalStyleFunc { get; set; }
-
-
-/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
-Antes:
-        private Style.CellStyle ConditionalStyle { get; set; }
-Después:
-        private CellStyle ConditionalStyle { get; set; }
-*/
-        private Styling.Style ConditionalStyle { get; set; }
         #endregion
 
         #region Edition
@@ -89,39 +75,12 @@ Después:
         /// <param name="style"></param>
         /// <returns>The same column instance, so additional calls can be chained</returns>
 
-/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
-Antes:
-        public TabularDataColumn<T> SetStyle(Style.CellStyle style)
-Después:
-        public TabularDataColumn<T> SetStyle(CellStyle style)
-*/
-        public TabularDataColumn<T> SetStyle(Styling.Style style)
+
+        public TabularDataColumn<T> SetStyle(Style style)
         {
             Style = style;
             return this;
         }
-
-        /// <summary>
-        /// Apply the <paramref name="style"/> to the cell of this column which matches the specific <paramref name="condition"/>.
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="style"></param>
-        /// <returns>The same column instance, so additional calls can be chained</returns>
-
-/* Cambio no fusionado mediante combinación del proyecto 'Beporsoft.TabularSheets (net6.0)'
-Antes:
-        public TabularDataColumn<T> SetConditionalStyle(Func<T, bool> condition, Style.CellStyle style)
-Después:
-        public TabularDataColumn<T> SetConditionalStyle(Func<T, bool> condition, CellStyle style)
-*/
-        public TabularDataColumn<T> SetConditionalStyle(Func<T, bool> condition, Styling.Style style)
-        {
-            ConditionalStyleFunc = condition;
-            ConditionalStyle = style;
-            return this;
-        }
-
-
 
         /// <summary>
         /// Reassign the current order position of the column inside the parent table and reorganice the previous items
@@ -134,24 +93,27 @@ Después:
         }
         #endregion
 
+        #region Internal methods called from Sheet builders
+        /// <summary>
+        /// Retrieve the current value of the cell for this column applied to <paramref name="value"/>
+        /// </summary>
         internal object Apply(T value)
         {
             return ColumnData.Invoke(value);
         }
-
-
 
         /// <summary>
         /// When no title is provided, set the column title to {_defaultColumnName}{Order}.
         /// </summary>
         internal void SetDefaultName()
         {
-            Match match = _regexDefaultColumnName.Match(Title ?? string.Empty); // Avoid Exception when title null
+            Match match = _regexDefaultColumnName.Match(Title ?? string.Empty);
             if (string.IsNullOrWhiteSpace(Title) || match.Success)
             {
                 Title = $"{nameof(T)}{_defaultColumnName}{Order}";
             }
         }
+        #endregion
 
     }
 }

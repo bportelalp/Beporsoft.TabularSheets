@@ -2,7 +2,7 @@
 using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Styling;
+using Beporsoft.TabularSheets.CellStyling;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Beporsoft.TabularSheets
 {
-    public class TabularSheet<T> : TabularData<T>, ISheet
+    public sealed class TabularSheet<T> : TabularData<T>, ISheet
     {
         public TabularSheet()
         {
@@ -29,7 +29,7 @@ namespace Beporsoft.TabularSheets
 
         /// <summary>
         /// Defines the style of every cell of the heading of <see cref="TabularSheet{T}"/> inside a 
-        /// Spreadsheet document.<br/> Initially all styles are the default ones.
+        /// Spreadsheet document.<br/> Initially all styles are the default ones from <see cref="DefaultStyle"/>
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 

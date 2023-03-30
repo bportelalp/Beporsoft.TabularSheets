@@ -1,4 +1,4 @@
-﻿using Beporsoft.TabularSheets.Styling;
+﻿using Beporsoft.TabularSheets.CellStyling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,14 +42,14 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             var font = new FontStyle();
             Assert.That(font, Is.EqualTo(FontStyle.Default));
 
-            font.FontSize = 12;
-            font.FontFamily = "efa";
-            font.FontColor = System.Drawing.Color.Aquamarine;
+            font.Size = 12;
+            font.Font = "efa";
+            font.Color = System.Drawing.Color.Aquamarine;
             Assert.That(font, Is.Not.EqualTo(FontStyle.Default));
 
-            font.FontSize = null;
-            font.FontFamily = null;
-            font.FontColor = null;
+            font.Size = null;
+            font.Font = null;
+            font.Color = null;
             Assert.That(font, Is.EqualTo(FontStyle.Default));
         }
 
@@ -79,7 +79,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             });
 
             // Change one field of one property
-            style.Font.FontSize = 0;
+            style.Font.Size = 0;
             Assert.Multiple(() =>
             {
                 Assert.That(style, Is.Not.EqualTo(Style.Default));
@@ -103,17 +103,17 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             var font2 = new FontStyle();
             var fontR = new FontStyle();
 
-            font1.FontSize = 0;
-            font2.FontSize = 14;
-            fontR.FontSize = 0;
+            font1.Size = 0;
+            font2.Size = 14;
+            fontR.Size = 0;
             yield return new object[] { font1, font2, fontR };
-            font1.FontSize = null;
-            font2.FontSize = 14;
-            fontR.FontSize = 14;
+            font1.Size = null;
+            font2.Size = 14;
+            fontR.Size = 14;
             yield return new object[] { font1, font2, fontR };
-            font1.FontColor = null;
-            font2.FontColor = System.Drawing.Color.AliceBlue;
-            fontR.FontColor = System.Drawing.Color.AliceBlue;
+            font1.Color = null;
+            font2.Color = System.Drawing.Color.AliceBlue;
+            fontR.Color = System.Drawing.Color.AliceBlue;
             yield return new object[] { font1, font2, fontR };
         }
 

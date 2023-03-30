@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Styling
+namespace Beporsoft.TabularSheets.CellStyling
 {
     /// <summary>
     /// Defines the default styles for every cell of the representation of <see cref="TabularSheet{T}"/> inside
@@ -17,7 +17,7 @@ namespace Beporsoft.TabularSheets.Styling
         /// <summary>
         /// The default Date time format applied to cells which contains a <see cref="DateTime"/> value.
         /// </summary>
-        public string DefaultDateTimeFormat { get; set; } = $"{CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern} hh:mm:ss";
+        public string DateTimeFormat { get; set; } = $"{CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern} hh:mm:ss";
 
     }
 }

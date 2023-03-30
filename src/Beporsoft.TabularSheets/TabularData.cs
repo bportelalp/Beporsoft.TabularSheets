@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace Beporsoft.TabularSheets
 {
+    /// <summary>
+    /// Represent the base class to build tabular sheets
+    /// </summary>
+    /// <typeparam name="T">The type which represent every row</typeparam>
     public abstract class TabularData<T> : IList<T>
     {
         internal readonly List<TabularDataColumn<T>> _columns = new();
@@ -14,6 +18,7 @@ namespace Beporsoft.TabularSheets
         {
         }
 
+        #region Properties
         /// <summary>
         /// Gets the collection of items which will be displayed on rows
         /// </summary>
@@ -23,11 +28,13 @@ namespace Beporsoft.TabularSheets
         /// Gets the collection of columns which will define which data is displayed on each row, each cell.
         /// </summary>
         public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
+
         public int Count => _items.Count;
+
         public bool IsReadOnly => false;
 
         public T this[int index] { get => _items[index]; set => _items[index] = value; }
-
+        #endregion
 
         #region Manipulate Rows
 
@@ -93,7 +100,7 @@ namespace Beporsoft.TabularSheets
             bool removed = Columns.Remove(column);
             if (removed)
             {
-                // the next column and avobe will reorganize the column order.
+                // the next column and above will reorganize the column order.
                 int columnPosition = column.Order;
                 TabularDataColumn<T>? nextColumn = Columns.SingleOrDefault(c => c.Order == columnPosition + 1);
                 nextColumn?.SetPosition(columnPosition);
@@ -102,7 +109,7 @@ namespace Beporsoft.TabularSheets
         }
         #endregion
 
-
+        #region Helpers Columns
         /// <summary>
         /// Method invoked from columns which belongs to this table to reorganize the list of column order
         /// </summary>
@@ -126,9 +133,9 @@ namespace Beporsoft.TabularSheets
             column.SetDefaultName();
             Columns.Add(column);
         }
+        #endregion
 
-
-        public object Evaluate(int row, int col)
+        internal object Evaluate(int row, int col)
         {
             if (Count >= row)
                 throw new ArgumentOutOfRangeException(nameof(row), row, $"The value of row is outside the bounds of the collection length");

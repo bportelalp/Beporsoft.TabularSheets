@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Styling;
+using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -36,29 +36,29 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private FontSize? BuildFontSize()
         {
             FontSize? fontSize = null;
-            if (FontStyle.FontSize is not null)
+            if (FontStyle.Size is not null)
             {
-                fontSize = new FontSize() { Val = FontStyle.FontSize };
+                fontSize = new FontSize() { Val = FontStyle.Size };
             }
             return fontSize;
         }
         private Color? BuildColor()
         {
             Color? color = null;
-            if (FontStyle.FontColor is not null)
+            if (FontStyle.Color is not null)
             {
-                color = new Color() { Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(FontStyle.FontColor.Value) };
+                color = new Color() { Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(FontStyle.Color.Value) };
             }
             return color;
         }
         private FontName? BuildFontName()
         {
             FontName? fontName = null;
-            if (!string.IsNullOrWhiteSpace(FontStyle.FontFamily))
+            if (!string.IsNullOrWhiteSpace(FontStyle.Font))
             {
                 fontName = new FontName()
                 {
-                    Val = FontStyle.FontFamily
+                    Val = FontStyle.Font
                 };
             }
             return fontName;
