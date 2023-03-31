@@ -1,7 +1,8 @@
+using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Csv;
-using Beporsoft.TabularSheets.Styling;
 using System.Drawing;
 using System.Globalization;
+using System.Reflection;
 
 namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
@@ -26,15 +27,81 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         [Test]
         public void TestToDebug()
         {
+            Assert.That(() =>
+            {
+                TabularSheet<Product> table = Generate();
+                table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
+                table.DefaultStyle.Font.Color = Color.Red;
+                table.HeaderStyle.Font.Color = Color.White;
+                table.DefaultStyle.Fill.BackgroundColor = Color.AliceBlue;
+                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                string path = GetPath("DebugTest.xlsx");
+                table.Create(path);
+            }, Throws.Nothing);
+        }
 
-            TabularSheet<Product> table = Generate();
-            table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
-            table.DefaultStyle.Font.FontColor = Color.Red;
-            table.HeaderStyle.Font.FontColor = Color.White;
-            table.DefaultStyle.Fill.BackgroundColor = Color.AliceBlue;
-            table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
-            string path = GetPath("DebugTest.xlsx");
-            table.Create(path);
+        [Test]
+        public void TryHeaderStyles()
+        {
+            Assert.That(() =>
+            {
+                TabularSheet<Product> table = Generate();
+                table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
+                table.HeaderStyle.Font.Font = "Arial";
+                table.HeaderStyle.Font.Size = 12;
+                table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
+                string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
+                table.Create(path);
+            }, Throws.Nothing);
+        }
+
+        [Test]
+        public void TryDefaultStyles()
+        {
+            Assert.That(() =>
+            {
+                TabularSheet<Product> table = Generate();
+                table.DefaultStyle.Fill.BackgroundColor = Color.Azure;
+                table.DefaultStyle.Font.Font = "Arial";
+                table.DefaultStyle.Font.Size = 8;
+                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                string path = GetPath($"Test{nameof(TryDefaultStyles)}.xlsx");
+                table.Create(path);
+            }, Throws.Nothing);
+        }
+
+        [Test]
+        public void TryOverrideStyle()
+        {
+            Assert.That(() =>
+            {
+                TabularSheet<Product> table = Generate();
+                table.DefaultStyle.Fill.BackgroundColor = Color.Azure;
+                table.DefaultStyle.Font.Font = "Arial";
+                table.DefaultStyle.Font.Size = 8;
+                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+
+                table.HeaderStyle.Fill.BackgroundColor = Color.DarkBlue;
+                table.HeaderStyle.Font.Color = Color.White;
+                table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
+                table.HeaderStyle.Border.Color = Color.Yellow;
+                string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
+                table.Create(path);
+            }, Throws.Nothing);
+        }
+
+        [Test]
+        public void TryColumnStyle()
+        {
+            Assert.That(() =>
+            {
+                Style style = new Style();
+                style.Fill.BackgroundColor = Color.Red;
+                TabularSheet<Product> table = Generate();
+                table.AddColumn(t => t.Name).SetTitle("Name duplicated").SetStyle(style);
+                string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
+                table.Create(path);
+            }, Throws.Nothing);
         }
 
 

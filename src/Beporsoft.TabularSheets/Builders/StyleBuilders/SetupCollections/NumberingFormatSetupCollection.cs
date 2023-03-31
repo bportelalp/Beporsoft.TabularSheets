@@ -50,7 +50,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
 
 
 
-        private static Dictionary<int, string> PredefinedFormats = new Dictionary<int, string>()
+        private static readonly Dictionary<int, string> PredefinedFormats = new Dictionary<int, string>()
         {
             { 0 , "General"},
             { 1 , "0"},

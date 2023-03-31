@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Styling
+namespace Beporsoft.TabularSheets.CellStyling
 {
     [DebuggerDisplay("Bg={BackgroundColor}")]
     public class FillStyle : IEquatable<FillStyle?>
     {
-        internal static FillStyle Default { get; set; } = new FillStyle();
 
         public Color? BackgroundColor { get; set; }
 
+        internal static FillStyle Default { get; } = new FillStyle();
 
         #region IEquatable
 

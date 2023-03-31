@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Styling;
+using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -142,7 +142,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
             if (value.GetType() == typeof(DateTime))
             {
-                numberingFormatSetup = new NumberingFormatSetup(Table.DefaultStyle.DefaultDateTimeFormat);
+                numberingFormatSetup = new NumberingFormatSetup(Table.DefaultStyle.DateTimeFormat);
             }
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numberingFormatSetup);
             cell.StyleIndex = OpenXmlHelpers.ToUint32Value(formatId);

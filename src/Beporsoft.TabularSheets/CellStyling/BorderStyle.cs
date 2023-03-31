@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Styling
+namespace Beporsoft.TabularSheets.CellStyling
 {
+    [DebuggerDisplay("Color={Color} | Borders=[{Top}, {Right}, {Bottom}, {Left}]")]
     public class BorderStyle : IEquatable<BorderStyle?>
     {
 
@@ -35,7 +37,7 @@ namespace Beporsoft.TabularSheets.Styling
         /// </summary>
         public BorderType Bottom { get; set; } = BorderType.None;
 
-        internal static BorderStyle Default { get; set; } = new BorderStyle();
+        internal static BorderStyle Default { get; } = new BorderStyle();
 
         /// <summary>
         /// Set the same <see cref="BorderType"/> for all sides
