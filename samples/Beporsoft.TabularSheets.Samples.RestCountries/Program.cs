@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Beporsoft.TabularSheets.CellStyling;
+using System.Drawing;
 using System.Net.Http.Json;
 
 namespace Beporsoft.TabularSheets.Samples.RestCountries
@@ -40,9 +41,9 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 // Add some style
                 Console.WriteLine($"Adding some style");
                 sheet.HeaderStyle.Fill.BackgroundColor = Color.Black;
-                sheet.HeaderStyle.Font.FontColor = Color.White;
-                sheet.DefaultStyle.Border.Top = Styling.BorderStyle.BorderType.Thin;
-                sheet.DefaultStyle.Border.Bottom = Styling.BorderStyle.BorderType.Thin;
+                sheet.HeaderStyle.Font.Color = Color.White;
+                sheet.DefaultStyle.Border.Top = BorderStyle.BorderType.Thin;
+                sheet.DefaultStyle.Border.Bottom = BorderStyle.BorderType.Thin;
 
                 // Export
                 Console.WriteLine($"Creating file");
