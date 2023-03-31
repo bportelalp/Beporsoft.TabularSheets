@@ -1,0 +1,6 @@
+# Folder where the spreadsheets will be created
+*.xlsx
+*.xls
+*.csv
+*.xls#
+*.xlsx#
