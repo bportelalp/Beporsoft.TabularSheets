@@ -14,6 +14,8 @@ namespace Beporsoft.TabularSheets.CellStyling
 
         public Color? BackgroundColor { get; set; }
 
+        internal DocumentFormat.OpenXml.Spreadsheet.PatternValues PatternValue { get; set; } = DocumentFormat.OpenXml.Spreadsheet.PatternValues.Solid;
+
         internal static FillStyle Default { get; } = new FillStyle();
 
         #region IEquatable
@@ -26,12 +28,13 @@ namespace Beporsoft.TabularSheets.CellStyling
         public bool Equals(FillStyle? other)
         {
             return other is not null &&
-                   EqualityComparer<Color?>.Default.Equals(BackgroundColor, other.BackgroundColor);
+                   EqualityComparer<Color?>.Default.Equals(BackgroundColor, other.BackgroundColor) &&
+                   PatternValue.Equals(other.PatternValue);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(BackgroundColor);
+            return HashCode.Combine(BackgroundColor, PatternValue);
         }
 
         #endregion
