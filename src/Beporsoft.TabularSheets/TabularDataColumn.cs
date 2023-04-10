@@ -17,6 +17,7 @@ namespace Beporsoft.TabularSheets
         private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
         private static readonly Regex _regexDefaultColumnName = new(nameof(T) + _defaultColumnName + @"\d{0,}"); // Regex to find when a column is named according to its default name.
 
+        #region Constructors
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
         {
             Owner = parentTabularData;
@@ -29,6 +30,7 @@ namespace Beporsoft.TabularSheets
         {
             Title = title;
         }
+        #endregion
 
         #region Properties
         /// <summary>
@@ -81,9 +83,7 @@ namespace Beporsoft.TabularSheets
             return this;
         }
 
-        /// <summary>
         /// <inheritdoc cref="SetStyle(Style)"/>
-        /// </summary>
         /// <param name="styleActionEdition">An action to use the given object and edit the fields</param>
         /// <returns></returns>
         public TabularDataColumn<T> SetStyle(Action<Style> styleActionEdition)

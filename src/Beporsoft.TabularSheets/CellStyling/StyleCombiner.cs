@@ -29,13 +29,9 @@ namespace Beporsoft.TabularSheets.CellStyling
                 object? highestValue = property.GetValue(highestPriority);
                 object? lowestValue = property.GetValue(lowestPriority);
                 if (highestValue is null)
-                {
                     assignedValue = lowestValue;
-                }
                 else
-                {
                     assignedValue = highestValue;
-                }
                 property.SetValue(result, assignedValue);
             }
             return result;

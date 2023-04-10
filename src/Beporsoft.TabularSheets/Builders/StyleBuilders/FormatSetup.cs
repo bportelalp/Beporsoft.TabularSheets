@@ -33,6 +33,26 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 BorderId = GetSetupId(Border),
                 NumberFormatId = GetSetupId(NumberingFormat)
             };
+            if (format.FillId is null)
+                format.ApplyFill = false;
+            else
+                format.ApplyFill = true;
+
+            if (format.FontId is null)
+                format.ApplyFont = false;
+            else
+                format.ApplyFont = true;
+
+            if (format.BorderId is null)
+                format.ApplyBorder = false;
+            else
+                format.ApplyBorder = true;
+
+            if (format.NumberFormatId is null)
+                format.ApplyNumberFormat = false;
+            else
+                format.ApplyNumberFormat = true;
+
             return format;
         }
 
@@ -60,7 +80,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             UInt32Value? value = null;
             if (setup is not null)
-                value = OpenXmlHelpers.ToUint32Value(setup.Index);
+                value = setup.Index.ToUint32OpenXml();
             return value;
         }
         #endregion

@@ -80,7 +80,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         {
             Row header = new();
 
-            header.RowIndex = OpenXmlHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
+            header.RowIndex = (_cellRefIterator.CurrentRow + 1).ToUint32OpenXml();
 
 
             int? formatId = RegisterHeaderStyle();
@@ -90,7 +90,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 Cell cell = CellBuilder.CreateCell(col.Title);
                 if (formatId is not null)
-                    cell.StyleIndex = OpenXmlHelpers.ToUint32Value(formatId.Value);
+                    cell.StyleIndex = formatId.Value.ToUint32OpenXml();
 
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
 
@@ -106,7 +106,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private Row CreateItemRow(T item)
         {
             Row row = new Row();
-            row.RowIndex = OpenXmlHelpers.ToUint32Value(_cellRefIterator.CurrentRow + 1);
+            row.RowIndex = (_cellRefIterator.CurrentRow + 1).ToUint32OpenXml();
             _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
@@ -145,7 +145,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 numberingFormatSetup = new NumberingFormatSetup(Table.DefaultStyle.DateTimeFormat);
             }
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numberingFormatSetup);
-            cell.StyleIndex = OpenXmlHelpers.ToUint32Value(formatId);
+            cell.StyleIndex = formatId.ToUint32OpenXml();
             return cell;
         }
 

@@ -1,5 +1,8 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
 
@@ -12,7 +15,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private readonly ISetupCollection<BorderSetup> _borders = new IndexedSetupCollection<BorderSetup>();
         private readonly ISetupCollection<FormatSetup> _formats = new IndexedSetupCollection<FormatSetup>();
         private readonly ISetupCollection<NumberingFormatSetup> _numFormats = new NumberingFormatSetupCollection();
-
+        public StylesheetBuilder()
+        {
+            InitializeMsExcelDefaults();
+        }
         public int RegisteredFills => _fills.Count;
         public int RegisteredFonts => _fonts.Count;
         public int RegisteredBorders => _borders.Count;
@@ -39,7 +45,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 _fonts.Register(font);
             if (border is not null)
                 _borders.Register(border);
-            if(numberingFormat is not null)
+            if (numberingFormat is not null)
                 _numFormats.Register(numberingFormat);
 
 
@@ -48,12 +54,51 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return formatId;
         }
 
-        public Fills GetFills() => _fills.BuildContainer<Fills>();
-        public CellFormats GetFormats() => _formats.BuildContainer<CellFormats>();
-        public Fonts GetFonts() => _fonts.BuildContainer<Fonts>();
-        public Borders GetBorders() => _borders.BuildContainer<Borders>();
-        public NumberingFormats GetNumberingFormats() => _numFormats.BuildContainer<NumberingFormats>();
+        public Fills GetFills()
+        {
+            Fills fills = _fills.BuildContainer<Fills>();
+            fills.Count = RegisteredFills.ToUint32OpenXml();
+            return fills;
+        }
+        public CellFormats GetFormats()
+        {
+            CellFormats formats = _formats.BuildContainer<CellFormats>();
+            formats.Count = RegisteredFormats.ToUint32OpenXml();
+            return formats;
+        }
+        public Fonts GetFonts()
+        {
+            Fonts Fonts = _fonts.BuildContainer<Fonts>();
+            Fonts.Count = RegisteredFonts.ToUint32OpenXml();
+            return Fonts;
+        }
+        public Borders GetBorders()
+        {
+            Borders borders = _borders.BuildContainer<Borders>();
+            borders.Count = RegisteredBorders.ToUint32OpenXml();
+            return borders;
+        }
+        public NumberingFormats GetNumberingFormats()
+        {
+            NumberingFormats numFormats = _numFormats.BuildContainer<NumberingFormats>();
+            numFormats.Count = RegisteredNumberingFormats.ToUint32OpenXml();
+            return numFormats;
+        }
 
+        private void InitializeMsExcelDefaults()
+        {
+            ExcelStyleDefaults defaults = ExcelStyleDefaults.Create();
+            foreach (var setup in defaults.Fills)
+                _fills.Register(setup);
+            foreach (var setup in defaults.Fonts)
+                _fonts.Register(setup);
+            foreach (var setup in defaults.Border)
+                _borders.Register(setup);
+            foreach (var setup in defaults.Formats)
+                _formats.Register(setup);
+            foreach (var setup in defaults.NumberingFormats)
+                _numFormats.Register(setup);
+        }
 
 
     }

@@ -47,7 +47,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 TabularSheet<Product> table = Generate();
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
-                table.HeaderStyle.Font.Font = "Arial";
+                //table.HeaderStyle.Font.Font = "Arial";
                 table.HeaderStyle.Font.Size = 12;
                 table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
                 string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");

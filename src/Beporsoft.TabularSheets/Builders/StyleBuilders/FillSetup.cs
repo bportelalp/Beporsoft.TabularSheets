@@ -48,10 +48,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         #region Build child elements
         private PatternFill BuildPatternFill()
         {
-            var patternFill = new PatternFill
+            PatternFill patternFill = new PatternFill
             {
                 ForegroundColor = BuildForegroundColor(),
-                PatternType = PatternValues.Solid
+                PatternType = Fill.PatternValue
             };
             return patternFill;
         }
@@ -60,7 +60,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private ForegroundColor? BuildForegroundColor()
         {
             ForegroundColor? bg = null;
-            if(Fill.BackgroundColor is not null)
+            if (Fill.BackgroundColor is not null)
             {
 
             }
@@ -68,7 +68,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             {
                 bg = new ForegroundColor()
                 {
-                    Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(Fill.BackgroundColor!.Value),
+                    Rgb = Fill.BackgroundColor!.Value.ToHexBinaryOpenXml(),
                 };
             }
             return bg;
