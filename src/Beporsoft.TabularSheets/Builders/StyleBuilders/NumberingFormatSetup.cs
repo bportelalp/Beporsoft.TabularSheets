@@ -23,7 +23,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             var numberingFormat = new NumberingFormat()
             {
-                NumberFormatId = OpenXmlHelpers.ToUint32Value(Index),
+                NumberFormatId = Index.ToUint32OpenXml(),
                 FormatCode = Pattern
             };
             return numberingFormat;

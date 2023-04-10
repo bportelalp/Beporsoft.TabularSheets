@@ -90,6 +90,9 @@ namespace Beporsoft.TabularSheets
             return column;
         }
 
+        /// <inheritdoc cref="AddColumn(Func{T, object})"/>
+        public virtual TabularDataColumn<T> AddColumn(Func<T, object> predicate, string title) => AddColumn(title, predicate);
+
         /// <summary>
         /// Remove the given column if exists and reorganize the order of the following columns
         /// </summary>

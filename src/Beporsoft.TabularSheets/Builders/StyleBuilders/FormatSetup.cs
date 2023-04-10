@@ -60,7 +60,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             UInt32Value? value = null;
             if (setup is not null)
-                value = OpenXmlHelpers.ToUint32Value(setup.Index);
+                value = setup.Index.ToUint32OpenXml();
             return value;
         }
         #endregion

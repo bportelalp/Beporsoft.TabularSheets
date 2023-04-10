@@ -16,10 +16,10 @@ var table = new TabularSpreadsheet<Product>();
 
 table.SetSheetTitle("List of products");
 
-table.SetColumn("Product", p => p.Name);
-table.SetColumn("Cost", p => p.CostPerUnit);
-table.SetColumn("In Stock", p => p.HasStock ? "Yes":"No");
-table.SetColumn("Provider", p => p.ProviderName);
+table.AddColumn("Product", p => p.Name);
+table.AddColumn("Cost", p => p.CostPerUnit);
+table.AddColumn("In Stock", p => p.HasStock ? "Yes":"No");
+table.AddColumn("Provider", p => p.ProviderName);
 
 table.CreateExcel("ProductList.xlsx");
 ```

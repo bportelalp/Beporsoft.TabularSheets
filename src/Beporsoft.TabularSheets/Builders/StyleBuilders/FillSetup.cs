@@ -68,7 +68,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             {
                 bg = new ForegroundColor()
                 {
-                    Rgb = OpenXmlHelpers.BuildHexBinaryFromColor(Fill.BackgroundColor!.Value),
+                    Rgb = Fill.BackgroundColor!.Value.ToHexBinaryOpenXml(),
                 };
             }
             return bg;
