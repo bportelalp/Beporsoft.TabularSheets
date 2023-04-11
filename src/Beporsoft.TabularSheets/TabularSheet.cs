@@ -21,6 +21,7 @@ namespace Beporsoft.TabularSheets
         {
             Items = items.ToList();
         }
+
         #region Properties
         /// <summary>
         /// The title of the current sheet
@@ -28,11 +29,15 @@ namespace Beporsoft.TabularSheets
         public string Title { get; set; } = "Sheet";
 
         /// <summary>
-        /// Defines the style of every cell of the heading of <see cref="TabularSheet{T}"/> inside a 
-        /// Spreadsheet document.<br/> Initially all styles are the default ones from <see cref="DefaultStyle"/>
+        /// Defines the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
+        /// Initially all styles are the default ones from <see cref="DefaultStyle"/>
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 
+        /// <summary>
+        /// Defines the style of data cells from the current <see cref="TabularSheet{T}"/>. Applies to
+        /// all cells unless a more specific style is applied.
+        /// </summary>
         public DefaultStyle DefaultStyle { get; private set; } = new();
 
         #endregion

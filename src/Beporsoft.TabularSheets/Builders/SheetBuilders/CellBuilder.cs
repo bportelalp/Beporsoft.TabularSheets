@@ -53,8 +53,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 // Converter null, use a shared string registering it.
                 cell.DataType = CellValues.SharedString;
                 string valueString = Convert.ToString(value)?? string.Empty;
-                int index = SharedStrings.RegisterString(valueString);
-                cell.CellValue = new CellValue(index);
+                int indexSharedTable = SharedStrings.RegisterString(valueString);
+                cell.CellValue = new CellValue(indexSharedTable);
             }
             else
             {
