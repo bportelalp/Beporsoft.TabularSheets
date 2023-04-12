@@ -9,6 +9,10 @@ using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    /// <summary>
+    /// Builder for the qualified node x:fill of 
+    /// <see href="https://www.ecma-international.org/publications-and-standards/standards/ecma-376/">ECMA-376-1:2016 §18.8.20</see>
+    /// </summary>
     [DebuggerDisplay("Id={Index}")]
     internal class FillSetup : Setup, IEquatable<FillSetup?>, IIndexedSetup
     {

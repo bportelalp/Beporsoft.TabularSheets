@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
+    /// <summary>
+    /// Defines the fill of cells
+    /// </summary>
     [DebuggerDisplay("Bg={BackgroundColor}")]
     public class FillStyle : IEquatable<FillStyle?>
     {

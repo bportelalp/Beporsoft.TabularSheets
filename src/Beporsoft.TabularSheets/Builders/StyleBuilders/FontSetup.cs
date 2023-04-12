@@ -9,6 +9,10 @@ using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    /// <summary>
+    /// Builder for the qualified node x:font of 
+    /// <see href="https://www.ecma-international.org/publications-and-standards/standards/ecma-376/">ECMA-376-1:2016 §18.8.22</see>
+    /// </summary>
     [DebuggerDisplay("Id={Index}")]
     internal class FontSetup : Setup, IEquatable<FontSetup?>, IIndexedSetup
     {

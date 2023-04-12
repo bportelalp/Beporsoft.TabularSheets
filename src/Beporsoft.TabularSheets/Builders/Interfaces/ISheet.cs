@@ -13,6 +13,7 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         internal string Title { get; }
 
         internal Type ItemType { get; }
+
         /// <summary>
         /// Build the object <see cref="SheetData"/> which represent the data.
         /// </summary>
@@ -20,5 +21,8 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         /// <param name="sharedStringBuilder">A reference to the object which handles the compilation of shared strings</param>
         /// <returns></returns>
         internal SheetData BuildData(ref StylesheetBuilder stylesheetBuilder, ref SharedStringBuilder sharedStringBuilder);
+
+
+        internal Columns BuildColumns();
     }
 }

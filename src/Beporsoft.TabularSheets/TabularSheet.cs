@@ -40,6 +40,10 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public DefaultStyle DefaultStyle { get; private set; } = new();
 
+        /// <summary>
+        /// Enable the automatic column filter
+        /// </summary>
+        public bool AutoFilter { get; set; } = false;
         #endregion
 
         #region Configure Table
@@ -68,6 +72,11 @@ namespace Beporsoft.TabularSheets
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
             return builder.BuildSheetData();
+        }
+
+        Columns ISheet.BuildColumns()
+        {
+            return SheetBuilder<T>.BuildColumns(this);
         }
         #endregion
     }

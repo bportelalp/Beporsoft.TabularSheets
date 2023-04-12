@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
+    /// <summary>
+    /// Defines the font of cells
+    /// </summary>
     [DebuggerDisplay("Size={FontSize} | Color={FontColor} | Family={FontFamily}")]
     public class FontStyle : IEquatable<FontStyle?>
     {

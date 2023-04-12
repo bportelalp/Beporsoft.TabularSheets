@@ -8,6 +8,10 @@ using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    /// <summary>
+    /// Builder for the qualified node x:xf of 
+    /// <see href="https://www.ecma-international.org/publications-and-standards/standards/ecma-376/">ECMA-376-1:2016 §18.8.45</see>
+    /// </summary>
     [DebuggerDisplay("Id={Index} | Fill={Fill is not null} | Font={Font is not null} | Border={Border is not null} | Numb={NumberingFormat is not null}")]
     internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IIndexedSetup
     {
