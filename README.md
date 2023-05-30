@@ -4,7 +4,7 @@ Tools to create data tables on file formats like Excel or Csv.
 
 ## Introduction and Goal
 
-`Beporsoft.Spreadsheet` will allow to create simple Excel data tables based on a collection of items of type `T`.
+`Beporsoft.TabularSheets` will allow to create simple Excel data tables based on a collection of items of type `T`.
 
 The package uses `DocumentFormat.OpenXml` to create OpenXml Spreadsheets document. The aim of the package is to simplify the creation of a simple spreadsheet to store the information of instances of `T`, where each row represent an instance and the columns is specified using predicates.
 
