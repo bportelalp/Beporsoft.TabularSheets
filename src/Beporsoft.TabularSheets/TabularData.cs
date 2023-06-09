@@ -9,7 +9,7 @@ namespace Beporsoft.TabularSheets
     /// Represent the base class to build tabular sheets
     /// </summary>
     /// <typeparam name="T">The type which represent every row</typeparam>
-    public abstract class TabularData<T> : IList<T>
+    public abstract class TabularData<T> : ICollection<T>
     {
         internal readonly List<TabularDataColumn<T>> _columns = new();
         private List<T> _items = new();
@@ -38,7 +38,7 @@ namespace Beporsoft.TabularSheets
 
         #region Manipulate Rows
 
-        #region Interface IList
+        #region Interface ICollection
         public int IndexOf(T item) => _items.IndexOf(item);
 
         public void Insert(int index, T item) => _items.Insert(index, item);

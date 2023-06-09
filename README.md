@@ -2,7 +2,7 @@
 
 Tools to create data tables on file formats like Excel or Csv.
 
-## Introduction and Goal
+## Introduction
 
 `Beporsoft.TabularSheets` will allow to create simple Excel data tables based on a collection of items of type `T`.
 
