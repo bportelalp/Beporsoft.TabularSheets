@@ -31,7 +31,7 @@ namespace Beporsoft.TabularSheets.Tools
         public static string Excel97_2003 = ".xls";
         public static string MIME_Excel97_2003 = "application/vnd.ms-excel";
         public static string[] AllowedExtensions = new string[] { Excel2007_365, Excel97_2003 };
-        public static string[] AllowedMimeTypes = new string[] { MIME_Excel2007_365, Excel97_2003 };
+        public static string[] AllowedMimeTypes = new string[] { MIME_Excel2007_365, MIME_Excel97_2003 };
     }
 
     internal struct CsvFileExtension

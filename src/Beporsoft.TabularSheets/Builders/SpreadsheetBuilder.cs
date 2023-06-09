@@ -109,9 +109,13 @@ namespace Beporsoft.TabularSheets.Builders
             };
             sheets.Append(sheet);
 
+            Columns columns = table.BuildColumns();
+            worksheetPart.Worksheet.Append(columns);
+
             SheetData sheetData = table.BuildData(ref _styleBuilder, ref _sharedStringBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
+
 
         /// <summary>
         /// Append a  <see cref="WorkbookStylesPart"/> to <paramref name="workbookPart"/> based on the

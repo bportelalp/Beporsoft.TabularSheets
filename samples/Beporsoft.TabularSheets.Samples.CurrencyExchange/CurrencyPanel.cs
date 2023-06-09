@@ -1,5 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Samples.CurrencyExchange.DTO;
 using Beporsoft.TabularSheets.Samples.CurrencyExchange.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -123,7 +123,8 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
         private async Task<List<Currency>> GetCurrencies()
         {
             var response = await _apiClient.GetAsync("currencies");
-            var currencies = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+            string currenciesString = await response.Content.ReadAsStringAsync();
+            var currencies = JsonConvert.DeserializeObject<Dictionary<string, string>>(currenciesString);
             List<Currency> list = new List<Currency>();
             foreach (var pair in currencies)
             {
@@ -146,7 +147,8 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
                     endpoint += curr + ",";
             }
             var response = await _apiClient.GetAsync(endpoint);
-            var content = await response.Content.ReadFromJsonAsync<CurrencyExchangeLatestDTO>();
+            var contentStr = await response.Content.ReadAsStringAsync();
+            var content = JsonConvert.DeserializeObject<CurrencyExchangeLatestDTO>(contentStr);
             ExchangeRecord record = new ExchangeRecord()
             {
                 BaseCurrency = content.Base,
@@ -175,7 +177,9 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
                     endpoint += curr + ",";
             }
             var response = await _apiClient.GetAsync(endpoint);
-            var historical = await response.Content.ReadFromJsonAsync<CurrencyExchangeHistoricalDTO>();
+            var historicalStr = await response.Content.ReadAsStringAsync();
+
+            var historical = JsonConvert.DeserializeObject<CurrencyExchangeHistoricalDTO>(historicalStr);
             var list = new List<ExchangeRecord>();
             foreach (var historicalStamp in historical.Rates)
             {

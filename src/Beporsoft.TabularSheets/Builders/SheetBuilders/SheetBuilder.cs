@@ -2,7 +2,6 @@
 using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
@@ -69,6 +68,22 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             }
             return sheetData;
         }
+
+        public static Columns BuildColumns(TabularSheet<T> table)
+        {
+            Columns columns = new Columns();
+            int index = 1;
+            foreach (var colSheet in table.Columns)
+            {
+                Column col = new Column();
+                col.BestFit = true;
+                col.Min = index.ToUint32OpenXml();
+                col.Max = index.ToUint32OpenXml();
+                columns.Append(col);
+                index++;
+            }
+            return columns;
+        }
         #endregion
 
         #region Create SheetData components
@@ -122,7 +137,9 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             return row;
         }
 
-
+        /// <summary>
+        /// Create the <see cref="Cell"/> filled with <paramref name="value"/> applying the combined style based on the different rules of the table
+        /// </summary>
         private Cell BuildDataCell(object value)
         {
             Cell cell = CellBuilder.CreateCell(value);

@@ -87,16 +87,16 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         private void InitializeMsExcelDefaults()
         {
-            ExcelStyleDefaults defaults = ExcelStyleDefaults.Create();
-            foreach (var setup in defaults.Fills)
+            ExcelPredefinedStyles defaults = ExcelPredefinedStyles.Create();
+            foreach (var setup in defaults.PredefinedFills)
                 _fills.Register(setup);
-            foreach (var setup in defaults.Fonts)
+            foreach (var setup in defaults.PredefinedFonts)
                 _fonts.Register(setup);
-            foreach (var setup in defaults.Border)
+            foreach (var setup in defaults.PredefinedBorders)
                 _borders.Register(setup);
-            foreach (var setup in defaults.Formats)
+            foreach (var setup in defaults.PredefinedFormats)
                 _formats.Register(setup);
-            foreach (var setup in defaults.NumberingFormats)
+            foreach (var setup in defaults.PredefinedNumberingFormats)
                 _numFormats.Register(setup);
         }
 

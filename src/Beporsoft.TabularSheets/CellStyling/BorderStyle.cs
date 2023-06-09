@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
+    /// <summary>
+    /// Define the cell border style.
+    /// </summary>
     [DebuggerDisplay("Color={Color} | Borders=[{Top}, {Right}, {Bottom}, {Left}]")]
     public class BorderStyle : IEquatable<BorderStyle?>
     {

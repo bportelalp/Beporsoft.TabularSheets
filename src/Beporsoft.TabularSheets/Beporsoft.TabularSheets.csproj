@@ -1,24 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net48;net6.0;net7.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;netstandard2.0;net48</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Title>Tabular sheets</Title>
-		<Copyright>MIT</Copyright>
-		<PackageProjectUrl>https://github.com/bportelalp/tabular-data-sheets</PackageProjectUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RepositoryUrl>https://github.com/bportelalp/tabular-data-sheets</RepositoryUrl>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Authors>Bruno Portela</Authors>
-		<Description>Tools to create basic data tables inside spreadsheets.</Description>
+		<Title>Tabular Sheets</Title>
 		<LangVersion>10.0</LangVersion>
 		<VersionPrefix>1.0.0</VersionPrefix>
-		<VersionSuffix></VersionSuffix>
+		<VersionSuffix>beta</VersionSuffix>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+		<Description>Export generic collections as spreadsheets with configurable column content based on type T</Description>
+		<Copyright>MIT</Copyright>
+		<PackageProjectUrl>https://github.com/bportelalp/tabular-sheets</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/bportelalp/tabular-sheets</RepositoryUrl>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>Bruno Portela</Authors>
+		<NoWarn>1701;1702;IDE0090</NoWarn>
+		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>spreadsheet;excel;export;collection;export generic collection;collection to spreadsheet;list to spreadsheet;export list;OpenXml;easy export;</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\README.md">
+		<None Include="..\..\resources\icon\Beporsoft.TabularSheets.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
@@ -30,9 +39,8 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-
 	<ItemGroup>
-		<PackageReference Include="DocumentFormat.OpenXml" Version="2.19.0" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -42,11 +50,4 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<NoWarn>1701;1702;IDE0090</NoWarn>
-		<FileVersion>$(AssemblyVersion)</FileVersion>
-		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
-		<AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
-	</PropertyGroup>
 </Project>
