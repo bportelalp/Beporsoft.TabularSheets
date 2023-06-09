@@ -112,7 +112,7 @@ namespace Beporsoft.TabularSheets.Builders
             Columns columns = table.BuildColumns();
             worksheetPart.Worksheet.Append(columns);
 
-            SheetData sheetData = table.BuildData(ref _styleBuilder, ref _sharedStringBuilder);
+            SheetData sheetData = table.BuildSheetContext(_styleBuilder, _sharedStringBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 

@@ -51,7 +51,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             Color? color = null;
             if (FontStyle.Color is not null)
             {
-                color = new Color() { Rgb = FontStyle.Color.Value.ToHexBinaryOpenXml() };
+                color = new Color() { Rgb = FontStyle.Color.Value.ToOpenXmlHexBinary() };
             }
             return color;
         }

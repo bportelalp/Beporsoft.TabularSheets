@@ -13,6 +13,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     {
         private static readonly Dictionary<Type, TypeConverter> _knownConverters = new()
         {
+            // Convertible to numeric, all can use CellValues.Number
             {typeof(short), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToInt32(obj))) },
             {typeof(ushort), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToInt32(obj))) },
             {typeof(int), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToInt32(obj))) },
@@ -21,6 +22,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {typeof(float), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDouble(obj))) },
             {typeof(decimal), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDecimal(obj))) },
             {typeof(bool), new TypeConverter(CellValues.Boolean, (obj) => new CellValue(Convert.ToBoolean(obj))) },
+            // DateTime must be saved as number, using the value as OADate, It is responsability of formatting to convert it as datetime
             {typeof(DateTime), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDateTime(obj).ToOADate())) },
         };
 

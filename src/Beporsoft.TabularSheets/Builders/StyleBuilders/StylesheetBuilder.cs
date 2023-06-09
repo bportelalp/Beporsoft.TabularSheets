@@ -57,31 +57,31 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public Fills GetFills()
         {
             Fills fills = _fills.BuildContainer<Fills>();
-            fills.Count = RegisteredFills.ToUint32OpenXml();
+            fills.Count = RegisteredFills.ToOpenXmlUInt32();
             return fills;
         }
         public CellFormats GetFormats()
         {
             CellFormats formats = _formats.BuildContainer<CellFormats>();
-            formats.Count = RegisteredFormats.ToUint32OpenXml();
+            formats.Count = RegisteredFormats.ToOpenXmlUInt32();
             return formats;
         }
         public Fonts GetFonts()
         {
             Fonts Fonts = _fonts.BuildContainer<Fonts>();
-            Fonts.Count = RegisteredFonts.ToUint32OpenXml();
+            Fonts.Count = RegisteredFonts.ToOpenXmlUInt32();
             return Fonts;
         }
         public Borders GetBorders()
         {
             Borders borders = _borders.BuildContainer<Borders>();
-            borders.Count = RegisteredBorders.ToUint32OpenXml();
+            borders.Count = RegisteredBorders.ToOpenXmlUInt32();
             return borders;
         }
         public NumberingFormats GetNumberingFormats()
         {
             NumberingFormats numFormats = _numFormats.BuildContainer<NumberingFormats>();
-            numFormats.Count = RegisteredNumberingFormats.ToUint32OpenXml();
+            numFormats.Count = RegisteredNumberingFormats.ToOpenXmlUInt32();
             return numFormats;
         }
 

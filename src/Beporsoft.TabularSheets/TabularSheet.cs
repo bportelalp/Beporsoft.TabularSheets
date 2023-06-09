@@ -68,7 +68,7 @@ namespace Beporsoft.TabularSheets
         #region ISheet
         Type ISheet.ItemType => typeof(T);
 
-        SheetData ISheet.BuildData(ref StylesheetBuilder stylesheetBuilder, ref SharedStringBuilder sharedStringBuilder)
+        SheetData ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
             return builder.BuildSheetData();

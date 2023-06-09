@@ -77,8 +77,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 Column col = new Column();
                 col.BestFit = true;
-                col.Min = index.ToUint32OpenXml();
-                col.Max = index.ToUint32OpenXml();
+                col.Min = index.ToOpenXmlUInt32();
+                col.Max = index.ToOpenXmlUInt32();
                 columns.Append(col);
                 index++;
             }
@@ -93,10 +93,10 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// </summary>
         private Row CreateHeaderRow()
         {
-            Row header = new();
-
-            header.RowIndex = (_cellRefIterator.CurrentRow + 1).ToUint32OpenXml();
-
+            Row header = new()
+            {
+                RowIndex = (_cellRefIterator.CurrentRow + 1).ToOpenXmlUInt32()
+            };
 
             int? formatId = RegisterHeaderStyle();
 
@@ -105,7 +105,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 Cell cell = CellBuilder.CreateCell(col.Title);
                 if (formatId is not null)
-                    cell.StyleIndex = formatId.Value.ToUint32OpenXml();
+                    cell.StyleIndex = formatId.Value.ToOpenXmlUInt32();
 
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
 
@@ -121,7 +121,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private Row CreateItemRow(T item)
         {
             Row row = new Row();
-            row.RowIndex = (_cellRefIterator.CurrentRow + 1).ToUint32OpenXml();
+            row.RowIndex = (_cellRefIterator.CurrentRow + 1).ToOpenXmlUInt32();
             _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
@@ -129,6 +129,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 Cell cell = new();
                 if (value is not null)
                 {
+                    // TODO - Check if is null, style is not filled
                     cell = BuildDataCell(value);
                 }
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
@@ -162,10 +163,14 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 numberingFormatSetup = new NumberingFormatSetup(Table.DefaultStyle.DateTimeFormat);
             }
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numberingFormatSetup);
-            cell.StyleIndex = formatId.ToUint32OpenXml();
+            cell.StyleIndex = formatId.ToOpenXmlUInt32();
             return cell;
         }
 
+        /// <summary>
+        /// Configure and register one <see cref="FormatSetup"/> in the <see cref="StyleBuilder"/> to format the heading cells.
+        /// </summary>
+        /// <returns>The index of the setup, or null if there aren't any style to build</returns>
         private int? RegisterHeaderStyle()
         {
             FillSetup? fill = null;
@@ -184,10 +189,10 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             if (!combinedBorder.Equals(BorderStyle.Default))
                 border = new BorderSetup(combinedBorder);
 
-            if (font is null && fill is null)
+            if (font is null && fill is null && border is null)
                 return null;
 
-            int? formatId = StyleBuilder.RegisterFormat(fill, font, border);
+            int formatId = StyleBuilder.RegisterFormat(fill, font, border);
 
             return formatId;
         }

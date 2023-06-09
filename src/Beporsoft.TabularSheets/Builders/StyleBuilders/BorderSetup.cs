@@ -70,7 +70,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                     {
                         border.Color = new Color()
                         {
-                            Rgb = BorderStyle.Color.Value.ToHexBinaryOpenXml()
+                            Rgb = BorderStyle.Color.Value.ToOpenXmlHexBinary()
                         };
                     }
                 }
