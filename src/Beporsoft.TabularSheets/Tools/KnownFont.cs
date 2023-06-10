@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Tools
 {
-    public struct KnownFont
+    internal struct KnownFont
     {
         public const string Calibri = "Calibri";
         public const string Arial = "Arial";

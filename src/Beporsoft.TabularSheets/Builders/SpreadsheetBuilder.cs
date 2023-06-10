@@ -36,6 +36,7 @@ namespace Beporsoft.TabularSheets.Builders
         /// Build spreadsheets using a shared <see cref="StylesheetBuilder"/>. This is ideal when build spreadsheets with more than one table.
         /// </summary>
         /// <param name="stylesheetBuilder"></param>
+        /// <param name="sharedStringBuilder"></param>
         public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
 
@@ -175,6 +176,7 @@ namespace Beporsoft.TabularSheets.Builders
         /// name based on {name}{incremental}
         /// </summary>
         /// <param name="sheets"></param>
+        /// <param name="nameSheet"></param>
         /// <returns></returns>
         private string BuildSuitableSheetName(Sheets sheets, string nameSheet)
         {

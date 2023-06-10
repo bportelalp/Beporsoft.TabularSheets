@@ -16,7 +16,7 @@ namespace Beporsoft.TabularSheets.CellStyling
     {
 
         /// <summary>
-        /// Create an instance of <see cref="{T}"/> filling its properties from <paramref name="highestPriority"/>, unless they're
+        /// Create an instance of <typeparamref name="T"/> filling its properties from <paramref name="highestPriority"/>, unless they're
         /// <see langword="null"/>. In this case, use the equivalent property from <paramref name="lowestPriority"/>
         /// </summary>
         internal static T Combine<T>(T highestPriority, T lowestPriority) where T : class, new()

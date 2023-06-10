@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net48;net6.0;net7.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;netstandard2.0;net48</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Tabular Sheets</Title>
 		<LangVersion>10.0</LangVersion>
 		<VersionPrefix>1.0.0</VersionPrefix>
-		<VersionSuffix>beta</VersionSuffix>
+		<VersionSuffix></VersionSuffix>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<Description>Export generic collections as spreadsheets with configurable column content based on type T</Description>
@@ -20,6 +20,7 @@
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>spreadsheet;excel;export;collection;export generic collection;collection to spreadsheet;list to spreadsheet;export list;OpenXml;easy export;</PackageTags>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
-    public class ContentStyle
+    
+    internal class ContentStyle
     {
         /// <summary>
         /// The content should be line-wrapped within the cell.

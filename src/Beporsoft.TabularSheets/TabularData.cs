@@ -9,18 +9,19 @@ namespace Beporsoft.TabularSheets
     /// Represent the base class to build tabular sheets
     /// </summary>
     /// <typeparam name="T">The type which represent every row</typeparam>
-    public abstract class TabularData<T> : ICollection<T>
+    public abstract class TabularData<T> : IList<T>
     {
         internal readonly List<TabularDataColumn<T>> _columns = new();
         private List<T> _items = new();
 
+        /// <summary></summary>
         public TabularData()
         {
         }
 
         #region Properties
         /// <summary>
-        /// Gets the collection of items which will be displayed on rows
+        /// Gets the collection of items which will be displayed on rows.
         /// </summary>
         public ICollection<T> Items { get => _items; protected set => _items = value.ToList(); }
 
@@ -29,34 +30,51 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
 
+        /// <inheritdoc cref="ICollection{T}.Count"/>
         public int Count => _items.Count;
 
+        /// <inheritdoc cref="ICollection{T}.IsReadOnly"/>
         public bool IsReadOnly => false;
 
+        /// <summary>
+        /// Get or sets the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns></returns>
         public T this[int index] { get => _items[index]; set => _items[index] = value; }
         #endregion
 
         #region Manipulate Rows
 
         #region Interface ICollection
+        /// <inheritdoc cref="IList{T}.IndexOf(T)"/>
         public int IndexOf(T item) => _items.IndexOf(item);
 
+        /// <inheritdoc cref="IList{T}.Insert(int, T)"/>
         public void Insert(int index, T item) => _items.Insert(index, item);
 
+        /// <inheritdoc cref="IList{T}.RemoveAt(int)"/>
         public void RemoveAt(int index) => _items.RemoveAt(index);
 
+        /// <inheritdoc cref="ICollection{T}.Add(T)"/>
         public void Add(T item) => _items.Add(item);
 
+        /// <inheritdoc cref="ICollection{T}.Clear"/>
         public void Clear() => _items.Clear();
 
+        /// <inheritdoc cref="ICollection{T}.Contains(T)"/>
         public bool Contains(T item) => _items.Contains(item);
 
+        /// <inheritdoc cref="ICollection{T}.CopyTo(T[], int)"/>
         public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
 
+        /// <inheritdoc cref="ICollection{T}.Remove(T)"/>
         public bool Remove(T item) => _items.Remove(item);
 
+        /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
         public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
 
+        /// <inheritdoc cref="IEnumerable.GetEnumerator"/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         #endregion
 

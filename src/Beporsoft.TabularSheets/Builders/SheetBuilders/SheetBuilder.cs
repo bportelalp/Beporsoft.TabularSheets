@@ -115,7 +115,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
 
         /// <summary>
-        /// Create the <see cref="Row"/> which represents one item of <see cref="{T}"/> of the table, including the registry of
+        /// Create the <see cref="Row"/> which represents one item of <typeparamref name="T"/> of the table, including the registry of
         /// styles inside <see cref="StyleBuilder"/>
         /// </summary>
         private Row CreateItemRow(T item)

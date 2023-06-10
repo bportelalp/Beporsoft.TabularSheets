@@ -11,12 +11,21 @@ using System.Linq;
 
 namespace Beporsoft.TabularSheets
 {
+    /// <summary>
+    /// Represent a spreadsheet that can be handled by the OpenXml Specification
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class TabularSheet<T> : TabularData<T>, ISheet
     {
+        /// <summary>
+        /// </summary>
         public TabularSheet()
         {
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="items">A list of items to add to the table</param>
         public TabularSheet(IEnumerable<T> items)
         {
             Items = items.ToList();
@@ -47,16 +56,27 @@ namespace Beporsoft.TabularSheets
         #endregion
 
         #region Configure Table
+        /// <summary>
+        /// Set the name of the sheet
+        /// </summary>
+        /// <param name="title"></param>
         public void SetSheetTitle(string title) => Title = title;
         #endregion
 
         #region Create
+        /// <summary>
+        /// Create a spreadsheet document
+        /// </summary>
+        /// <param name="path">Path to store the document</param>
         public void Create(string path)
         {
             SpreadsheetBuilder builder = new();
             builder.Create(path, this);
         }
 
+        /// <summary>
+        /// Create a spreadsheet document
+        /// </summary>
         public MemoryStream Create()
         {
             SpreadsheetBuilder builder = new();

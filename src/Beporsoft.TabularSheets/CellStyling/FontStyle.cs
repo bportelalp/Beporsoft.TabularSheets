@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace Beporsoft.TabularSheets.CellStyling
 {
     /// <summary>
-    /// Defines the font of cells
+    /// Defines the font of cells.
     /// </summary>
-    [DebuggerDisplay("Size={FontSize} | Color={FontColor} | Family={FontFamily}")]
+    [DebuggerDisplay("Size={Size} | Color={Color} | Font={Font}")]
     public class FontStyle : IEquatable<FontStyle?>
     {
 
@@ -33,11 +33,14 @@ namespace Beporsoft.TabularSheets.CellStyling
         internal static FontStyle Default { get; } = new FontStyle();
 
         #region IEquatable
+
+        /// <inheritdoc cref="Equals(object?)"/>
         public override bool Equals(object? obj)
         {
             return obj is FontStyle style && Equals(style);
         }
 
+        /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
         public bool Equals(FontStyle? other)
         {
             return other is not null &&
@@ -46,6 +49,7 @@ namespace Beporsoft.TabularSheets.CellStyling
                   Font == other.Font;
         }
 
+        /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
             return HashCode.Combine(Color, Size, Font);

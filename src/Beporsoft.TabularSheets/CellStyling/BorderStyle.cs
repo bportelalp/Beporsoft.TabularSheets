@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Beporsoft.TabularSheets.CellStyling
 {
     /// <summary>
-    /// Define the cell border style.
+    /// Defines the cell border style.
     /// </summary>
     [DebuggerDisplay("Color={Color} | Borders=[{Top}, {Right}, {Bottom}, {Left}]")]
     public class BorderStyle : IEquatable<BorderStyle?>
@@ -53,19 +53,33 @@ namespace Beporsoft.TabularSheets.CellStyling
             Bottom = borderType;
         }
 
+        /// <summary>
+        /// Type of border
+        /// </summary>
         public enum BorderType
         {
+            /// <summary>
+            /// No border is present
+            /// </summary>
             None,
+            /// <summary>
+            /// A thin border
+            /// </summary>
             Thin,
+            /// <summary>
+            /// A medium border
+            /// </summary>
             Medium,
         }
 
         #region IEquatable
+        /// <inheritdoc cref="Equals(object)"/>
         public override bool Equals(object? obj)
         {
             return Equals(obj as BorderStyle);
         }
 
+        /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
         public bool Equals(BorderStyle? other)
         {
             return other is not null &&
@@ -76,6 +90,8 @@ namespace Beporsoft.TabularSheets.CellStyling
                    Bottom == other.Bottom;
         }
 
+
+        /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
             return HashCode.Combine(Color, Left, Right, Top, Bottom);
