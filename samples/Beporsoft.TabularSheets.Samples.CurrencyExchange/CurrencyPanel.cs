@@ -47,7 +47,7 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
 
             // Add some style
             table.DefaultStyle.DateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
-            table.DefaultStyle.Border.SetAll(CellStyling.BorderStyle.BorderType.Thin);
+            table.DefaultStyle.Border.SetBorderType(CellStyling.BorderStyle.BorderType.Thin);
             table.DefaultStyle.Font.Font = "Calibri";
             table.HeaderStyle.Font.Color = Color.White;
             table.HeaderStyle.Fill.BackgroundColor = Color.Black;

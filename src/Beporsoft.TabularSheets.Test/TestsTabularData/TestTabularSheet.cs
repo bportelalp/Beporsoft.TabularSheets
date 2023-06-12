@@ -33,7 +33,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.DefaultStyle.Font.Color = Color.Red;
                 table.HeaderStyle.Font.Color = Color.White;
                 table.DefaultStyle.Fill.BackgroundColor = Color.AliceBlue;
-                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                table.DefaultStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
                 string path = GetPath("DebugTest.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
@@ -48,7 +48,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
                 //table.HeaderStyle.Font.Font = "Arial";
                 table.HeaderStyle.Font.Size = 12;
-                table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
+                table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
                 string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
@@ -63,7 +63,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.DefaultStyle.Fill.BackgroundColor = Color.Azure;
                 table.DefaultStyle.Font.Font = "Arial";
                 table.DefaultStyle.Font.Size = 8;
-                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                table.DefaultStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
                 string path = GetPath($"Test{nameof(TryDefaultStyles)}.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
@@ -78,11 +78,11 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.DefaultStyle.Fill.BackgroundColor = Color.Azure;
                 table.DefaultStyle.Font.Font = "Arial";
                 table.DefaultStyle.Font.Size = 8;
-                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                table.DefaultStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
 
                 table.HeaderStyle.Fill.BackgroundColor = Color.DarkBlue;
                 table.HeaderStyle.Font.Color = Color.White;
-                table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
+                table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
                 table.HeaderStyle.Border.Color = Color.Yellow;
                 string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
                 table.Create(path);

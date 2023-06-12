@@ -43,14 +43,43 @@ namespace Beporsoft.TabularSheets.CellStyling
         internal static BorderStyle Default { get; } = new BorderStyle();
 
         /// <summary>
-        /// Set the same <see cref="BorderType"/> for all sides
+        /// Set the border type to all sides
         /// </summary>
-        public void SetAll(BorderType borderType)
+        /// <param name="borderType"></param>
+        public void SetBorderType(BorderType borderType)
         {
             Left = borderType;
             Right = borderType;
             Top = borderType;
             Bottom = borderType;
+        }
+
+        /// <summary>
+        /// Set the border type for each side
+        /// </summary>
+        /// <param name="top"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <param name="left"></param>
+        public void SetBorderType(BorderType top, BorderType right, BorderType bottom, BorderType left)
+        {
+            Top = top;
+            Bottom = bottom;
+            Left = left;
+            Right = right;
+        }
+
+        /// <summary>
+        /// Set the border type for horizontal and vertical sides
+        /// </summary>
+        /// <param name="horizontal"></param>
+        /// <param name="vertical"></param>
+        public void SetBorderType(BorderType horizontal, BorderType vertical)
+        {
+            Top = horizontal;
+            Bottom = horizontal;
+            Left = vertical;
+            Right = vertical;
         }
 
         /// <summary>

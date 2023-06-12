@@ -37,7 +37,6 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.AddColumn("Population", c => c.Population);
                 sheet.AddColumn("Currencies", c => string.Join("; ", c.Currencies.Values.Select(v => $"{v.Name} ({v.Symbol})")));
 
-
                 // Add some style
                 Console.WriteLine($"Adding some style");
                 sheet.HeaderStyle.Fill.BackgroundColor = Color.Black;

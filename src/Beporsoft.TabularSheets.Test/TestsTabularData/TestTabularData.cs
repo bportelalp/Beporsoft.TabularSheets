@@ -18,9 +18,9 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             TabularData<Product> table = Generate();
 
             // Check the ordering sequence
-            var orderSequence = Enumerable.Range(0, table.Columns.Count);
+            var orderSequence = Enumerable.Range(0, table.Columns.Count());
             Assert.That(table.Columns.Select(c => c.Order), Is.EquivalentTo(orderSequence));
-            Assert.That(table.Columns.Select(c => c.Title).Distinct().Count(), Is.EqualTo(table.Columns.Count));
+            Assert.That(table.Columns.Select(c => c.Title).Distinct().Count(), Is.EqualTo(table.Columns.Count()));
 
             foreach (var col in table.Columns)
             {
@@ -41,7 +41,6 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         public void TableReorderColumns()
         {
             TabularData<Product> table = Generate();
-
             var originCol2 = table.Columns.Skip(2).First();
             var originCol3 = table.Columns.Skip(3).First();
             var originCol4 = table.Columns.Skip(4).First();
@@ -98,7 +97,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             Assert.Multiple(() =>
             {
                 Assert.That(oldColX1, Is.EqualTo(newColX));
-                var orderSequence = Enumerable.Range(0, table.Columns.Count);
+                var orderSequence = Enumerable.Range(0, table.Columns.Count());
                 Assert.That(table.Columns.Select(c => c.Order).OrderBy(c => c), Is.EquivalentTo(orderSequence));
             });
         }
@@ -116,6 +115,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             col = table.AddColumn("Cost by unit", t => t.Cost);
             col = table.AddColumn(t => t.LastPriceUpdate).SetTitle("Price updated on");
             col = table.AddColumn(t => t.LastUpdate);
+
             return table;
         }
 

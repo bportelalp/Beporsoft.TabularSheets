@@ -26,12 +26,12 @@ namespace Beporsoft.TabularSheets.CellStyling
             foreach (PropertyInfo property in properties)
             {
                 object? assignedValue;
-                object? highestValue = property.GetValue(highestPriority);
-                object? lowestValue = property.GetValue(lowestPriority);
-                if (highestValue is null)
-                    assignedValue = lowestValue;
+                object? priorityValue = property.GetValue(highestPriority);
+                if (priorityValue is not null)
+                    assignedValue = priorityValue;
                 else
-                    assignedValue = highestValue;
+                    assignedValue = property.GetValue(lowestPriority);
+
                 property.SetValue(result, assignedValue);
             }
             return result;

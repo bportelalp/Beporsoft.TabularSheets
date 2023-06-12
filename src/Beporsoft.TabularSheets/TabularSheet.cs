@@ -17,16 +17,14 @@ namespace Beporsoft.TabularSheets
     /// <typeparam name="T"></typeparam>
     public sealed class TabularSheet<T> : TabularData<T>, ISheet
     {
-        /// <summary>
-        /// </summary>
+        /// <summary></summary>
         public TabularSheet()
         {
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="items">A list of items to add to the table</param>
-        public TabularSheet(IEnumerable<T> items)
+        /// <summary></summary>
+        /// <param name="items">A collection of items to add to the table</param>
+        public TabularSheet(ICollection<T> items)
         {
             Items = items.ToList();
         }

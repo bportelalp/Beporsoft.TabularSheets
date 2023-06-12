@@ -9,7 +9,7 @@ namespace Beporsoft.TabularSheets.CellStyling
 {
     /// <summary>
     /// Defines the default styles for every cell of <see cref="TabularSheet{T}"/> inside
-    /// a Spreadsheet Document, if there is no more specific one.<br/> Initially all the styles are the default ones
+    /// a Spreadsheet Document, if there is no more specific one.<br/>
     /// </summary>
     public class DefaultStyle : Style
     {

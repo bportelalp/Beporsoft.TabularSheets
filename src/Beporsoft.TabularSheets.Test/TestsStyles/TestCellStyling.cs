@@ -17,7 +17,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             Assert.That(border, Is.EqualTo(BorderStyle.Default));
 
             var borderModified = border;
-            border.SetAll(BorderStyle.BorderType.Thin);
+            border.SetBorderType(BorderStyle.BorderType.Thin);
             border.Color = System.Drawing.Color.Aquamarine;
             Assert.Multiple(() =>
             {
@@ -26,7 +26,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
                 Assert.That(border, Is.Not.EqualTo(BorderStyle.Default));
             });
 
-            border.SetAll(BorderStyle.BorderType.None);
+            border.SetBorderType(BorderStyle.BorderType.None);
             border.Color = null;
             Assert.Multiple(() =>
             {

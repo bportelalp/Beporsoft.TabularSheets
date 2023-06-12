@@ -12,22 +12,22 @@ namespace Beporsoft.TabularSheets.CellStyling
     public class Style : IEquatable<Style?>
     {
         /// <summary>
-        /// <inheritdoc cref="FontStyle"/> Applies to the entire table
+        /// <inheritdoc cref="FontStyle"/>
         /// </summary>
         public FontStyle Font { get; set; } = new();
 
         /// <summary>
-        /// <inheritdoc cref="FillStyle"/> Applies to the entire table
+        /// <inheritdoc cref="FillStyle"/>
         /// </summary>
         public FillStyle Fill { get; set; } = new();
 
         /// <summary>
-        /// <inheritdoc cref="BorderStyle"/> Applies to the entire table
+        /// <inheritdoc cref="BorderStyle"/>
         /// </summary>
         public BorderStyle Border { get; set; } = new();
 
         /// <summary>
-        /// Defines the numbering pattern applied to the entire table
+        /// Defines the numbering pattern applied to numeric values
         /// </summary>
         public string? NumberingPattern { get; set; } = null;
 

@@ -11,7 +11,7 @@ namespace Beporsoft.TabularSheets
     /// <typeparam name="T">The type which represent every row</typeparam>
     public abstract class TabularData<T> : IList<T>
     {
-        internal readonly List<TabularDataColumn<T>> _columns = new();
+        internal List<TabularDataColumn<T>> ColumnsCollection = new();
         private List<T> _items = new();
 
         /// <summary></summary>
@@ -23,18 +23,19 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the collection of items which will be displayed on rows.
         /// </summary>
-        public ICollection<T> Items { get => _items; protected set => _items = value.ToList(); }
+        public IList<T> Items { get => _items; protected set => _items = value.ToList(); }
 
         /// <summary>
         /// Gets the collection of columns which will define which data is displayed on each row, each cell.
         /// </summary>
-        public virtual ICollection<TabularDataColumn<T>> Columns => _columns;
+        public IEnumerable<TabularDataColumn<T>> Columns => ColumnsCollection.AsReadOnly();
 
-        /// <inheritdoc cref="ICollection{T}.Count"/>
+        /// <inheritdoc cref="List{T}.Count"/>
         public int Count => _items.Count;
 
         /// <inheritdoc cref="ICollection{T}.IsReadOnly"/>
-        public bool IsReadOnly => false;
+        bool ICollection<T>.IsReadOnly => false;
+
 
         /// <summary>
         /// Get or sets the element at the specified index.
@@ -91,7 +92,7 @@ namespace Beporsoft.TabularSheets
         public virtual TabularDataColumn<T> AddColumn(Func<T, object> predicate)
         {
             var column = new TabularDataColumn<T>(this, predicate);
-            _columns.Add(column);
+            ColumnsCollection.Add(column);
             return column;
         }
 
@@ -104,12 +105,10 @@ namespace Beporsoft.TabularSheets
         public virtual TabularDataColumn<T> AddColumn(string title, Func<T, object> predicate)
         {
             var column = new TabularDataColumn<T>(title, this, predicate);
-            _columns.Add(column);
+            ColumnsCollection.Add(column);
             return column;
         }
 
-        /// <inheritdoc cref="AddColumn(Func{T, object})"/>
-        public virtual TabularDataColumn<T> AddColumn(Func<T, object> predicate, string title) => AddColumn(title, predicate);
 
         /// <summary>
         /// Remove the given column if exists and reorganize the order of the following columns
@@ -118,14 +117,14 @@ namespace Beporsoft.TabularSheets
         /// <returns><see langword="true"/> if the column was removed. Otherwise, or if it doesn't exist on collection, <see langword="false"/></returns>
         public bool RemoveColumn(TabularDataColumn<T> column)
         {
-            bool removed = Columns.Remove(column);
-            if (removed)
-            {
-                // the next column and above will reorganize the column order.
-                int columnPosition = column.Order;
-                TabularDataColumn<T>? nextColumn = Columns.SingleOrDefault(c => c.Order == columnPosition + 1);
-                nextColumn?.SetPosition(columnPosition);
-            }
+            bool removed = ColumnsCollection.Remove(column);
+            //if (removed)
+            //{
+            //    // the next column and above will reorganize the column order.
+            //    int columnPosition = column.Order;
+            //    TabularDataColumn<T>? nextColumn = Columns.SingleOrDefault(c => c.Order == columnPosition + 1);
+            //    nextColumn?.SetPosition(columnPosition);
+            //}
             return removed;
         }
         #endregion
@@ -134,37 +133,37 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Method invoked from columns which belongs to this table to reorganize the list of column order
         /// </summary>
-        internal void ReallocateColumn(TabularDataColumn<T> column, int newPosition)
-        {
-            if (newPosition > Columns.Count)
-                throw new ArgumentOutOfRangeException(nameof(newPosition), newPosition, "The value of position cannot be higher than the amount of columns");
-            Columns.Remove(column);
-            var cols = Columns.OrderBy(x => x.Order);
-            int idx = 0;
-            foreach (var col in cols)
-            {
-                if (idx >= newPosition)
-                    col.Order = idx + 1;
-                else
-                    col.Order = idx;
-                idx++;
-                col.SetDefaultName();
-            }
-            column.Order = newPosition;
-            column.SetDefaultName();
-            Columns.Add(column);
-        }
+        //internal void ReallocateColumn(TabularDataColumn<T> column, int newPosition)
+        //{
+        //    if (newPosition > Columns.Count)
+        //        throw new ArgumentOutOfRangeException(nameof(newPosition), newPosition, "The value of position cannot be higher than the amount of columns");
+        //    Columns.Remove(column);
+        //    var cols = Columns.OrderBy(x => x.Order);
+        //    int idx = 0;
+        //    foreach (var col in cols)
+        //    {
+        //        if (idx >= newPosition)
+        //            col.Order = idx + 1;
+        //        else
+        //            col.Order = idx;
+        //        idx++;
+        //        col.SetDefaultName();
+        //    }
+        //    column.Order = newPosition;
+        //    column.SetDefaultName();
+        //    Columns.Add(column);
+        //}
         #endregion
 
         internal object Evaluate(int row, int col)
         {
             if (Count >= row)
                 throw new ArgumentOutOfRangeException(nameof(row), row, $"The value of row is outside the bounds of the collection length");
-            if (_columns.Count >= col)
+            if (ColumnsCollection.Count >= col)
                 throw new ArgumentOutOfRangeException(nameof(col), col, $"The value of col is outside the bounds of the columns length");
 
             T item = this[row];
-            TabularDataColumn<T> func = _columns[col];
+            TabularDataColumn<T> func = ColumnsCollection[col];
 
             object result = func.Apply(item);
             return result;
