@@ -15,7 +15,7 @@ namespace Beporsoft.TabularSheets.CellStyling
     public class FillStyle : IEquatable<FillStyle?>
     {
         /// <summary>
-        /// Color of the background 
+        /// Gets or sets the color for the background of the cell.
         /// </summary>
         public Color? BackgroundColor { get; set; }
 

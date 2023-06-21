@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace Beporsoft.TabularSheets.Test
         internal static IEnumerable<Product> GenerateProducts(int amount = 10)
         {
             const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+            List<Product> products = new List<Product>();
             foreach (var idx in Enumerable.Range(0, amount))
             {
                 var rnd = new Random();
@@ -43,9 +45,11 @@ namespace Beporsoft.TabularSheets.Test
                     Cost = rnd.NextDouble() * 10.0,
                     LastUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days)),
                     LastPriceUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days))
+                    
                 };
-                yield return product;
+                products.Add(product);
             }
+            return products;
         }
     }
 }

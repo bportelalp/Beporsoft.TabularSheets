@@ -24,7 +24,7 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
 
         /// <summary>
         /// Build the object <see cref="SheetData"/> which represent the data and fill <paramref name="stylesheetBuilder"/>
-        /// and <paramref name="sharedStringBuilder"/> with the values discovered during the creation
+        /// and <paramref name="sharedStringBuilder"/> with the styles and shared strings discovered during the creation, respectively
         /// </summary>
         /// <param name="stylesheetBuilder">A reference to the object which handles the compilation of stylesheet</param>
         /// <param name="sharedStringBuilder">A reference to the object which handles the compilation of shared strings</param>

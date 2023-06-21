@@ -16,13 +16,14 @@ namespace Beporsoft.TabularSheets
     {
         private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
 
+
         private string? _title;
 
         #region Constructors
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
         {
             Owner = parentTabularData;
-            ColumnData = columnData;
+            ColumnContent = columnData;
             //Order = Owner.Columns.Any() ? Owner.Columns.Max(x => x.Order) + 1 : 0;
             //SetDefaultName();
         }
@@ -37,7 +38,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets or sets the function which will be evaluated to fill the respective column for each item.
         /// </summary>
-        public Func<T, object> ColumnData { get; set; }
+        public Func<T, object> ColumnContent { get; set; }
 
         /// <summary>
         /// Gets title of the column. If no title are provided before, the default one is displayed.<br/>
@@ -46,9 +47,9 @@ namespace Beporsoft.TabularSheets
         public string Title => GetTitle();
 
         /// <summary>
-        /// Gets the position of the column on the parent table
+        /// Gets the column index of the column on the parent table
         /// </summary>
-        public int Order => Owner.ColumnsCollection.IndexOf(this);
+        public int ColumnIndex => Owner.ColumnsCollection.IndexOf(this);
 
         /// <summary>
         /// Gets the style to apply to all the column.
@@ -108,7 +109,7 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         /// <param name="index"></param>
         /// <returns>The same column instance, so additional calls can be chained</returns>
-        public TabularDataColumn<T> SetPosition(int index)
+        public TabularDataColumn<T> SetIndex(int index)
         {
             if (index < 0 || index >= Owner.ColumnsCollection.Count)
                 throw new ArgumentOutOfRangeException(nameof(index), $"{nameof(index)} is less than 0 or is greater than the current amount of items");
@@ -124,7 +125,7 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         internal object Apply(T value)
         {
-            return ColumnData.Invoke(value);
+            return ColumnContent.Invoke(value);
         }
 
         /// <summary>
@@ -133,9 +134,14 @@ namespace Beporsoft.TabularSheets
         internal string GetTitle()
         {
             if (string.IsNullOrWhiteSpace(_title))
-                return $"{typeof(T).Name}{_defaultColumnName}{Order}";
+            {
+                string format = $"D{Owner.Columns.Count().ToString().Count()}"; // Get the significant digits of the columns count, to give format
+                return $"{typeof(T).Name}{_defaultColumnName}{ColumnIndex.ToString(format)}";
+            }
             else
+            {
                 return _title!;
+            }
         }
         #endregion
 

@@ -17,40 +17,39 @@ namespace Beporsoft.TabularSheets
     /// <typeparam name="T"></typeparam>
     public sealed class TabularSheet<T> : TabularData<T>, ISheet
     {
-        /// <summary></summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabularSheet{T}"/> class that is empty
+        /// </summary>
         public TabularSheet()
         {
         }
 
-        /// <summary></summary>
-        /// <param name="items">A collection of items to add to the table</param>
-        public TabularSheet(ICollection<T> items)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabularSheet{T}"/> class that contains elements copied from the specific collection.
+        /// </summary>
+        /// <param name="items">The collection whose elements are copied to the new tabular sheet</param>
+        public TabularSheet(IEnumerable<T> items)
         {
-            Items = items.ToList();
+            foreach (var item in items)
+                Items.Add(item);
         }
 
         #region Properties
         /// <summary>
-        /// The title of the current sheet
+        /// Gets or sets the title of the current sheet
         /// </summary>
         public string Title { get; set; } = "Sheet";
 
         /// <summary>
-        /// Defines the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
-        /// Initially all styles are the default ones from <see cref="DefaultStyle"/>
+        /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
+        /// If no property is modified, header style will inherit <see cref="DefaultStyle"/>
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 
         /// <summary>
-        /// Defines the style of data cells from the current <see cref="TabularSheet{T}"/>. Applies to
-        /// all cells unless a more specific style is applied.
+        /// Gets the style of data cells from the current <see cref="TabularSheet{T}"/>.
         /// </summary>
         public DefaultStyle DefaultStyle { get; private set; } = new();
-
-        /// <summary>
-        /// Enable the automatic column filter
-        /// </summary>
-        public bool AutoFilter { get; set; } = false;
         #endregion
 
         #region Configure Table

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Test.TestsTabularData
@@ -13,15 +16,16 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         /// Create a table and verify correct ordering.
         /// </summary>
         [Test]
-        public void TableCreation()
+        public void CreateTableAndColumnsCoherent()
         {
             TabularData<Product> table = Generate();
-
             // Check the ordering sequence
             var orderSequence = Enumerable.Range(0, table.Columns.Count());
-            Assert.That(table.Columns.Select(c => c.Order), Is.EquivalentTo(orderSequence));
-            Assert.That(table.Columns.Select(c => c.Title).Distinct().Count(), Is.EqualTo(table.Columns.Count()));
-
+            Assert.Multiple(() =>
+            {
+                Assert.That(table.Columns.Select(c => c.ColumnIndex), Is.EquivalentTo(orderSequence));
+                Assert.That(table.Columns.Select(c => c.Title).Distinct().Count(), Is.EqualTo(table.Columns.Count()));
+            });
             foreach (var col in table.Columns)
             {
                 Assert.Multiple(() =>
@@ -38,7 +42,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         /// Reorder a column and verify the names and the reordering of the rest of columns
         /// </summary>
         [Test]
-        public void TableReorderColumns()
+        public void ReorderColumns()
         {
             TabularData<Product> table = Generate();
             var originCol2 = table.Columns.Skip(2).First();
@@ -46,31 +50,71 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             var originCol4 = table.Columns.Skip(4).First();
             Assert.Multiple(() =>
             {
-                Assert.That(originCol2.Order, Is.EqualTo(2));
-                Assert.That(originCol4.Order, Is.EqualTo(4));
+                Assert.That(originCol2.ColumnIndex, Is.EqualTo(2));
+                Assert.That(originCol4.ColumnIndex, Is.EqualTo(4));
             });
-            originCol2.SetPosition(4);
+            originCol2.SetIndex(4);
             Assert.Multiple(() =>
             {
-                Assert.That(originCol2.Order, Is.EqualTo(4)); // The set position is correct
-                Assert.That(table.Columns.Single(c => c.Order == 4), Is.EqualTo(originCol2)); // The col in 4th position is the original col2
+                Assert.That(originCol2.ColumnIndex, Is.EqualTo(4)); // The set position is correct
+                Assert.That(table.Columns.Single(c => c.ColumnIndex == 4), Is.EqualTo(originCol2)); // The col in 4th position is the original col2
                 // There are columns in col 2, 3 and 4
-                Assert.That(table.Columns.Any(c => c.Order == 4), Is.True);
-                Assert.That(table.Columns.Any(c => c.Order == 3), Is.True);
-                Assert.That(table.Columns.Any(c => c.Order == 2), Is.True);
+                Assert.That(table.Columns.Any(c => c.ColumnIndex == 4), Is.True);
+                Assert.That(table.Columns.Any(c => c.ColumnIndex == 3), Is.True);
+                Assert.That(table.Columns.Any(c => c.ColumnIndex == 2), Is.True);
 
                 // The column in position 3 is the column which was previously in position 4
-                Assert.That(table.Columns.Single(c => c.Order == 3), Is.EqualTo(originCol4));
+                Assert.That(table.Columns.Single(c => c.ColumnIndex == 3), Is.EqualTo(originCol4));
                 // The column in position 2 is the column which was previously in position 3
-                Assert.That(table.Columns.Single(c => c.Order == 2), Is.EqualTo(originCol3));
+                Assert.That(table.Columns.Single(c => c.ColumnIndex == 2), Is.EqualTo(originCol3));
 
                 // There aren't duplicities of order
-                Assert.That(table.Columns.GroupBy(c => c.Order).Any(group => group.Count() > 1), Is.False);
+                Assert.That(table.Columns.GroupBy(c => c.ColumnIndex).Any(group => group.Count() > 1), Is.False);
 
                 // The names, which weren't previously setted, keep coherence.
                 Assert.That(originCol2.Title.EndsWith("Col4"), Is.True); // 4th because now is in the 4 position
                 Assert.That(originCol3.Title.EndsWith("Col2"), Is.True); // 2th because now is in the 2 position
             });
+        }
+
+        /// <summary>
+        /// Ensure that when title of column is empty, the title is the default and when not, is the established
+        /// </summary>
+        [Test]
+        public void RenamingColumns()
+        {
+            const string customTitle = "CustomTitle";
+            Regex regexDefaultColumnName = new(@"ProductCol\d{0,}");
+            TabularData<Product> table = Generate();
+            foreach (var column in table.Columns)
+            {
+                string initialTitle = column.Title;
+                if (regexDefaultColumnName.Match(initialTitle).Success)
+                {
+                    // Make custom title, then delete to restore the initial, which is the autogenerated and include the order
+                    column.SetTitle(customTitle);
+                    Assert.That(column.Title, Is.EqualTo(customTitle));
+                    column.SetTitle(null);
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(column.Title, Is.EqualTo(initialTitle));
+                        Assert.That(column.Title, Does.EndWith(column.ColumnIndex.ToString()));
+                    });
+                }
+                else
+                {
+                    // Delete to get a autogenerated title, ensure that match the regex and the order, then undo and chech is the initial
+                    column.SetTitle(string.Empty);
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(regexDefaultColumnName.Match(column.Title).Success, Is.True);
+                        Assert.That(column.Title, Does.EndWith(column.ColumnIndex.ToString()));
+                    });
+                    column.SetTitle(initialTitle);
+                    Assert.That(column.Title, Is.EqualTo(initialTitle));
+                }
+            }
+
         }
 
         /// <summary>
@@ -87,19 +131,47 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             int x1 = x + 1;
             TabularData<Product> table = Generate();
 
-            var oldColX = table.Columns.Single(c => c.Order == x);
-            var oldColX1 = table.Columns.SingleOrDefault(c => c.Order == x1);
+            var oldColX = table.Columns.Single(c => c.ColumnIndex == x);
+            var oldColX1 = table.Columns.SingleOrDefault(c => c.ColumnIndex == x1);
 
             table.RemoveColumn(oldColX);
 
-            var newColX = table.Columns.SingleOrDefault(c => c.Order == x);
+            var newColX = table.Columns.SingleOrDefault(c => c.ColumnIndex == x);
 
             Assert.Multiple(() =>
             {
                 Assert.That(oldColX1, Is.EqualTo(newColX));
                 var orderSequence = Enumerable.Range(0, table.Columns.Count());
-                Assert.That(table.Columns.Select(c => c.Order).OrderBy(c => c), Is.EquivalentTo(orderSequence));
+                Assert.That(table.Columns.Select(c => c.ColumnIndex).OrderBy(c => c), Is.EquivalentTo(orderSequence));
             });
+        }
+
+        [Test]
+        public void AddItemsKeepInvariantOriginalLists()
+        {
+            IEnumerable<Product> initial = Product.GenerateProducts(10);
+            int countInitial = initial.Count();
+            TabularSheet<Product> table = new(initial);
+            // Items is not the same object as initial
+            // But the references contained are the same
+            Assert.Multiple(() =>
+            {
+                Assert.That(initial, Is.Not.SameAs(table.Items));
+                Assert.That(initial.SequenceEqual(table.Items), Is.True);
+            });
+            IEnumerable<Product> addition = Product.GenerateProducts(10);
+            table.AddRange(addition);
+            Assert.Multiple(() =>
+            {
+                Assert.That(initial.Count(), Is.EqualTo(countInitial));
+                Assert.That(countInitial + addition.Count(), Is.EqualTo(table.Items.Count));
+                Assert.That(initial.SequenceEqual(table.Items), Is.False);
+                List<Product> outsideMerge = new List<Product>(initial);
+                outsideMerge.AddRange(addition);
+                Assert.That(table.Items.SequenceEqual(outsideMerge), Is.True);
+            });
+
+
         }
 
         private static TabularData<Product> Generate()

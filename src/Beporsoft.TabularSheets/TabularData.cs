@@ -11,7 +11,7 @@ namespace Beporsoft.TabularSheets
     /// <typeparam name="T">The type which represent every row</typeparam>
     public abstract class TabularData<T> : IList<T>
     {
-        internal List<TabularDataColumn<T>> ColumnsCollection = new();
+        internal readonly List<TabularDataColumn<T>> ColumnsCollection = new();
         private List<T> _items = new();
 
         /// <summary></summary>
@@ -30,8 +30,15 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public IEnumerable<TabularDataColumn<T>> Columns => ColumnsCollection.AsReadOnly();
 
-        /// <inheritdoc cref="List{T}.Count"/>
+        /// <summary>
+        /// Gets the number of rows.
+        /// </summary>
         public int Count => _items.Count;
+
+        /// <summary>
+        /// Gets the number of columns
+        /// </summary>
+        public int ColumnCount => ColumnsCollection.Count;
 
         /// <inheritdoc cref="ICollection{T}.IsReadOnly"/>
         bool ICollection<T>.IsReadOnly => false;
@@ -118,41 +125,8 @@ namespace Beporsoft.TabularSheets
         public bool RemoveColumn(TabularDataColumn<T> column)
         {
             bool removed = ColumnsCollection.Remove(column);
-            //if (removed)
-            //{
-            //    // the next column and above will reorganize the column order.
-            //    int columnPosition = column.Order;
-            //    TabularDataColumn<T>? nextColumn = Columns.SingleOrDefault(c => c.Order == columnPosition + 1);
-            //    nextColumn?.SetPosition(columnPosition);
-            //}
             return removed;
         }
-        #endregion
-
-        #region Helpers Columns
-        /// <summary>
-        /// Method invoked from columns which belongs to this table to reorganize the list of column order
-        /// </summary>
-        //internal void ReallocateColumn(TabularDataColumn<T> column, int newPosition)
-        //{
-        //    if (newPosition > Columns.Count)
-        //        throw new ArgumentOutOfRangeException(nameof(newPosition), newPosition, "The value of position cannot be higher than the amount of columns");
-        //    Columns.Remove(column);
-        //    var cols = Columns.OrderBy(x => x.Order);
-        //    int idx = 0;
-        //    foreach (var col in cols)
-        //    {
-        //        if (idx >= newPosition)
-        //            col.Order = idx + 1;
-        //        else
-        //            col.Order = idx;
-        //        idx++;
-        //        col.SetDefaultName();
-        //    }
-        //    column.Order = newPosition;
-        //    column.SetDefaultName();
-        //    Columns.Add(column);
-        //}
         #endregion
 
         internal object Evaluate(int row, int col)

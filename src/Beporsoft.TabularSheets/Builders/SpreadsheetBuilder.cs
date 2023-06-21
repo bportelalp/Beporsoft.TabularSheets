@@ -20,16 +20,14 @@ namespace Beporsoft.TabularSheets.Builders
     /// </summary>
     internal sealed class SpreadsheetBuilder
     {
-        private StylesheetBuilder _styleBuilder;
-        private SharedStringBuilder _sharedStringBuilder;
 
         /// <summary>
         /// Build spreadsheets.
         /// </summary>
         public SpreadsheetBuilder()
         {
-            _styleBuilder = new StylesheetBuilder();
-            _sharedStringBuilder = new SharedStringBuilder();
+            StyleBuilder = new StylesheetBuilder();
+            SharedStringBuilder = new SharedStringBuilder();
         }
 
         /// <summary>
@@ -40,12 +38,12 @@ namespace Beporsoft.TabularSheets.Builders
         public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
 
-            _styleBuilder = stylesheetBuilder;
-            _sharedStringBuilder = sharedStringBuilder;
+            StyleBuilder = stylesheetBuilder;
+            SharedStringBuilder = sharedStringBuilder;
         }
 
-        public StylesheetBuilder StyleBuilder => _styleBuilder;
-        public SharedStringBuilder SharedStringBuilder => _sharedStringBuilder;
+        public StylesheetBuilder StyleBuilder { get; }
+        public SharedStringBuilder SharedStringBuilder { get; }
 
         #region Create Spreadsheet
         public void Create(string path, params ISheet[] tables)
@@ -113,7 +111,7 @@ namespace Beporsoft.TabularSheets.Builders
             Columns columns = table.BuildColumns();
             worksheetPart.Worksheet.Append(columns);
 
-            SheetData sheetData = table.BuildSheetContext(_styleBuilder, _sharedStringBuilder);
+            SheetData sheetData = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 
@@ -152,7 +150,7 @@ namespace Beporsoft.TabularSheets.Builders
         private void AppendSharedStringTablePart(ref WorkbookPart workbookPart)
         {
             SharedStringTablePart sharedStringTablePart = workbookPart.AddNewPart<SharedStringTablePart>();
-            var sharedStringTable = _sharedStringBuilder.GetSharedStringTable();
+            var sharedStringTable = SharedStringBuilder.GetSharedStringTable();
             sharedStringTablePart.SharedStringTable = sharedStringTable;
         }
 
