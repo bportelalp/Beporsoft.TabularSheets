@@ -25,14 +25,27 @@ namespace Beporsoft.TabularSheets.CellStyling
             T result = new T();
             foreach (PropertyInfo property in properties)
             {
-                object? assignedValue;
-                object? priorityValue = property.GetValue(highestPriority);
-                if (priorityValue is not null)
-                    assignedValue = priorityValue;
-                else
-                    assignedValue = property.GetValue(lowestPriority);
+                Type propertyType = property.PropertyType;
+                if (propertyType.IsValueType || propertyType == typeof(string))
+                {
+                    object? assignedValue;
+                    object? priorityValue = property.GetValue(highestPriority);
+                    if (priorityValue is not null)
+                        assignedValue = priorityValue;
+                    else
+                        assignedValue = property.GetValue(lowestPriority);
 
-                property.SetValue(result, assignedValue);
+                    property.SetValue(result, assignedValue);
+                }
+                else
+                {
+                    MethodInfo? methodCombineInfo = typeof(StyleCombiner).GetMethod(nameof(Combine), BindingFlags.Static | BindingFlags.NonPublic);
+                    MethodInfo method = methodCombineInfo!.MakeGenericMethod(propertyType);
+                    object? propertyInstanceHighest = property.GetValue(highestPriority);
+                    object? propertyInstanceLowest = property.GetValue(lowestPriority);
+                    var resultInstance = method.Invoke(null, new object?[] { propertyInstanceHighest, propertyInstanceLowest });
+                    property.SetValue(result, resultInstance);
+                }
             }
             return result;
         }

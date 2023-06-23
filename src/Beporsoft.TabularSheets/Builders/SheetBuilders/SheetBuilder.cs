@@ -173,21 +173,11 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// <returns>The index of the setup, or null if there aren't any style to build</returns>
         private int? RegisterHeaderStyle()
         {
-            FillSetup? fill = null;
-            FontSetup? font = null;
-            BorderSetup? border = null;
+            Style combinedStyle = StyleCombiner.Combine(Table.HeaderStyle, Table.DefaultStyle);
 
-            FillStyle combinedFill = StyleCombiner.Combine(Table.HeaderStyle.Fill, Table.DefaultStyle.Fill);
-            if (!combinedFill.Equals(FillStyle.Default))
-                fill = new FillSetup(combinedFill);
-
-            FontStyle combinedFont = StyleCombiner.Combine(Table.HeaderStyle.Font, Table.DefaultStyle.Font);
-            if (!combinedFill.Equals(FontStyle.Default))
-                font = new FontSetup(combinedFont);
-
-            BorderStyle combinedBorder = StyleCombiner.Combine(Table.HeaderStyle.Border, Table.DefaultStyle.Border);
-            if (!combinedBorder.Equals(BorderStyle.Default))
-                border = new BorderSetup(combinedBorder);
+            FillSetup? fill = new FillSetup(combinedStyle.Fill);
+            FontSetup? font = new FontSetup(combinedStyle.Font);
+            BorderSetup? border = new BorderSetup(combinedStyle.Border);
 
             if (font is null && fill is null && border is null)
                 return null;
