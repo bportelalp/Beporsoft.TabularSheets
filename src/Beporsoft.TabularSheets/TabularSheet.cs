@@ -11,52 +11,74 @@ using System.Linq;
 
 namespace Beporsoft.TabularSheets
 {
+    /// <summary>
+    /// Represent a spreadsheet that can be handled by the OpenXml Specification
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class TabularSheet<T> : TabularData<T>, ISheet
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabularSheet{T}"/> class that is empty
+        /// </summary>
         public TabularSheet()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabularSheet{T}"/> class that contains elements copied from the specific collection.
+        /// </summary>
+        /// <param name="items">The collection whose elements are copied to the new tabular sheet</param>
         public TabularSheet(IEnumerable<T> items)
         {
-            Items = items.ToList();
+            foreach (var item in items)
+                Items.Add(item);
         }
 
         #region Properties
         /// <summary>
-        /// The title of the current sheet
+        /// Gets or sets the title of the current sheet
         /// </summary>
         public string Title { get; set; } = "Sheet";
 
         /// <summary>
-        /// Defines the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
-        /// Initially all styles are the default ones from <see cref="DefaultStyle"/>
+        /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
+        /// If no property is modified, header style will inherit <see cref="BodyStyle"/>
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 
         /// <summary>
-        /// Defines the style of data cells from the current <see cref="TabularSheet{T}"/>. Applies to
-        /// all cells unless a more specific style is applied.
+        /// Gets the style of data cells from the current <see cref="TabularSheet{T}"/>.
         /// </summary>
-        public DefaultStyle DefaultStyle { get; private set; } = new();
+        public Style BodyStyle { get; private set; } = new();
 
         /// <summary>
-        /// Enable the automatic column filter
+        /// Gets the common options to configure the spreadsheet creation
         /// </summary>
-        public bool AutoFilter { get; set; } = false;
+        public TabularSheetOptions Options { get; private set; } = new();
         #endregion
 
         #region Configure Table
+        /// <summary>
+        /// Set the name of the sheet
+        /// </summary>
+        /// <param name="title"></param>
         public void SetSheetTitle(string title) => Title = title;
         #endregion
 
         #region Create
+        /// <summary>
+        /// Create a spreadsheet document
+        /// </summary>
+        /// <param name="path">Path to store the document</param>
         public void Create(string path)
         {
             SpreadsheetBuilder builder = new();
             builder.Create(path, this);
         }
 
+        /// <summary>
+        /// Create a spreadsheet document
+        /// </summary>
         public MemoryStream Create()
         {
             SpreadsheetBuilder builder = new();
@@ -68,7 +90,7 @@ namespace Beporsoft.TabularSheets
         #region ISheet
         Type ISheet.ItemType => typeof(T);
 
-        SheetData ISheet.BuildData(ref StylesheetBuilder stylesheetBuilder, ref SharedStringBuilder sharedStringBuilder)
+        SheetData ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
             return builder.BuildSheetData();

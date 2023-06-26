@@ -77,8 +77,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 Column col = new Column();
                 col.BestFit = true;
-                col.Min = index.ToUint32OpenXml();
-                col.Max = index.ToUint32OpenXml();
+                col.Min = index.ToOpenXmlUInt32();
+                col.Max = index.ToOpenXmlUInt32();
                 columns.Append(col);
                 index++;
             }
@@ -93,10 +93,10 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// </summary>
         private Row CreateHeaderRow()
         {
-            Row header = new();
-
-            header.RowIndex = (_cellRefIterator.CurrentRow + 1).ToUint32OpenXml();
-
+            Row header = new()
+            {
+                RowIndex = (_cellRefIterator.CurrentRow + 1).ToOpenXmlUInt32()
+            };
 
             int? formatId = RegisterHeaderStyle();
 
@@ -105,7 +105,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 Cell cell = CellBuilder.CreateCell(col.Title);
                 if (formatId is not null)
-                    cell.StyleIndex = formatId.Value.ToUint32OpenXml();
+                    cell.StyleIndex = formatId.Value.ToOpenXmlUInt32();
 
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
 
@@ -115,22 +115,17 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
 
         /// <summary>
-        /// Create the <see cref="Row"/> which represents one item of <see cref="{T}"/> of the table, including the registry of
+        /// Create the <see cref="Row"/> which represents one item of <typeparamref name="T"/> of the table, including the registry of
         /// styles inside <see cref="StyleBuilder"/>
         /// </summary>
         private Row CreateItemRow(T item)
         {
             Row row = new Row();
-            row.RowIndex = (_cellRefIterator.CurrentRow + 1).ToUint32OpenXml();
+            row.RowIndex = (_cellRefIterator.CurrentRow + 1).ToOpenXmlUInt32();
             _cellRefIterator.ResetCol();
             foreach (var col in Table.Columns)
             {
-                object value = col.Apply(item);
-                Cell cell = new();
-                if (value is not null)
-                {
-                    cell = BuildDataCell(value);
-                }
+                Cell cell = BuildDataCell(item, col);
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
                 row.Append(cell);
             }
@@ -138,56 +133,60 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
 
         /// <summary>
-        /// Create the <see cref="Cell"/> filled with <paramref name="value"/> applying the combined style based on the different rules of the table
+        /// Create the <see cref="Cell"/> filled with <paramref name="item"/> applying the combined style based on the different rules of the table
         /// </summary>
-        private Cell BuildDataCell(object value)
+        private Cell BuildDataCell(T item, TabularDataColumn<T> col)
         {
-            Cell cell = CellBuilder.CreateCell(value);
-            FillSetup? fillSetup = null;
-            FontSetup? fontSetup = null;
-            BorderSetup? borderSetup = null;
-            NumberingFormatSetup? numberingFormatSetup = null;
+            // Populate with value
+            object? value = col.Apply(item);
+            Cell cell = new();
+            if (value is not null)
+                cell = CellBuilder.CreateCell(value);
 
-            if (!Table.DefaultStyle.Fill.Equals(FillStyle.Default))
-                fillSetup = new FillSetup(Table.DefaultStyle.Fill);
-
-            if (!Table.DefaultStyle.Font.Equals(FontStyle.Default))
-                fontSetup = new FontSetup(Table.DefaultStyle.Font);
-
-            if (!Table.DefaultStyle.Border.Equals(BorderStyle.Default))
-                borderSetup = new BorderSetup(Table.DefaultStyle.Border);
-
-            if (value.GetType() == typeof(DateTime))
-            {
-                numberingFormatSetup = new NumberingFormatSetup(Table.DefaultStyle.DateTimeFormat);
-            }
-            int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numberingFormatSetup);
-            cell.StyleIndex = formatId.ToUint32OpenXml();
+            // Populate with style
+            int? formatId = BuildCellStyle(value, col);
+            cell.StyleIndex = formatId.ToOpenXmlUInt32();
             return cell;
         }
 
-        private int? RegisterHeaderStyle()
+        private int? BuildCellStyle(object? value, TabularDataColumn<T> column)
         {
-            FillSetup? fill = null;
-            FontSetup? font = null;
-            BorderSetup? border = null;
+            Style combinedStyle = StyleCombiner.Combine(column.Style, Table.BodyStyle);
+            FillSetup? fillSetup = combinedStyle.Fill.Equals(FillStyle.Default) ? null : new FillSetup(combinedStyle.Fill);
+            FontSetup? fontSetup = combinedStyle.Font.Equals(FillStyle.Default) ? null : new FontSetup(combinedStyle.Font);
+            BorderSetup? borderSetup = combinedStyle.Border.Equals(FillStyle.Default) ? null : new BorderSetup(combinedStyle.Border);
+            NumberingFormatSetup? numFmtSetup =
+                string.IsNullOrWhiteSpace(combinedStyle.NumberingPattern) is true ? null : new NumberingFormatSetup(combinedStyle.NumberingPattern!);
 
-            FillStyle combinedFill = StyleCombiner.Combine(Table.HeaderStyle.Fill, Table.DefaultStyle.Fill);
-            if (!combinedFill.Equals(FillStyle.Default))
-                fill = new FillSetup(combinedFill);
+            if (value is not null && value.GetType() == typeof(DateTime) && numFmtSetup is null)
+                numFmtSetup = new NumberingFormatSetup(Table.Options.DateTimeFormat);
 
-            FontStyle combinedFont = StyleCombiner.Combine(Table.HeaderStyle.Font, Table.DefaultStyle.Font);
-            if (!combinedFill.Equals(FontStyle.Default))
-                font = new FontSetup(combinedFont);
-
-            BorderStyle combinedBorder = StyleCombiner.Combine(Table.HeaderStyle.Border, Table.DefaultStyle.Border);
-            if (!combinedBorder.Equals(BorderStyle.Default))
-                border = new BorderSetup(combinedBorder);
-
-            if (font is null && fill is null)
+            if (fillSetup is null && fontSetup is null && borderSetup is null && numFmtSetup is null)
                 return null;
 
-            int? formatId = StyleBuilder.RegisterFormat(fill, font, border);
+            int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numFmtSetup);
+            return formatId;
+        }
+
+        /// <summary>
+        /// Configure and register one <see cref="FormatSetup"/> in the <see cref="StyleBuilder"/> to format the heading cells.
+        /// </summary>
+        /// <returns>The index of the setup, or null if there aren't any style to build</returns>
+        private int? RegisterHeaderStyle()
+        {
+            Style headerStyle = Table.HeaderStyle;
+
+            if (Table.Options.InheritHeaderStyleFromBody)
+                headerStyle = StyleCombiner.Combine(Table.HeaderStyle, Table.BodyStyle);
+
+            FillSetup? fill = headerStyle.Fill.Equals(FillStyle.Default) ? null : new FillSetup(headerStyle.Fill);
+            FontSetup? font = headerStyle.Font.Equals(FillStyle.Default) ? null : new FontSetup(headerStyle.Font);
+            BorderSetup? border = headerStyle.Border.Equals(FillStyle.Default) ? null : new BorderSetup(headerStyle.Border);
+
+            if (font is null && fill is null && border is null)
+                return null;
+
+            int formatId = StyleBuilder.RegisterFormat(fill, font, border);
 
             return formatId;
         }

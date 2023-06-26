@@ -37,13 +37,12 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.AddColumn("Population", c => c.Population);
                 sheet.AddColumn("Currencies", c => string.Join("; ", c.Currencies.Values.Select(v => $"{v.Name} ({v.Symbol})")));
 
-
                 // Add some style
                 Console.WriteLine($"Adding some style");
                 sheet.HeaderStyle.Fill.BackgroundColor = Color.Black;
                 sheet.HeaderStyle.Font.Color = Color.White;
-                sheet.DefaultStyle.Border.Top = BorderStyle.BorderType.Thin;
-                sheet.DefaultStyle.Border.Bottom = BorderStyle.BorderType.Thin;
+                sheet.BodyStyle.Border.Top = BorderStyle.BorderType.Thin;
+                sheet.BodyStyle.Border.Bottom = BorderStyle.BorderType.Thin;
 
                 // Export
                 Console.WriteLine($"Creating file");

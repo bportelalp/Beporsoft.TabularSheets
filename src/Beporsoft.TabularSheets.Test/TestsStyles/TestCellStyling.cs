@@ -17,7 +17,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             Assert.That(border, Is.EqualTo(BorderStyle.Default));
 
             var borderModified = border;
-            border.SetAll(BorderStyle.BorderType.Thin);
+            border.SetBorderType(BorderStyle.BorderType.Thin);
             border.Color = System.Drawing.Color.Aquamarine;
             Assert.Multiple(() =>
             {
@@ -26,7 +26,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
                 Assert.That(border, Is.Not.EqualTo(BorderStyle.Default));
             });
 
-            border.SetAll(BorderStyle.BorderType.None);
+            border.SetBorderType(BorderStyle.BorderType.None);
             border.Color = null;
             Assert.Multiple(() =>
             {
@@ -91,30 +91,45 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
 
         [Test]
         [TestCaseSource(nameof(CombineStylesCases))]
-        public void CombineStyles(FontStyle style1, FontStyle style2, FontStyle styleExpected)
+        public void CombineStyles(Style style1, Style style2, Style styleExpected)
         {
-            FontStyle styleResult = StyleCombiner.Combine(style1, style2);
+            Style styleResult = StyleCombiner.Combine(style1, style2);
             Assert.That(styleResult, Is.EqualTo(styleExpected));
         }
 
         private static IEnumerable<object[]> CombineStylesCases()
         {
-            var font1 = new FontStyle();
-            var font2 = new FontStyle();
-            var fontR = new FontStyle();
+            var style1 = new Style();
+            var style2 = new Style();
+            var styleR = new Style();
+            style1.Font = new();
+            style2.Font = new();
+            styleR.Font = new();
 
-            font1.Size = 0;
-            font2.Size = 14;
-            fontR.Size = 0;
-            yield return new object[] { font1, font2, fontR };
-            font1.Size = null;
-            font2.Size = 14;
-            fontR.Size = 14;
-            yield return new object[] { font1, font2, fontR };
-            font1.Color = null;
-            font2.Color = System.Drawing.Color.AliceBlue;
-            fontR.Color = System.Drawing.Color.AliceBlue;
-            yield return new object[] { font1, font2, fontR };
+            style1.Font.Size = 0;
+            style2.Font.Size = 14;
+            styleR.Font.Size = 0;
+            yield return new object[] { style1, style2, styleR };
+            style1.Font.Size = null;
+            style2.Font.Size = 14;
+            styleR.Font.Size = 14;
+            yield return new object[] { style1, style2, styleR };
+            style1.Font.Color = null;
+            style2.Font.Color = System.Drawing.Color.AliceBlue;
+            styleR.Font.Color = System.Drawing.Color.AliceBlue;
+            yield return new object[] { style1, style2, styleR };
+
+            style1 = new Style();
+            style2 = new Style();
+            styleR = new Style();
+            style1.Fill = new();
+            styleR.Fill = new();
+            yield return new object[] { style1, style2, styleR };
+
+            style2.Fill = new();
+            style2.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
+            styleR.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
+            yield return new object[] { style1, style2, styleR };
         }
 
     }

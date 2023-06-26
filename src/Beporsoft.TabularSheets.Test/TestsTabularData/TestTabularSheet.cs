@@ -1,5 +1,4 @@
 using Beporsoft.TabularSheets.CellStyling;
-using Beporsoft.TabularSheets.Csv;
 using System.Drawing;
 using System.Globalization;
 using System.Reflection;
@@ -31,10 +30,10 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 TabularSheet<Product> table = Generate();
                 table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
-                table.DefaultStyle.Font.Color = Color.Red;
+                table.BodyStyle.Font.Color = Color.Red;
                 table.HeaderStyle.Font.Color = Color.White;
-                table.DefaultStyle.Fill.BackgroundColor = Color.AliceBlue;
-                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
+                table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
                 string path = GetPath("DebugTest.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
@@ -49,7 +48,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
                 //table.HeaderStyle.Font.Font = "Arial";
                 table.HeaderStyle.Font.Size = 12;
-                table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
+                table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
                 string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
@@ -61,10 +60,10 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             Assert.That(() =>
             {
                 TabularSheet<Product> table = Generate();
-                table.DefaultStyle.Fill.BackgroundColor = Color.Azure;
-                table.DefaultStyle.Font.Font = "Arial";
-                table.DefaultStyle.Font.Size = 8;
-                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                table.BodyStyle.Fill.BackgroundColor = Color.Azure;
+                table.BodyStyle.Font.Font = "Arial";
+                table.BodyStyle.Font.Size = 8;
+                table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
                 string path = GetPath($"Test{nameof(TryDefaultStyles)}.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
@@ -76,14 +75,14 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             Assert.That(() =>
             {
                 TabularSheet<Product> table = Generate();
-                table.DefaultStyle.Fill.BackgroundColor = Color.Azure;
-                table.DefaultStyle.Font.Font = "Arial";
-                table.DefaultStyle.Font.Size = 8;
-                table.DefaultStyle.Border.SetAll(BorderStyle.BorderType.Thin);
+                table.BodyStyle.Fill.BackgroundColor = Color.Azure;
+                table.BodyStyle.Font.Font = "Arial";
+                table.BodyStyle.Font.Size = 8;
+                table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
 
                 table.HeaderStyle.Fill.BackgroundColor = Color.DarkBlue;
                 table.HeaderStyle.Font.Color = Color.White;
-                table.HeaderStyle.Border.SetAll(BorderStyle.BorderType.Medium);
+                table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
                 table.HeaderStyle.Border.Color = Color.Yellow;
                 string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
                 table.Create(path);
@@ -98,7 +97,14 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 Style style = new Style();
                 style.Fill.BackgroundColor = Color.Red;
                 TabularSheet<Product> table = Generate();
-                table.AddColumn(t => t.Name).SetTitle("Name duplicated").SetStyle(style);
+                table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
+                table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
+                {
+                    s.NumberingPattern = "0.00"; 
+                    s.Fill.BackgroundColor = Color.AliceBlue;
+                });
+                table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data unmodify Numbering").SetStyle(s => s.Font.Color = Color.Blue);
+                table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data modify Numbering").SetStyle(s => s.NumberingPattern = "d-mmm-yy");
                 string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
                 table.Create(path);
             }, Throws.Nothing);

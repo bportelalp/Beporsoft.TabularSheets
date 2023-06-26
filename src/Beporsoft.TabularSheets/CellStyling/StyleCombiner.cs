@@ -16,7 +16,7 @@ namespace Beporsoft.TabularSheets.CellStyling
     {
 
         /// <summary>
-        /// Create an instance of <see cref="{T}"/> filling its properties from <paramref name="highestPriority"/>, unless they're
+        /// Create an instance of <typeparamref name="T"/> filling its properties from <paramref name="highestPriority"/>, unless they're
         /// <see langword="null"/>. In this case, use the equivalent property from <paramref name="lowestPriority"/>
         /// </summary>
         internal static T Combine<T>(T highestPriority, T lowestPriority) where T : class, new()
@@ -25,14 +25,27 @@ namespace Beporsoft.TabularSheets.CellStyling
             T result = new T();
             foreach (PropertyInfo property in properties)
             {
-                object? assignedValue;
-                object? highestValue = property.GetValue(highestPriority);
-                object? lowestValue = property.GetValue(lowestPriority);
-                if (highestValue is null)
-                    assignedValue = lowestValue;
+                Type propertyType = property.PropertyType;
+                if (propertyType.IsValueType || propertyType == typeof(string))
+                {
+                    object? assignedValue;
+                    object? priorityValue = property.GetValue(highestPriority);
+                    if (priorityValue is not null)
+                        assignedValue = priorityValue;
+                    else
+                        assignedValue = property.GetValue(lowestPriority);
+
+                    property.SetValue(result, assignedValue);
+                }
                 else
-                    assignedValue = highestValue;
-                property.SetValue(result, assignedValue);
+                {
+                    MethodInfo? methodCombineInfo = typeof(StyleCombiner).GetMethod(nameof(Combine), BindingFlags.Static | BindingFlags.NonPublic);
+                    MethodInfo method = methodCombineInfo!.MakeGenericMethod(propertyType);
+                    object? propertyInstanceHighest = property.GetValue(highestPriority);
+                    object? propertyInstanceLowest = property.GetValue(lowestPriority);
+                    var resultInstance = method.Invoke(null, new object?[] { propertyInstanceHighest, propertyInstanceLowest });
+                    property.SetValue(result, resultInstance);
+                }
             }
             return result;
         }

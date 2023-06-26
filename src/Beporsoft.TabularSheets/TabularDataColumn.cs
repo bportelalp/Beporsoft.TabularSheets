@@ -11,50 +11,51 @@ namespace Beporsoft.TabularSheets
     /// Represent a column inside a <see cref="TabularData{T}"/>
     /// </summary>
     /// <typeparam name="T">The type of the instances which will be represented for each row</typeparam>
-    [DebuggerDisplay("{Title} | {Order} | {ColumnData}")]
+    [DebuggerDisplay("{Title} | {ColumnIndex} | {ColumnContent}")]
     public class TabularDataColumn<T>
     {
         private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
-        private static readonly Regex _regexDefaultColumnName = new(nameof(T) + _defaultColumnName + @"\d{0,}"); // Regex to find when a column is named according to its default name.
+                private string? _title;
 
         #region Constructors
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
         {
             Owner = parentTabularData;
-            ColumnData = columnData;
-            Order = Owner.Columns.Any() ? Owner.Columns.Max(x => x.Order) + 1 : 0;
-            SetDefaultName();
+            ColumnContent = columnData;
+            //Order = Owner.Columns.Any() ? Owner.Columns.Max(x => x.Order) + 1 : 0;
+            //SetDefaultName();
         }
 
         internal TabularDataColumn(string title, TabularData<T> parentTabularData, Func<T, object> columnData) : this(parentTabularData, columnData)
         {
-            Title = title;
+            _title = title;
         }
         #endregion
 
         #region Properties
         /// <summary>
-        /// The function which will be evaluated to fill the respective column for each item.
+        /// Gets or sets the function which will be evaluated to fill the respective column for each item.
         /// </summary>
-        public Func<T, object> ColumnData { get; set; }
+        public Func<T, object> ColumnContent { get; set; }
 
         /// <summary>
-        /// The title of the column. It must be set throught constructor or <see cref="SetTitle(string)"/>
+        /// Gets title of the column. If no title are provided before, the default one is displayed.<br/>
+        /// To set it, use the method <see cref="SetTitle(string)"/>
         /// </summary>
-        public string Title { get; private set; } = null!;
+        public string Title => GetTitle();
 
         /// <summary>
-        /// The position where the column will be displayed.
+        /// Gets the column index of the column on the parent table
         /// </summary>
-        public int Order { get; internal set; } = 0;
+        public int ColumnIndex => Owner.ColumnsCollection.IndexOf(this);
 
         /// <summary>
-        /// The style to apply to all the column excluding the header
+        /// Gets the style to apply to all the column.
         /// </summary>
-        public Style Style { get; set; } = Style.Default;
+        public Style Style { get; private set; } = Style.Default;
 
         /// <summary>
-        /// The <see cref="TabularData{T}"/> to whom belongs this <see cref="TabularDataColumn{T}"/>
+        /// Gets the <see cref="TabularData{T}"/> to which belongs this <see cref="TabularDataColumn{T}"/>
         /// </summary>
         public TabularData<T> Owner { get; }
         #endregion
@@ -63,11 +64,11 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Sets the title of the column
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title to assign to the column, or <see langword="null"/> or <see cref="string.Empty"/> for the default one</param>
         /// <returns>The same column instance, so additional calls can be chained</returns>
-        public TabularDataColumn<T> SetTitle(string title)
+        public TabularDataColumn<T> SetTitle(string? title)
         {
-            Title = title;
+            _title = title;
             return this;
         }
 
@@ -88,21 +89,32 @@ namespace Beporsoft.TabularSheets
         /// <returns></returns>
         public TabularDataColumn<T> SetStyle(Action<Style> styleActionEdition)
         {
+            // take the current style, or create a new one to edit fields
             Style editionStyle = Style;
             if (Style.Equals(Style.Default))
                 editionStyle = new();
 
             styleActionEdition.Invoke(editionStyle);
+            // If it is equals default, set the default again
+            if (editionStyle.Equals(Style.Default))
+                Style = Style.Default;
+            else
+                Style = editionStyle;
+
             return this;
         }
 
         /// <summary>
         /// Reassign the current order position of the column inside the parent table and reorganice the previous items
         /// </summary>
+        /// <param name="index"></param>
         /// <returns>The same column instance, so additional calls can be chained</returns>
-        public TabularDataColumn<T> SetPosition(int position)
+        public TabularDataColumn<T> SetIndex(int index)
         {
-            Owner.ReallocateColumn(this, position);
+            if (index < 0 || index >= Owner.ColumnsCollection.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), $"{nameof(index)} is less than 0 or is greater than the current amount of items");
+            Owner.ColumnsCollection.Remove(this);
+            Owner.ColumnsCollection.Insert(index, this);
             return this;
         }
         #endregion
@@ -113,18 +125,22 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         internal object Apply(T value)
         {
-            return ColumnData.Invoke(value);
+            return ColumnContent.Invoke(value);
         }
 
         /// <summary>
-        /// When no title is provided, set the column title to {_defaultColumnName}{Order}.
+        /// Gets the defined title or build a default one if it is empry
         /// </summary>
-        internal void SetDefaultName()
+        internal string GetTitle()
         {
-            Match match = _regexDefaultColumnName.Match(Title ?? string.Empty);
-            if (string.IsNullOrWhiteSpace(Title) || match.Success)
+            if (string.IsNullOrWhiteSpace(_title))
             {
-                Title = $"{nameof(T)}{_defaultColumnName}{Order}";
+                string format = $"D{Owner.Columns.Count().ToString().Count()}"; // Get the significant digits of the columns count, to give format
+                return $"{typeof(T).Name}{_defaultColumnName}{ColumnIndex.ToString(format)}";
+            }
+            else
+            {
+                return _title!;
             }
         }
         #endregion

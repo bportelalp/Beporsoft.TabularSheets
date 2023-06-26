@@ -5,9 +5,20 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
+using static System.Net.WebRequestMethods;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
+    /// <summary>
+    /// A class to handle the creation of the qualified node x:styleSheet of
+    /// <see href="https://www.ecma-international.org/publications-and-standards/standards/ecma-376/">ECMA-376-1:2016 §18.8.39</see>, 
+    /// which is the root element of the Styles part.
+    /// <br/><br/>
+    /// An instance of this class can be consumed by multiple <see cref="TabularSheet{T}"/> to build a workbook, feature that it will be
+    /// supported in the future. Although each sheet can contain its own styles, in the 
+    /// <see href="https://www.ecma-international.org/publications-and-standards/standards/ecma-376/">ECMA-376-1:2016</see>
+    /// a single Styles part is shared for every sheets. This is the reason and requirement to create a single class which handles all the styles.
+    /// </summary>
     internal class StylesheetBuilder
     {
         private readonly ISetupCollection<FillSetup> _fills = new IndexedSetupCollection<FillSetup>();
@@ -57,31 +68,31 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public Fills GetFills()
         {
             Fills fills = _fills.BuildContainer<Fills>();
-            fills.Count = RegisteredFills.ToUint32OpenXml();
+            fills.Count = RegisteredFills.ToOpenXmlUInt32();
             return fills;
         }
         public CellFormats GetFormats()
         {
             CellFormats formats = _formats.BuildContainer<CellFormats>();
-            formats.Count = RegisteredFormats.ToUint32OpenXml();
+            formats.Count = RegisteredFormats.ToOpenXmlUInt32();
             return formats;
         }
         public Fonts GetFonts()
         {
             Fonts Fonts = _fonts.BuildContainer<Fonts>();
-            Fonts.Count = RegisteredFonts.ToUint32OpenXml();
+            Fonts.Count = RegisteredFonts.ToOpenXmlUInt32();
             return Fonts;
         }
         public Borders GetBorders()
         {
             Borders borders = _borders.BuildContainer<Borders>();
-            borders.Count = RegisteredBorders.ToUint32OpenXml();
+            borders.Count = RegisteredBorders.ToOpenXmlUInt32();
             return borders;
         }
         public NumberingFormats GetNumberingFormats()
         {
             NumberingFormats numFormats = _numFormats.BuildContainer<NumberingFormats>();
-            numFormats.Count = RegisteredNumberingFormats.ToUint32OpenXml();
+            numFormats.Count = RegisteredNumberingFormats.ToOpenXmlUInt32();
             return numFormats;
         }
 

@@ -15,11 +15,11 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         /// <summary>
         /// The index inside the collection stored on the OpenXml Tree.
         /// </summary>
-        int Index { get; }
+        internal int Index { get; }
 
         /// <summary>
         /// Generates the <see cref="OpenXmlElement"/> to fill the tree.
         /// </summary>
-        OpenXmlElement Build();
+        internal OpenXmlElement Build();
     }
 }

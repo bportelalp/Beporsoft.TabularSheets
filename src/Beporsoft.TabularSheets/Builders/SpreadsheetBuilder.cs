@@ -20,31 +20,30 @@ namespace Beporsoft.TabularSheets.Builders
     /// </summary>
     internal sealed class SpreadsheetBuilder
     {
-        private StylesheetBuilder _styleBuilder;
-        private SharedStringBuilder _sharedStringBuilder;
 
         /// <summary>
         /// Build spreadsheets.
         /// </summary>
         public SpreadsheetBuilder()
         {
-            _styleBuilder = new StylesheetBuilder();
-            _sharedStringBuilder = new SharedStringBuilder();
+            StyleBuilder = new StylesheetBuilder();
+            SharedStringBuilder = new SharedStringBuilder();
         }
 
         /// <summary>
         /// Build spreadsheets using a shared <see cref="StylesheetBuilder"/>. This is ideal when build spreadsheets with more than one table.
         /// </summary>
         /// <param name="stylesheetBuilder"></param>
+        /// <param name="sharedStringBuilder"></param>
         public SpreadsheetBuilder(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
 
-            _styleBuilder = stylesheetBuilder;
-            _sharedStringBuilder = sharedStringBuilder;
+            StyleBuilder = stylesheetBuilder;
+            SharedStringBuilder = sharedStringBuilder;
         }
 
-        public StylesheetBuilder StyleBuilder => _styleBuilder;
-        public SharedStringBuilder SharedStringBuilder => _sharedStringBuilder;
+        public StylesheetBuilder StyleBuilder { get; }
+        public SharedStringBuilder SharedStringBuilder { get; }
 
         #region Create Spreadsheet
         public void Create(string path, params ISheet[] tables)
@@ -112,7 +111,7 @@ namespace Beporsoft.TabularSheets.Builders
             Columns columns = table.BuildColumns();
             worksheetPart.Worksheet.Append(columns);
 
-            SheetData sheetData = table.BuildData(ref _styleBuilder, ref _sharedStringBuilder);
+            SheetData sheetData = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
             worksheetPart.Worksheet.AppendChild(sheetData);
         }
 
@@ -151,7 +150,7 @@ namespace Beporsoft.TabularSheets.Builders
         private void AppendSharedStringTablePart(ref WorkbookPart workbookPart)
         {
             SharedStringTablePart sharedStringTablePart = workbookPart.AddNewPart<SharedStringTablePart>();
-            var sharedStringTable = _sharedStringBuilder.GetSharedStringTable();
+            var sharedStringTable = SharedStringBuilder.GetSharedStringTable();
             sharedStringTablePart.SharedStringTable = sharedStringTable;
         }
 
@@ -175,6 +174,7 @@ namespace Beporsoft.TabularSheets.Builders
         /// name based on {name}{incremental}
         /// </summary>
         /// <param name="sheets"></param>
+        /// <param name="nameSheet"></param>
         /// <returns></returns>
         private string BuildSuitableSheetName(Sheets sheets, string nameSheet)
         {
