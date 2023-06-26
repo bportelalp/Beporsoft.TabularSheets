@@ -47,7 +47,8 @@ namespace Beporsoft.TabularSheets.CellStyling
             return other is not null &&
                    EqualityComparer<FontStyle>.Default.Equals(Font, other.Font) &&
                    EqualityComparer<FillStyle>.Default.Equals(Fill, other.Fill) &&
-                   EqualityComparer<BorderStyle>.Default.Equals(Border, other.Border);
+                   EqualityComparer<BorderStyle>.Default.Equals(Border, other.Border) &&
+                   NumberingPattern == other.NumberingPattern;
         }
 
         /// <inheritdoc cref="GetHashCode"/>

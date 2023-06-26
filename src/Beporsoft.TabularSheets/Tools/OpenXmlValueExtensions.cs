@@ -20,5 +20,11 @@ namespace Beporsoft.TabularSheets.Tools
         /// </summary>
         internal static UInt32Value ToOpenXmlUInt32(this int value)
             => new UInt32Value(Convert.ToUInt32(value));
+
+        /// <summary>
+        /// Convert <see cref="int"/> to its equivalent <see cref="UInt32Value"/> representation
+        /// </summary>
+        internal static UInt32Value? ToOpenXmlUInt32(this int? value)
+            => value is null? null: new UInt32Value(Convert.ToUInt32(value));
     }
 }

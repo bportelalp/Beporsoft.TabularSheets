@@ -41,8 +41,8 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 Console.WriteLine($"Adding some style");
                 sheet.HeaderStyle.Fill.BackgroundColor = Color.Black;
                 sheet.HeaderStyle.Font.Color = Color.White;
-                sheet.DefaultStyle.Border.Top = BorderStyle.BorderType.Thin;
-                sheet.DefaultStyle.Border.Bottom = BorderStyle.BorderType.Thin;
+                sheet.BodyStyle.Border.Top = BorderStyle.BorderType.Thin;
+                sheet.BodyStyle.Border.Bottom = BorderStyle.BorderType.Thin;
 
                 // Export
                 Console.WriteLine($"Creating file");

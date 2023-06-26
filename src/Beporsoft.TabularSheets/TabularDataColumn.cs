@@ -11,13 +11,11 @@ namespace Beporsoft.TabularSheets
     /// Represent a column inside a <see cref="TabularData{T}"/>
     /// </summary>
     /// <typeparam name="T">The type of the instances which will be represented for each row</typeparam>
-    [DebuggerDisplay("{Title} | {Order} | {ColumnData}")]
+    [DebuggerDisplay("{Title} | {ColumnIndex} | {ColumnContent}")]
     public class TabularDataColumn<T>
     {
         private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
-
-
-        private string? _title;
+                private string? _title;
 
         #region Constructors
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
@@ -100,6 +98,8 @@ namespace Beporsoft.TabularSheets
             // If it is equals default, set the default again
             if (editionStyle.Equals(Style.Default))
                 Style = Style.Default;
+            else
+                Style = editionStyle;
 
             return this;
         }

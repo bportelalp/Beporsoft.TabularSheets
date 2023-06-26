@@ -42,14 +42,19 @@ namespace Beporsoft.TabularSheets
 
         /// <summary>
         /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
-        /// If no property is modified, header style will inherit <see cref="DefaultStyle"/>
+        /// If no property is modified, header style will inherit <see cref="BodyStyle"/>
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 
         /// <summary>
         /// Gets the style of data cells from the current <see cref="TabularSheet{T}"/>.
         /// </summary>
-        public DefaultStyle DefaultStyle { get; private set; } = new();
+        public Style BodyStyle { get; private set; } = new();
+
+        /// <summary>
+        /// Gets the common options to configure the spreadsheet creation
+        /// </summary>
+        public TabularSheetOptions Options { get; private set; } = new();
         #endregion
 
         #region Configure Table
