@@ -1,6 +1,7 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
+using Beporsoft.TabularSheets.Exceptions;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -205,7 +206,7 @@ namespace Beporsoft.TabularSheets.Builders
             OpenXmlValidator validator = new OpenXmlValidator();
             IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
             if (errors.Any())
-                throw new XmlException("Errors validating Xml");
+                throw new OpenXmlException(errors);
         }
         #endregion
     }

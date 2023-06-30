@@ -1,4 +1,6 @@
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Test.Helpers;
 using System.Drawing;
 using System.Globalization;
 using System.Reflection;
@@ -40,17 +42,81 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         }
 
         [Test]
+        public void TryDataIntegrity()
+        {
+            string path = GetPath($"Test{nameof(TryDataIntegrity)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
+            Assert.That(() =>
+            {
+                table = Generate();
+                table.Create(path);
+            }, Throws.Nothing);
+
+            Assert.That(() =>
+            {
+                sheet = new SheetWrapper(path);
+            }, Throws.Nothing);
+
+            foreach (var column in table.Columns)
+            {
+                CheckColumnData(table, column, sheet);
+            }
+        }
+
+        private static void CheckColumnData(TabularSheet<Product> table, TabularDataColumn<Product> column, SheetWrapper sheet)
+        {
+            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.ColumnIndex);
+            Assert.Multiple(() =>
+            {
+                Assert.That(headerCell.InnerText, Is.Not.Null);
+                Assert.That(headerCell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString));
+                var indexSharedString = Convert.ToInt32(headerCell.InnerText);
+                string? headerTitle = sheet.GetSharedString(indexSharedString);
+                Assert.That(headerTitle, Is.EqualTo(column.Title));
+            });
+            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.ColumnIndex);
+            foreach(var cell in bodyCells)
+            {
+                Assert.Multiple(() =>
+                {
+                    int row = CellRefBuilder.GetRowIndex(cell.CellReference!);
+                    Product item = table[row -1];
+                    object value = column.Apply(item);
+                    if(cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString)
+                    {
+                        var indexSharedString = Convert.ToInt32(cell.InnerText);
+                        string? content = sheet.GetSharedString(indexSharedString);
+                        Assert.That(value.ToString(), Is.EqualTo(content));
+                    }
+                    else if(value.GetType() == typeof(DateTime))
+                    {
+                        var date = ((DateTime) value).ToOADate();
+                        double content = Convert.ToDouble(cell.CellValue!.Text);
+                        const double tolerance = 0.0001;
+                        Assert.That(date, Is.LessThan(content + tolerance));
+                        Assert.That(date, Is.GreaterThan(content - tolerance));
+                    }
+                });
+            }
+        }
+
+        [Test]
         public void TryHeaderStyles()
         {
             Assert.That(() =>
             {
                 TabularSheet<Product> table = Generate();
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
-                //table.HeaderStyle.Font.Font = "Arial";
                 table.HeaderStyle.Font.Size = 12;
                 table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
                 string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
                 table.Create(path);
+
+                var sheet = new SheetWrapper(path);
+
+                sheet.GetHeaderCellByColumn(1);
+
             }, Throws.Nothing);
         }
 
@@ -116,13 +182,13 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             TabularSheet<Product> table = new();
             table.AddRange(Product.GenerateProducts(50));
 
-            table.AddColumn(t => t.Id).SetTitle("Product Id");
-            table.AddColumn(t => t.Name).SetTitle("Product name");
-            table.AddColumn(t => t.Vendor).SetTitle("Vendor");
-            table.AddColumn(t => t.CountryOrigin).SetTitle("Country");
-            table.AddColumn("Cost by unit", t => t.Cost);
-            table.AddColumn(t => t.LastPriceUpdate).SetTitle("Price updated on");
-            table.AddColumn(t => t.LastUpdate).SetTitle("Last update"); ;
+            table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
+            table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
+            table.AddColumn(t => t.Vendor).SetTitle(nameof(Product.Vendor));
+            table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
+            table.AddColumn(nameof(Product.Cost), t => t.Cost);
+            table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
+            table.AddColumn(t => t.LastUpdate).SetTitle(nameof(Product.LastUpdate)); ;
             return table;
         }
 
@@ -130,7 +196,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         private string GetPath(string fileName)
         {
             DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
-            return $"{projectDir!.FullName}/Results/{fileName}";
+            return $"{projectDir!.FullName}\\Results\\{fileName}";
         }
 
     }

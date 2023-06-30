@@ -14,11 +14,6 @@ namespace Beporsoft.TabularSheets
         internal readonly List<TabularDataColumn<T>> ColumnsCollection = new();
         private List<T> _items = new();
 
-        /// <summary></summary>
-        public TabularData()
-        {
-        }
-
         #region Properties
         /// <summary>
         /// Gets the collection of items which will be displayed on rows.

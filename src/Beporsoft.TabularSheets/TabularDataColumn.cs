@@ -11,11 +11,11 @@ namespace Beporsoft.TabularSheets
     /// Represent a column inside a <see cref="TabularData{T}"/>
     /// </summary>
     /// <typeparam name="T">The type of the instances which will be represented for each row</typeparam>
-    [DebuggerDisplay("{Title} | {ColumnIndex} | {ColumnContent}")]
+    [DebuggerDisplay("{Title} | Col={ColumnIndex} | {ColumnContent}")]
     public class TabularDataColumn<T>
     {
-        private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_defautl}
-                private string? _title;
+        private const string _defaultColumnName = "Col"; // Default name for unnamed columns, of pattern {typeof(T).Name}{_default}
+        private string? _columnTitle;
 
         #region Constructors
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
@@ -28,7 +28,7 @@ namespace Beporsoft.TabularSheets
 
         internal TabularDataColumn(string title, TabularData<T> parentTabularData, Func<T, object> columnData) : this(parentTabularData, columnData)
         {
-            _title = title;
+            _columnTitle = title;
         }
         #endregion
 
@@ -68,7 +68,7 @@ namespace Beporsoft.TabularSheets
         /// <returns>The same column instance, so additional calls can be chained</returns>
         public TabularDataColumn<T> SetTitle(string? title)
         {
-            _title = title;
+            _columnTitle = title;
             return this;
         }
 
@@ -131,16 +131,16 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the defined title or build a default one if it is empry
         /// </summary>
-        internal string GetTitle()
+        private string GetTitle()
         {
-            if (string.IsNullOrWhiteSpace(_title))
+            if (string.IsNullOrWhiteSpace(_columnTitle))
             {
-                string format = $"D{Owner.Columns.Count().ToString().Count()}"; // Get the significant digits of the columns count, to give format
+                string format = $"D{Owner.Columns.Count().ToString().Length}"; // Get the significant digits of the columns count, to give format
                 return $"{typeof(T).Name}{_defaultColumnName}{ColumnIndex.ToString(format)}";
             }
             else
             {
-                return _title!;
+                return _columnTitle!;
             }
         }
         #endregion
