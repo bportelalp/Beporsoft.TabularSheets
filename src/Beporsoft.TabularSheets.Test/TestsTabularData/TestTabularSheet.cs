@@ -51,73 +51,66 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 table = Generate();
                 table.Create(path);
-            }, Throws.Nothing);
-
-            Assert.That(() =>
-            {
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
 
-            foreach (var column in table.Columns)
-            {
-                CheckColumnData(table, column, sheet);
-            }
-        }
-
-        private static void CheckColumnData(TabularSheet<Product> table, TabularDataColumn<Product> column, SheetWrapper sheet)
-        {
-            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.ColumnIndex);
-            Assert.Multiple(() =>
-            {
-                Assert.That(headerCell.InnerText, Is.Not.Null);
-                Assert.That(headerCell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString));
-                var indexSharedString = Convert.ToInt32(headerCell.InnerText);
-                string? headerTitle = sheet.GetSharedString(indexSharedString);
-                Assert.That(headerTitle, Is.EqualTo(column.Title));
-            });
-            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.ColumnIndex);
-            foreach(var cell in bodyCells)
-            {
-                Assert.Multiple(() =>
-                {
-                    int row = CellRefBuilder.GetRowIndex(cell.CellReference!);
-                    Product item = table[row -1];
-                    object value = column.Apply(item);
-                    if(cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString)
-                    {
-                        var indexSharedString = Convert.ToInt32(cell.InnerText);
-                        string? content = sheet.GetSharedString(indexSharedString);
-                        Assert.That(value.ToString(), Is.EqualTo(content));
-                    }
-                    else if(value.GetType() == typeof(DateTime))
-                    {
-                        var date = ((DateTime) value).ToOADate();
-                        double content = Convert.ToDouble(cell.CellValue!.Text);
-                        const double tolerance = 0.0001;
-                        Assert.That(date, Is.LessThan(content + tolerance));
-                        Assert.That(date, Is.GreaterThan(content - tolerance));
-                    }
-                });
-            }
+            AssertTabularSheetData(table, sheet);
         }
 
         [Test]
         public void TryHeaderStyles()
         {
+            string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Generate();
+                table = Generate();
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
                 table.HeaderStyle.Font.Size = 12;
                 table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
-                string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
                 table.Create(path);
-
-                var sheet = new SheetWrapper(path);
-
-                sheet.GetHeaderCellByColumn(1);
-
+                sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+            AssertTabularSheetData(table, sheet);
+
+            foreach (var cell in sheet.GetHeaderCells())
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style? style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value));
+                Assert.That(style, Is.Not.Null);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.Azure.ToArgb()));
+                    Assert.That(style.Font.Size, Is.EqualTo(12));
+                });
+            }
+            foreach (var cell in sheet.GetBodyCells())
+            {
+                if (cell.StyleIndex is not null)
+                {
+                    Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                    // Styles must be the default except datetime which has numbering pattern
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(style.Fill, Is.EqualTo(FillStyle.Default));
+                        Assert.That(style.Font, Is.EqualTo(FontStyle.Default));
+                        Assert.That(style.Border, Is.EqualTo(BorderStyle.Default));
+                    });
+
+                    (int row, int col) = CellRefBuilder.GetIndexes(cell.CellReference!.Value!);
+                    object value = table.Columns.Single(c => c.ColumnIndex == col).Apply(table.Items[row - 1]);
+                    if (value.GetType() == typeof(DateTime))
+                    {
+                        Assert.That(style.NumberingPattern, Is.Not.Null);
+                        Assert.That(style.NumberingPattern, Is.Not.Empty);
+                    }
+                    else
+                    {
+                        Assert.That(style.NumberingPattern, Is.Null);
+                    }
+                }
+            }
         }
 
         [Test]
@@ -166,7 +159,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
                 table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
                 {
-                    s.NumberingPattern = "0.00"; 
+                    s.NumberingPattern = "0.00";
                     s.Fill.BackgroundColor = Color.AliceBlue;
                 });
                 table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data unmodify Numbering").SetStyle(s => s.Font.Color = Color.Blue);
@@ -176,7 +169,72 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             }, Throws.Nothing);
         }
 
+        #region TestHelpers
+        /// <summary>
+        /// Verify the data on every column is OK as expected
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <param name="sheet"></param>
+        private static void AssertTabularSheetData(TabularSheet<Product> table, SheetWrapper sheet)
+        {
+            foreach (var col in table.Columns)
+            {
+                AssertColumnHeaderData(col, sheet);
+                AssertColumnBodyData(table, col, sheet);
+            }
 
+        }
+
+        private static void AssertColumnHeaderData(TabularDataColumn<Product> column, SheetWrapper sheet)
+        {
+            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.ColumnIndex);
+            Assert.Multiple(() =>
+            {
+                Assert.That(headerCell.InnerText, Is.Not.Null);
+                Assert.That(headerCell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString));
+                var indexSharedString = Convert.ToInt32(headerCell.InnerText);
+                string? headerTitle = sheet.GetSharedString(indexSharedString);
+                Assert.That(headerTitle, Is.EqualTo(column.Title));
+            });
+        }
+
+        private static void AssertColumnBodyData(TabularSheet<Product> table, TabularDataColumn<Product> column, SheetWrapper sheet)
+        {
+            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.ColumnIndex);
+            foreach (var cell in bodyCells)
+            {
+                Assert.Multiple(() =>
+                {
+                    int row = CellRefBuilder.GetRowIndex(cell.CellReference!);
+                    Product item = table[row - 1];
+                    object value = column.Apply(item);
+                    if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString)
+                    {
+                        var indexSharedString = Convert.ToInt32(cell.InnerText);
+                        string? content = sheet.GetSharedString(indexSharedString);
+                        Assert.That(value.ToString(), Is.EqualTo(content));
+                    }
+                    else if (value.GetType() == typeof(DateTime))
+                    {
+                        var date = ((DateTime)value).ToOADate();
+                        double content = Convert.ToDouble(cell.CellValue!.Text);
+                        Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
+                        Assert.That(date, Is.EqualTo(content));
+                    }
+                    else if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.Number)
+                    {
+                        // Treat all as double
+                        double content = Convert.ToDouble(cell.CellValue!.Text, System.Globalization.CultureInfo.InvariantCulture);
+                        double valueDouble = Convert.ToDouble(column.Apply(item));
+                        Assert.That(valueDouble, Is.EqualTo(content));
+                    }
+                });
+            }
+        }
+        #endregion
+
+        #region Data Helpers
         private static TabularSheet<Product> Generate()
         {
             TabularSheet<Product> table = new();
@@ -198,6 +256,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
             return $"{projectDir!.FullName}\\Results\\{fileName}";
         }
+        #endregion
 
     }
 }

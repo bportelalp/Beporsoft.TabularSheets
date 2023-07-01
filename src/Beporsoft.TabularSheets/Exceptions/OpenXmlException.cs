@@ -44,7 +44,7 @@ namespace Beporsoft.TabularSheets.Exceptions
             /// <summary>
             /// Message of the error
             /// </summary>
-            public string Message { get; set; }
+            public string Message { get; set; } = null!;
 
         }
 
