@@ -19,7 +19,7 @@
 		<NoWarn>1701;1702;IDE0090</NoWarn>
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageTags>spreadsheet;excel;export;collection;export generic collection;collection to spreadsheet;list to spreadsheet;export list;OpenXml;easy export;</PackageTags>
+		<PackageTags>spreadsheet;excel;export;generic;collection;OpenXml;tabular</PackageTags>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 

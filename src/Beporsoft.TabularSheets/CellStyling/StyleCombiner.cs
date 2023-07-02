@@ -14,6 +14,11 @@ namespace Beporsoft.TabularSheets.CellStyling
     /// </summary>
     internal static class StyleCombiner
     {
+        /// <summary>
+        /// Method <see cref="Combine{T}(T, T)"/> obtained by reflection to invoke for combine typed objects at runtime.
+        /// </summary>
+        internal static MethodInfo? MethodCombine = typeof(StyleCombiner).GetMethod(nameof(Combine), BindingFlags.Static | BindingFlags.NonPublic);
+
 
         /// <summary>
         /// Create an instance of <typeparamref name="T"/> filling its properties from <paramref name="highestPriority"/>, unless they're
@@ -21,11 +26,13 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// </summary>
         internal static T Combine<T>(T highestPriority, T lowestPriority) where T : class, new()
         {
-            PropertyInfo[] properties = typeof(T).GetProperties();
             T result = new T();
+
+            PropertyInfo[] properties = typeof(T).GetProperties();
             foreach (PropertyInfo property in properties)
             {
                 Type propertyType = property.PropertyType;
+                // TODO - Find a suitable way to filter primitive reference types and string
                 if (propertyType.IsValueType || propertyType == typeof(string))
                 {
                     object? assignedValue;
@@ -39,12 +46,14 @@ namespace Beporsoft.TabularSheets.CellStyling
                 }
                 else
                 {
-                    MethodInfo? methodCombineInfo = typeof(StyleCombiner).GetMethod(nameof(Combine), BindingFlags.Static | BindingFlags.NonPublic);
-                    MethodInfo method = methodCombineInfo!.MakeGenericMethod(propertyType);
-                    object? propertyInstanceHighest = property.GetValue(highestPriority);
-                    object? propertyInstanceLowest = property.GetValue(lowestPriority);
-                    var resultInstance = method.Invoke(null, new object?[] { propertyInstanceHighest, propertyInstanceLowest });
-                    property.SetValue(result, resultInstance);
+                    // Recursively invoke this method for sibling reference objects using Reflection
+                    object? highPriorityByRefProperty = property.GetValue(highestPriority);
+                    object? lowPriorityByRefProperty = property.GetValue(lowestPriority);
+                    object?[] paramsCombine = new object?[] { highPriorityByRefProperty, lowPriorityByRefProperty };
+
+                    MethodInfo method = MethodCombine!.MakeGenericMethod(propertyType);
+                    object? resultByRefProperty = method.Invoke(null, paramsCombine);
+                    property.SetValue(result, resultByRefProperty);
                 }
             }
             return result;

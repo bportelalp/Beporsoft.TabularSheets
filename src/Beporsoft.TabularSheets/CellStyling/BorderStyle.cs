@@ -23,22 +23,22 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// <summary>
         /// Border type for left border
         /// </summary>
-        public BorderType Left { get; set; } = BorderType.None;
+        public BorderType? Left { get; set; }
 
         /// <summary>
         /// Border type for right border
         /// </summary>
-        public BorderType Right { get; set; } = BorderType.None;
+        public BorderType? Right { get; set; }
 
         /// <summary>
         /// Border type for top border
         /// </summary>
-        public BorderType Top { get; set; } = BorderType.None;
+        public BorderType? Top { get; set; }
 
         /// <summary>
         /// Border type for bottom border
         /// </summary>
-        public BorderType Bottom { get; set; } = BorderType.None;
+        public BorderType? Bottom { get; set; }
 
         internal static BorderStyle Default { get; } = new BorderStyle();
 
@@ -46,7 +46,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// Set the border type to all sides
         /// </summary>
         /// <param name="borderType"></param>
-        public void SetBorderType(BorderType borderType)
+        public void SetBorderType(BorderType? borderType)
         {
             Left = borderType;
             Right = borderType;
@@ -61,7 +61,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// <param name="right"></param>
         /// <param name="bottom"></param>
         /// <param name="left"></param>
-        public void SetBorderType(BorderType top, BorderType right, BorderType bottom, BorderType left)
+        public void SetBorderType(BorderType? top, BorderType? right, BorderType? bottom, BorderType? left)
         {
             Top = top;
             Bottom = bottom;
@@ -74,7 +74,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// </summary>
         /// <param name="horizontal"></param>
         /// <param name="vertical"></param>
-        public void SetBorderType(BorderType horizontal, BorderType vertical)
+        public void SetBorderType(BorderType? horizontal, BorderType? vertical)
         {
             Top = horizontal;
             Bottom = horizontal;

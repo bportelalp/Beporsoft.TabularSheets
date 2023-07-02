@@ -15,6 +15,10 @@ namespace Beporsoft.TabularSheets.Tools
         internal static HexBinaryValue ToOpenXmlHexBinary(this Color color)
             => new HexBinaryValue($"FF{color.R:X2}{color.G:X2}{color.B:X2}");
 
+        internal static Color FromOpenXmlHexBinaryValue(this HexBinaryValue value)
+             => Color.FromArgb(int.Parse(value.Value!.Replace("#", ""), System.Globalization.NumberStyles.AllowHexSpecifier));
+
+
         /// <summary>
         /// Convert <see cref="int"/> to its equivalent <see cref="UInt32Value"/> representation
         /// </summary>
@@ -25,6 +29,6 @@ namespace Beporsoft.TabularSheets.Tools
         /// Convert <see cref="int"/> to its equivalent <see cref="UInt32Value"/> representation
         /// </summary>
         internal static UInt32Value? ToOpenXmlUInt32(this int? value)
-            => value is null? null: new UInt32Value(Convert.ToUInt32(value));
+            => value is null ? null : new UInt32Value(Convert.ToUInt32(value));
     }
 }

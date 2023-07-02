@@ -35,6 +35,16 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return font;
         }
 
+        public static FontSetup FromOpenXmlFont(Font fontXml)
+        {
+            FontStyle font = new FontStyle()
+            {
+                Font = fontXml.FontName?.Val?.Value,
+                Color = fontXml.Color?.Rgb?.FromOpenXmlHexBinaryValue(),
+                Size = fontXml.FontSize?.Val?.Value,
+            };
+            return new FontSetup(font);
+        }
 
         #region Build Child properties
         private FontSize? BuildFontSize()

@@ -26,7 +26,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
                 Assert.That(border, Is.Not.EqualTo(BorderStyle.Default));
             });
 
-            border.SetBorderType(BorderStyle.BorderType.None);
+            border.SetBorderType(null);
             border.Color = null;
             Assert.Multiple(() =>
             {
