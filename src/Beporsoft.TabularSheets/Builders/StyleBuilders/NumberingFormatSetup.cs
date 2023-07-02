@@ -33,6 +33,12 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return numberingFormat;
         }
 
+        public static NumberingFormatSetup FromOpenXmlNumberingFormat(NumberingFormat numFormatXml)
+        {
+            string pattern = numFormatXml.FormatCode!;
+            return new NumberingFormatSetup(pattern);
+        }
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as NumberingFormatSetup);

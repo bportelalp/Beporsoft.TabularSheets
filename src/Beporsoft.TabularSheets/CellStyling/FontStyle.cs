@@ -23,7 +23,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// <summary>
         /// The font size, or <see langword="null"/> for default size.
         /// </summary>
-        public int? Size { get; set; } = null;
+        public double? Size { get; set; } = null;
 
         /// <summary>
         /// The font family name, or <see langword="null"/> for default font

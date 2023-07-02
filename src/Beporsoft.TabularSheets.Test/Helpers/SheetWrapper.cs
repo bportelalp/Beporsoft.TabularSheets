@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Beporsoft.TabularSheets.Tools;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
 
 namespace Beporsoft.TabularSheets.Test.Helpers
 {
@@ -87,7 +88,7 @@ namespace Beporsoft.TabularSheets.Test.Helpers
                     style.Font = GetFont(Convert.ToInt32(cellFormat.FontId.Value));
                 if (cellFormat.BorderId is not null)
                     style.Border = GetBorder(Convert.ToInt32(cellFormat.BorderId.Value));
-                if(cellFormat.NumberFormatId is not null)
+                if (cellFormat.NumberFormatId is not null)
                     style.NumberingFormat = GetNumberingFormat(Convert.ToInt32(cellFormat.NumberFormatId.Value));
                 return style.ToStyle();
             }
@@ -119,10 +120,21 @@ namespace Beporsoft.TabularSheets.Test.Helpers
 
         private NumberingFormat GetNumberingFormat(int indexNumbering)
         {
-            NumberingFormat numberingPattern = Stylesheet.NumberingFormats!
+            NumberingFormat? numberingPattern = Stylesheet.NumberingFormats!
                 .Descendants<NumberingFormat>()
-                .Single(nf => nf.NumberFormatId!.Value == indexNumbering.ToOpenXmlUInt32());
-            return numberingPattern;
+                .SingleOrDefault(nf => nf.NumberFormatId!.Value == indexNumbering.ToOpenXmlUInt32());
+            if (numberingPattern is null)
+            {
+                if (NumberingFormatSetupCollection.PredefinedFormats.ContainsKey(indexNumbering))
+                {
+                    numberingPattern = new()
+                    {
+                        NumberFormatId = indexNumbering.ToOpenXmlUInt32(),
+                        FormatCode = NumberingFormatSetupCollection.PredefinedFormats[indexNumbering]
+                    };
+                }
+            }
+            return numberingPattern!;
         }
 
         private void Load(string filePath)
@@ -151,27 +163,17 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         {
             CellStyling.Style style = new();
             if (Border is not null)
-            {
-                // Left Border
-                if (Border.LeftBorder is not null)
-                {
+                style.Border = Builders.StyleBuilders.BorderSetup.FromOpenXmlBorder(Border).BorderStyle;
 
-                }
-            }
             if (Fill is not null)
-            {
-                style.Fill.BackgroundColor = Fill.PatternFill?.ForegroundColor?.Rgb?.FromOpenXmlHexBinaryValue();
-            }
+                style.Fill = Builders.StyleBuilders.FillSetup.FromOpenXmlFill(Fill).Fill;
+
             if (Font is not null)
-            {
-                style.Font.Font = Font.FontName?.Val?.Value;
-                style.Font.Color = Font.Color?.Rgb?.FromOpenXmlHexBinaryValue();
-                style.Font.Size = Font.FontSize?.Val?.Value is not null ? Convert.ToInt32(Font.FontSize?.Val?.Value) : null;
-            }
-            if(NumberingFormat is not null)
-            {
-                style.NumberingPattern = NumberingFormat.FormatCode;
-            }
+                style.Font = Builders.StyleBuilders.FontSetup.FromOpenXmlFont(Font).FontStyle;
+
+            if (NumberingFormat is not null)
+                style.NumberingPattern = Builders.StyleBuilders.NumberingFormatSetup.FromOpenXmlNumberingFormat(NumberingFormat).Pattern;
+
 
             return style;
         }

@@ -60,18 +60,23 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         [Test]
         public void TryHeaderStyles()
         {
+            Color bgColor = Color.Azure;
+            double fontSize = 8;
+            BorderStyle.BorderType borderType = BorderStyle.BorderType.Thin;
+
             string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
                 table = Generate();
-                table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
-                table.HeaderStyle.Font.Size = 12;
-                table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
+                table.HeaderStyle.Fill.BackgroundColor = bgColor;
+                table.HeaderStyle.Font.Size = fontSize;
+                table.HeaderStyle.Border.SetBorderType(borderType);
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+
             AssertTabularSheetData(table, sheet);
 
             foreach (var cell in sheet.GetHeaderCells())
@@ -81,8 +86,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 Assert.That(style, Is.Not.Null);
                 Assert.Multiple(() =>
                 {
-                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.Azure.ToArgb()));
-                    Assert.That(style.Font.Size, Is.EqualTo(12));
+                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColor.ToArgb()));
+                    Assert.That(style.Font.Size, Is.EqualTo(fontSize));
+                    Assert.That(style.Border.Top, Is.EqualTo(borderType));
+                    Assert.That(style.Border.Bottom, Is.EqualTo(borderType));
+                    Assert.That(style.Border.Left, Is.EqualTo(borderType));
+                    Assert.That(style.Border.Right, Is.EqualTo(borderType));
                 });
             }
             foreach (var cell in sheet.GetBodyCells())
@@ -114,59 +123,175 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         }
 
         [Test]
-        public void TryDefaultStyles()
+        public void TryBodyStyle()
         {
+            Color bgColor = Color.Azure;
+            string font = "Arial";
+            double fontSize = 8;
+            BorderStyle.BorderType borderType = BorderStyle.BorderType.Thin;
+
+            string path = GetPath($"Test{nameof(TryBodyStyle)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Generate();
-                table.BodyStyle.Fill.BackgroundColor = Color.Azure;
-                table.BodyStyle.Font.Font = "Arial";
-                table.BodyStyle.Font.Size = 8;
-                table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
-                string path = GetPath($"Test{nameof(TryDefaultStyles)}.xlsx");
+                table = Generate();
+                table.BodyStyle.Fill.BackgroundColor = bgColor;
+                table.BodyStyle.Font.Font = font;
+                table.BodyStyle.Font.Size = fontSize;
+                table.BodyStyle.Border.SetBorderType(borderType);
                 table.Create(path);
+                sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+            AssertTabularSheetData(table, sheet);
+            // Header default style
+            foreach (var cell in sheet.GetHeaderCells())
+            {
+                if (cell.StyleIndex is not null)
+                {
+                    Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(style.Fill, Is.EqualTo(FillStyle.Default));
+                        Assert.That(style.Font, Is.EqualTo(FontStyle.Default));
+                        Assert.That(style.Border, Is.EqualTo(BorderStyle.Default));
+                    });
+                }
+            }
+
+            // Body has the specified style, Not check for numbering for datetime. Assumed ok due the previous test
+            foreach (var cell in sheet.GetBodyCells())
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColor.ToArgb()));
+                    Assert.That(style.Font.Size, Is.EqualTo(fontSize));
+                    Assert.That(style.Font.Font, Is.EqualTo(font));
+                    Assert.That(style.Border.Top, Is.EqualTo(borderType));
+                    Assert.That(style.Border.Bottom, Is.EqualTo(borderType));
+                    Assert.That(style.Border.Left, Is.EqualTo(borderType));
+                    Assert.That(style.Border.Right, Is.EqualTo(borderType));
+                });
+            }
+
         }
 
         [Test]
         public void TryOverrideStyle()
         {
+            Color bgColorHead = Color.DarkBlue;
+            Color bgColorBody = Color.Azure;
+            string fontBody = "Arial";
+            Color fontColorHeader = Color.White;
+            int fontSizeBody = 8;
+            BorderStyle.BorderType borderTypeBody = BorderStyle.BorderType.Thin;
+            BorderStyle.BorderType borderTypeHead = BorderStyle.BorderType.Medium;
+            Color borderColorHead = Color.Yellow;
+
+            string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Generate();
-                table.BodyStyle.Fill.BackgroundColor = Color.Azure;
-                table.BodyStyle.Font.Font = "Arial";
-                table.BodyStyle.Font.Size = 8;
-                table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
+                table = Generate();
+                table.BodyStyle.Fill.BackgroundColor = bgColorBody;
+                table.BodyStyle.Font.Font = fontBody;
+                table.BodyStyle.Font.Size = fontSizeBody;
+                table.BodyStyle.Border.SetBorderType(borderTypeBody);
 
-                table.HeaderStyle.Fill.BackgroundColor = Color.DarkBlue;
-                table.HeaderStyle.Font.Color = Color.White;
-                table.HeaderStyle.Border.SetBorderType(BorderStyle.BorderType.Medium);
-                table.HeaderStyle.Border.Color = Color.Yellow;
-                string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
+                table.HeaderStyle.Fill.BackgroundColor = bgColorHead;
+                table.HeaderStyle.Font.Color = fontColorHeader;
+                table.HeaderStyle.Border.SetBorderType(borderTypeHead);
+                table.HeaderStyle.Border.Color = borderColorHead;
+
+                table.Options.InheritHeaderStyleFromBody = true;
                 table.Create(path);
+                sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+            AssertTabularSheetData(table, sheet);
+            // Header merged style
+            foreach (var cell in sheet.GetHeaderCells())
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColorHead.ToArgb()));
+                    Assert.That(style.Font.Font, Is.EqualTo(fontBody));
+                    Assert.That(style.Font.Color?.ToArgb(), Is.EqualTo(fontColorHeader.ToArgb()));
+                    Assert.That(style.Font.Size, Is.EqualTo(fontSizeBody));
+                    Assert.That(style.Border.Color?.ToArgb(), Is.EqualTo(borderColorHead.ToArgb()));
+                    Assert.That(style.Border.Top, Is.EqualTo(borderTypeHead));
+                    Assert.That(style.Border.Bottom, Is.EqualTo(borderTypeHead));
+                    Assert.That(style.Border.Left, Is.EqualTo(borderTypeHead));
+                    Assert.That(style.Border.Right, Is.EqualTo(borderTypeHead));
+                });
+
+            }
+            // check defaults body and not inherited from header
+            foreach (var cell in sheet.GetBodyCells())
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColorBody.ToArgb()));
+                    Assert.That(style.Font.Font, Is.EqualTo(fontBody));
+                    Assert.That(style.Font.Size, Is.EqualTo(fontSizeBody));
+                    Assert.That(style.Font.Color?.ToArgb(), Is.Not.EqualTo(fontColorHeader.ToArgb()));
+                    Assert.That(style.Border.Color?.ToArgb(), Is.Not.EqualTo(borderColorHead.ToArgb()));
+                    Assert.That(style.Border.Top, Is.EqualTo(borderTypeBody));
+                    Assert.That(style.Border.Bottom, Is.EqualTo(borderTypeBody));
+                    Assert.That(style.Border.Left, Is.EqualTo(borderTypeBody));
+                    Assert.That(style.Border.Right, Is.EqualTo(borderTypeBody));
+                });
+
+            }
         }
 
         [Test]
         public void TryColumnStyle()
         {
+            string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
+            int indexColExtra1 = 0;
+            int indexColExtra2 = 0;
             Assert.That(() =>
             {
                 Style style = new Style();
                 style.Fill.BackgroundColor = Color.Red;
-                TabularSheet<Product> table = Generate();
-                table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
-                table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
+                table = Generate();
+                var colExtra1 = table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
+                var colExtra2 = table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
                 {
                     s.NumberingPattern = "0.00";
                     s.Fill.BackgroundColor = Color.AliceBlue;
                 });
+                indexColExtra1 = colExtra1.ColumnIndex;
+                indexColExtra2 = colExtra2.ColumnIndex;
                 table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data unmodify Numbering").SetStyle(s => s.Font.Color = Color.Blue);
                 table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data modify Numbering").SetStyle(s => s.NumberingPattern = "d-mmm-yy");
                 string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
                 table.Create(path);
+                sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+            AssertTabularSheetData(table, sheet);
+            foreach (var cell in sheet.GetBodyCellsByColumn(indexColExtra1))
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.Red.ToArgb()));
+            }
+            foreach (var cell in sheet.GetBodyCellsByColumn(indexColExtra2))
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.AliceBlue.ToArgb()));
+                Assert.That(style.NumberingPattern, Is.EqualTo("0.00"));
+            }
         }
 
         #region TestHelpers
