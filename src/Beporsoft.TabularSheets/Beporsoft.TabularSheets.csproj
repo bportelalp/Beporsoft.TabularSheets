@@ -4,22 +4,25 @@
 		<TargetFrameworks>net48;net6.0;net7.0;netstandard2.0</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Title>Tabular Sheets</Title>
 		<LangVersion>10.0</LangVersion>
+		<NoWarn>1701;1702;IDE0090</NoWarn>
+		
+		<Title>Tabular Sheets</Title>
+		<Description>Export generic collections as spreadsheets with configurable column content based on type T</Description>
+		<Authors>Bruno Portela</Authors>
+		<PackageProjectUrl>https://github.com/bportelalp/tabular-sheets</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/bportelalp/tabular-sheets</RepositoryUrl>
+		<Copyright>MIT</Copyright>
+		<PackageTags>spreadsheet;excel;export;generic;collection;OpenXml;tabular</PackageTags>
+		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		
 		<VersionPrefix>0.1.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
-		<Description>Export generic collections as spreadsheets with configurable column content based on type T</Description>
-		<Copyright>MIT</Copyright>
-		<PackageProjectUrl>https://github.com/bportelalp/tabular-sheets</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/bportelalp/tabular-sheets</RepositoryUrl>
+		
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Authors>Bruno Portela</Authors>
-		<NoWarn>1701;1702;IDE0090</NoWarn>
-		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageTags>spreadsheet;excel;export;generic;collection;OpenXml;tabular</PackageTags>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 

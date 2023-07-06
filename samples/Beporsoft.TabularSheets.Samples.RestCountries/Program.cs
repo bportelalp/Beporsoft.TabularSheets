@@ -34,13 +34,16 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.AddColumn("Region", c => c.Region);
                 sheet.AddColumn("Capital", c => c.Capital.FirstOrDefault()!);
                 sheet.AddColumn("Languages", c => string.Join("; ", c.Languages.Values));
-                sheet.AddColumn("Population", c => c.Population);
+                sheet.AddColumn("Population", c => c.Population)
+                    .SetStyle(s => s.NumberingPattern = "#,##0"); // Style with no decimals and thousands separator
                 sheet.AddColumn("Currencies", c => string.Join("; ", c.Currencies.Values.Select(v => $"{v.Name} ({v.Symbol})")));
-
+                
                 // Add some style
                 Console.WriteLine($"Adding some style");
-                sheet.HeaderStyle.Fill.BackgroundColor = Color.Black;
+                sheet.HeaderStyle.Fill.BackgroundColor = Color.DarkOliveGreen;
                 sheet.HeaderStyle.Font.Color = Color.White;
+                sheet.HeaderStyle.Border.Bottom = BorderStyle.BorderType.Medium;
+
                 sheet.BodyStyle.Border.Top = BorderStyle.BorderType.Thin;
                 sheet.BodyStyle.Border.Bottom = BorderStyle.BorderType.Thin;
 
@@ -48,7 +51,7 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 Console.WriteLine($"Creating file");
                 string path = PrepareDirectory($"{region}-countries.xlsx");
                 sheet.Create(path);
-                Console.WriteLine($"Done!");
+                Console.WriteLine($"Done! Exported on: {path}");
             }
             else
             {
@@ -68,6 +71,8 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                     Console.WriteLine($"{index}. {reg}");
                     index++;
                 }
+                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine("Type a number and press enter");
                 var input = Console.ReadLine();
                 bool converted = int.TryParse(input, out int result);
                 if (converted && result > 0 && result <= _regions.Count)

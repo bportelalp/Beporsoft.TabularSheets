@@ -24,6 +24,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {typeof(bool), new TypeConverter(CellValues.Boolean, (obj) => new CellValue(Convert.ToBoolean(obj))) },
             // DateTime must be saved as number, using the value as OADate, It is responsability of formatting to convert it as datetime
             {typeof(DateTime), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDateTime(obj).ToOADate())) },
+            // TimeSpan must be saved as number using the total days
+            {typeof(TimeSpan), new TypeConverter(CellValues.Number, (obj) => new CellValue(((TimeSpan)obj).TotalDays)) }
         };
 
         public CellBuilder(SharedStringBuilder sharedStrings)

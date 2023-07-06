@@ -109,7 +109,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
                     (int row, int col) = CellRefBuilder.GetIndexes(cell.CellReference!.Value!);
                     object value = table.Columns.Single(c => c.ColumnIndex == col).Apply(table.Items[row - 1]);
-                    if (value.GetType() == typeof(DateTime))
+                    if (value.GetType() == typeof(DateTime) || value.GetType() == typeof(TimeSpan))
                     {
                         Assert.That(style.NumberingPattern, Is.Not.Null);
                         Assert.That(style.NumberingPattern, Is.Not.Empty);
@@ -347,11 +347,15 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                         Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
                         Assert.That(date, Is.EqualTo(content));
                     }
+                    else if (value.GetType() == typeof(TimeSpan))
+                    {
+                        // Todo process TimeSpan
+                    }
                     else if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.Number)
                     {
                         // Treat all as double
                         double content = Convert.ToDouble(cell.CellValue!.Text, System.Globalization.CultureInfo.InvariantCulture);
-                        double valueDouble = Convert.ToDouble(column.Apply(item));
+                        double valueDouble = Convert.ToDouble(value);
                         Assert.That(valueDouble, Is.EqualTo(content));
                     }
                 });
@@ -371,7 +375,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
             table.AddColumn(nameof(Product.Cost), t => t.Cost);
             table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
-            table.AddColumn(t => t.LastUpdate).SetTitle(nameof(Product.LastUpdate)); ;
+            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
             return table;
         }
 
