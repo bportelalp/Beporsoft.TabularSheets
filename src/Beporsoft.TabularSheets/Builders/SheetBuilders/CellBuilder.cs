@@ -22,16 +22,42 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {typeof(float), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDouble(obj))) },
             {typeof(decimal), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDecimal(obj))) },
             {typeof(bool), new TypeConverter(CellValues.Boolean, (obj) => new CellValue(Convert.ToBoolean(obj))) },
+
             // DateTime must be saved as number, using the value as OADate, It is responsability of formatting to convert it as datetime
             {typeof(DateTime), new TypeConverter(CellValues.Number, (obj) => new CellValue(Convert.ToDateTime(obj).ToOADate())) },
+            {typeof(DateTimeOffset), new TypeConverter(CellValues.Number, (obj) => new CellValue(((DateTimeOffset)obj).DateTime.ToOADate())) },
+
             // TimeSpan must be saved as number using the total days
-            {typeof(TimeSpan), new TypeConverter(CellValues.Number, (obj) => new CellValue(((TimeSpan)obj).TotalDays)) }
+            {typeof(TimeSpan), new TypeConverter(CellValues.Number, (obj) => new CellValue(((TimeSpan)obj).TotalDays)) },
+#if NET6_0_OR_GREATER
+            {typeof(TimeOnly), new TypeConverter(CellValues.Number, (obj) => new CellValue(((TimeOnly)obj).ToTimeSpan().TotalDays)) }
+#endif
         };
 
         public CellBuilder(SharedStringBuilder sharedStrings)
         {
             SharedStrings = sharedStrings;
         }
+
+        public static List<Type> DateTimeTypes { get; } = new List<Type>() { typeof(DateTime), typeof(DateTimeOffset) };
+        public static List<Type> TimeSpanTypes { get; } = new List<Type>()
+        {
+            typeof(TimeSpan),
+#if NET6_0_OR_GREATER 
+            typeof(TimeOnly) 
+#endif 
+        };
+
+        public static List<Type> CellTypesWithStyle { get; } = new List<Type>() 
+        { 
+            typeof(DateTime), 
+            typeof(DateTimeOffset), 
+            typeof(TimeSpan),
+#if NET6_0_OR_GREATER 
+            typeof(TimeOnly) 
+#endif 
+        };
+
 
         /// <summary>
         /// The <see cref="SharedStringBuilder"/> to fill with strings.
@@ -56,7 +82,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 // Converter null, use a shared string registering it.
                 cell.DataType = CellValues.SharedString;
-                string valueString = Convert.ToString(value)?? string.Empty;
+                string valueString = Convert.ToString(value) ?? string.Empty;
                 int indexSharedTable = SharedStrings.RegisterString(valueString);
                 cell.CellValue = new CellValue(indexSharedTable);
             }

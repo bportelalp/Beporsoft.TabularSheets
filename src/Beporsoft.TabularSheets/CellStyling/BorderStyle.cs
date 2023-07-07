@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
@@ -42,6 +39,7 @@ namespace Beporsoft.TabularSheets.CellStyling
 
         internal static BorderStyle Default { get; } = new BorderStyle();
 
+        #region SetBorder
         /// <summary>
         /// Set the border type to all sides
         /// </summary>
@@ -81,25 +79,7 @@ namespace Beporsoft.TabularSheets.CellStyling
             Left = vertical;
             Right = vertical;
         }
-
-        /// <summary>
-        /// Type of border
-        /// </summary>
-        public enum BorderType
-        {
-            /// <summary>
-            /// No border is present
-            /// </summary>
-            None,
-            /// <summary>
-            /// A thin border
-            /// </summary>
-            Thin,
-            /// <summary>
-            /// A medium border
-            /// </summary>
-            Medium,
-        }
+        #endregion
 
         #region IEquatable
         /// <inheritdoc cref="Equals(object)"/>
@@ -126,5 +106,65 @@ namespace Beporsoft.TabularSheets.CellStyling
             return HashCode.Combine(Color, Left, Right, Top, Bottom);
         }
         #endregion
+
+
+        /// <summary>
+        /// Type of border
+        /// </summary>
+        public enum BorderType
+        {
+            /// <summary>
+            /// No border is present
+            /// </summary>
+            None,
+            /// <summary>
+            /// Border thin
+            /// </summary>
+            Thin,
+            /// <summary>
+            /// Border medium
+            /// </summary>
+            Medium,
+            /// <summary>
+            /// Border thick
+            /// </summary>
+            Thick,
+            /// <summary>
+            /// Border dashed
+            /// </summary>
+            Dashed,
+            /// <summary>
+            /// Border dotted
+            /// </summary>
+            Dotted,
+            /// <summary>
+            /// Border is dash-dot
+            /// </summary>
+            DashDot,
+            /// <summary>
+            /// Border is dash-dot-dot
+            /// </summary>
+            DashDotDot,
+            /// <summary>
+            /// Border is hairline
+            /// </summary>
+            Hair,
+            /// <summary>
+            /// Border is medium dash-dot
+            /// </summary>
+            MediumDashDot,
+            /// <summary>
+            /// Border is medium dash-dot-dot
+            /// </summary>
+            MediumDashDotDot,
+            /// <summary>
+            /// Border is medium dashed
+            /// </summary>
+            MediumDashed,
+            /// <summary>
+            /// Border is slant-dash-dot
+            /// </summary>
+            SlantDashDot,
+        }
     }
 }
