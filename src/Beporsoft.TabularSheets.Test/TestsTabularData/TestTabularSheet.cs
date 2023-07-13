@@ -416,7 +416,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         }
 
 
-        private string GetPath(string fileName)
+        private static string GetPath(string fileName)
         {
             DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
             return $"{projectDir!.FullName}\\Results\\{fileName}";
