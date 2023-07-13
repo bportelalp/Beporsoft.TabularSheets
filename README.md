@@ -1,5 +1,6 @@
 # Tabular data sheets
 
+[![NuGet version (Beporsoft.TabularSheets)](https://img.shields.io/nuget/v/Beporsoft.TabularSheets.svg?style=flat-square)](https://www.nuget.org/packages/Beporsoft.TabularSheets/)
 
 Tools to create data tables on file formats like Excel or Csv.
 

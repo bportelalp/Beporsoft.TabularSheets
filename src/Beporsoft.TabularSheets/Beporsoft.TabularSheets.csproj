@@ -10,9 +10,10 @@
 		<Title>Tabular Sheets</Title>
 		<Description>Export generic collections as spreadsheets with configurable column content based on type T</Description>
 		<Authors>Bruno Portela</Authors>
-		<PackageProjectUrl>https://github.com/bportelalp/tabular-sheets</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/bportelalp/tabular-sheets</RepositoryUrl>
-		<Copyright>MIT</Copyright>
+		<PackageProjectUrl>https://github.com/bportelalp/Beporsoft.TabularSheets</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/bportelalp/Beporsoft.TabularSheets</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
 		<PackageTags>spreadsheet;excel;export;generic;collection;OpenXml;tabular</PackageTags>
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
