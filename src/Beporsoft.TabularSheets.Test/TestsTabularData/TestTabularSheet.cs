@@ -3,6 +3,7 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Test.Helpers;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 
 namespace Beporsoft.TabularSheets.Test.TestsTabularData
@@ -61,8 +62,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         public void TryHeaderStyles()
         {
             Color bgColor = Color.Azure;
-            double fontSize = 8;
-            BorderStyle.BorderType borderType = BorderStyle.BorderType.Thin;
+            double fontSize = 9.25;
+            BorderStyle.BorderType borderType = BorderStyle.BorderType.Dashed;
 
             string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
             TabularSheet<Product> table = null!;
@@ -109,7 +110,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
                     (int row, int col) = CellRefBuilder.GetIndexes(cell.CellReference!.Value!);
                     object value = table.Columns.Single(c => c.ColumnIndex == col).Apply(table.Items[row - 1]);
-                    if (value.GetType() == typeof(DateTime))
+                    if (value.GetType() == typeof(DateTime) || value.GetType() == typeof(TimeSpan))
                     {
                         Assert.That(style.NumberingPattern, Is.Not.Null);
                         Assert.That(style.NumberingPattern, Is.Not.Empty);
@@ -259,6 +260,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             SheetWrapper sheet = null!;
             int indexColExtra1 = 0;
             int indexColExtra2 = 0;
+            int indexColExtra3 = 0;
+            int indexColExtra4 = 0;
             Assert.That(() =>
             {
                 Style style = new Style();
@@ -272,12 +275,22 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 });
                 indexColExtra1 = colExtra1.ColumnIndex;
                 indexColExtra2 = colExtra2.ColumnIndex;
-                table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data unmodify Numbering").SetStyle(s => s.Font.Color = Color.Blue);
-                table.AddColumn(t => t.LastPriceUpdate).SetTitle("Data modify Numbering").SetStyle(s => s.NumberingPattern = "d-mmm-yy");
+
+                var colExtra3 = table.AddColumn(t => t.LastPriceUpdate)
+                                        .SetTitle("Data unmodify Numbering")
+                                        .SetStyle(s => s.Font.Color = Color.Blue);
+                var colExtra4 = table.AddColumn(t => t.LastPriceUpdate)
+                                        .SetTitle("Data modify Numbering")
+                                        .SetStyle(s => s.NumberingPattern = "d-mmm-yy");
+                indexColExtra3 = colExtra3.ColumnIndex;
+                indexColExtra4 = colExtra4.ColumnIndex;
+
                 string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
                 table.Create(path);
+
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+
             AssertTabularSheetData(table, sheet);
             foreach (var cell in sheet.GetBodyCellsByColumn(indexColExtra1))
             {
@@ -289,8 +302,29 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 Assert.That(cell.StyleIndex, Is.Not.Null);
                 Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
-                Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.AliceBlue.ToArgb()));
-                Assert.That(style.NumberingPattern, Is.EqualTo("0.00"));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.AliceBlue.ToArgb()));
+                    Assert.That(style.NumberingPattern, Is.EqualTo("0.00"));
+                });
+            }
+
+            foreach (var cell in sheet.GetBodyCellsByColumn(indexColExtra3))
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style.Font.Color?.ToArgb(), Is.EqualTo(Color.Blue.ToArgb()));
+                    Assert.That(style.NumberingPattern, Is.EqualTo(table.Options.DateTimeFormat));
+                });
+            }
+
+            foreach (var cell in sheet.GetBodyCellsByColumn(indexColExtra4))
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.That(style.NumberingPattern, Is.EqualTo("d-mmm-yy"));
             }
         }
 
@@ -308,7 +342,6 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 AssertColumnHeaderData(col, sheet);
                 AssertColumnBodyData(table, col, sheet);
             }
-
         }
 
         private static void AssertColumnHeaderData(TabularDataColumn<Product> column, SheetWrapper sheet)
@@ -340,18 +373,25 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                         string? content = sheet.GetSharedString(indexSharedString);
                         Assert.That(value.ToString(), Is.EqualTo(content));
                     }
-                    else if (value.GetType() == typeof(DateTime))
+                    else if (CellBuilder.DateTimeTypes.Contains(value.GetType()))
                     {
                         var date = ((DateTime)value).ToOADate();
-                        double content = Convert.ToDouble(cell.CellValue!.Text);
+                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
                         Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
                         Assert.That(date, Is.EqualTo(content));
+                    }
+                    else if (CellBuilder.TimeSpanTypes.Contains(value.GetType()))
+                    {
+                        var totalDays = ((TimeSpan)value).TotalDays;
+                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
+                        Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
+                        Assert.That(totalDays, Is.EqualTo(content));
                     }
                     else if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.Number)
                     {
                         // Treat all as double
-                        double content = Convert.ToDouble(cell.CellValue!.Text, System.Globalization.CultureInfo.InvariantCulture);
-                        double valueDouble = Convert.ToDouble(column.Apply(item));
+                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
+                        double valueDouble = Convert.ToDouble(value);
                         Assert.That(valueDouble, Is.EqualTo(content));
                     }
                 });
@@ -371,12 +411,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
             table.AddColumn(nameof(Product.Cost), t => t.Cost);
             table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
-            table.AddColumn(t => t.LastUpdate).SetTitle(nameof(Product.LastUpdate)); ;
+            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
             return table;
         }
 
 
-        private string GetPath(string fileName)
+        private static string GetPath(string fileName)
         {
             DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
             return $"{projectDir!.FullName}\\Results\\{fileName}";

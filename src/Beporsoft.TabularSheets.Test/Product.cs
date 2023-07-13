@@ -16,13 +16,14 @@ namespace Beporsoft.TabularSheets.Test
         {
             Id = Guid.NewGuid();
         }
+
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public double Cost { get; set; }
         public string Vendor { get; set; } = null!;
         public string CountryOrigin { get; set; } = null!;
-        public DateTime LastUpdate { get; set; }
         public DateTime LastPriceUpdate { get; set; }
+        public TimeSpan DeliveryTime { get; set; }
 
 
         /// <summary>
@@ -43,9 +44,8 @@ namespace Beporsoft.TabularSheets.Test
                     Vendor = new string(Enumerable.Repeat(letters, 10).Select(s => s[rnd.Next(s.Length)]).ToArray()),
                     CountryOrigin = new string(Enumerable.Repeat(letters, 8).Select(s => s[rnd.Next(s.Length)]).ToArray()),
                     Cost = rnd.NextDouble() * 10.0,
-                    LastUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days)),
-                    LastPriceUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days))
-                    
+                    LastPriceUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days)),
+                    DeliveryTime = TimeSpan.FromSeconds(rnd.NextDouble() * 10000.0)
                 };
                 products.Add(product);
             }

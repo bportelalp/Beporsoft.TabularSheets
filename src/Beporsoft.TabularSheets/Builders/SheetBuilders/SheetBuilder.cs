@@ -158,14 +158,27 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             NumberingFormatSetup? numFmtSetup =
                 string.IsNullOrWhiteSpace(combinedStyle.NumberingPattern) is true ? null : new NumberingFormatSetup(combinedStyle.NumberingPattern!);
 
-            if (value is not null && value.GetType() == typeof(DateTime) && numFmtSetup is null)
-                numFmtSetup = new NumberingFormatSetup(Table.Options.DateTimeFormat);
+            numFmtSetup = FindSuitableNumberingFormat(value, numFmtSetup);
 
             if (fillSetup is null && fontSetup is null && borderSetup is null && numFmtSetup is null)
                 return null;
 
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numFmtSetup);
             return formatId;
+        }
+
+
+        private NumberingFormatSetup? FindSuitableNumberingFormat(object? value, NumberingFormatSetup? customNumberingFormat)
+        {
+            // Omit suitable if other one is provided or value is null
+            if (value is null || customNumberingFormat is not null)
+                return customNumberingFormat;
+            else if (value.GetType() == typeof(DateTime))
+                return new NumberingFormatSetup(Table.Options.DateTimeFormat);
+            else if (value.GetType() == typeof(TimeSpan))
+                return new NumberingFormatSetup(Table.Options.TimeSpanFormat);
+            else
+                return customNumberingFormat;
         }
 
         /// <summary>

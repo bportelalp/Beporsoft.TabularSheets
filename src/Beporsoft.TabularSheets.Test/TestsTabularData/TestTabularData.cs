@@ -186,8 +186,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             col = table.AddColumn(t => t.CountryOrigin);
             col = table.AddColumn("Cost by unit", t => t.Cost);
             col = table.AddColumn(t => t.LastPriceUpdate).SetTitle("Price updated on");
-            col = table.AddColumn(t => t.LastUpdate);
-
+            col = table.AddColumn(t => t.DeliveryTime).SetTitle("Delivery Time");
             return table;
         }
 
