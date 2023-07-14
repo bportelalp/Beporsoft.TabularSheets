@@ -109,11 +109,13 @@ namespace Beporsoft.TabularSheets.Builders
             };
             sheets.Append(sheet);
 
-            Columns columns = table.BuildColumns();
-            worksheetPart.Worksheet.Append(columns);
+            WorksheetBundle bundle = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
+            if (bundle.FormatProperties is not null)
+                worksheetPart.Worksheet.AppendChild(bundle.FormatProperties);
+            if (bundle.Columns is null)
+                worksheetPart.Worksheet.AppendChild(bundle.Columns);
 
-            SheetData sheetData = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
-            worksheetPart.Worksheet.AppendChild(sheetData);
+            worksheetPart.Worksheet.AppendChild(bundle.Data);
         }
 
 

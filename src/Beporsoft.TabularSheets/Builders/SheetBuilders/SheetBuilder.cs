@@ -1,4 +1,5 @@
-﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -47,6 +48,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         #endregion
 
         #region Public
+
         /// <summary>
         /// Build the <see cref="SheetData"/> node using values from <see cref="Table"/>. <br/>
         /// In addition, handles the required styles and include it inside the <see cref="StyleBuilder"/>
@@ -59,7 +61,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             _cellRefIterator.Reset();
             Row header = CreateHeaderRow();
             sheetData.AppendChild(header);
-
             foreach (var item in Table.Items)
             {
                 _cellRefIterator.MoveNextRow();
@@ -69,20 +70,26 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             return sheetData;
         }
 
-        public static Columns BuildColumns(TabularSheet<T> table)
+        public Columns? BuildColumns()
         {
-            Columns columns = new Columns();
-            int index = 1;
-            foreach (var colSheet in table.Columns)
-            {
-                Column col = new Column();
-                col.BestFit = true;
-                col.Min = index.ToOpenXmlUInt32();
-                col.Max = index.ToOpenXmlUInt32();
-                columns.Append(col);
-                index++;
-            }
-            return columns;
+            //Columns columns = new Columns();
+            //int index = 1;
+            //foreach (var colSheet in Table.Columns)
+            //{
+            //    Column col = new Column();
+            //    col.BestFit = true;
+            //    col.Min = index.ToOpenXmlUInt32();
+            //    col.Max = index.ToOpenXmlUInt32();
+            //    col.Width = 15;
+            //    columns.Append(col);
+            //    index++;
+            //}
+            return null;
+        }
+
+        public SheetFormatProperties BuildFormatProperties()
+        {
+            return ExcelPredefinedFormatProperties.Create();
         }
         #endregion
 

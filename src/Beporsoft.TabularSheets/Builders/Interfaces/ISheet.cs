@@ -23,18 +23,15 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         internal Type ItemType { get; }
 
         /// <summary>
-        /// Build the object <see cref="SheetData"/> which represent the data and fill <paramref name="stylesheetBuilder"/>
-        /// and <paramref name="sharedStringBuilder"/> with the styles and shared strings discovered during the creation, respectively
+        /// Build the object <see cref="WorksheetBundle"/> which contains all the elements to build a <see cref="Worksheet"/>
+        /// and fill <paramref name="stylesheetBuilder"/> and <paramref name="sharedStringBuilder"/> with the styles and 
+        /// shared strings discovered during the creation, respectively
         /// </summary>
         /// <param name="stylesheetBuilder">A reference to the object which handles the compilation of stylesheet</param>
         /// <param name="sharedStringBuilder">A reference to the object which handles the compilation of shared strings</param>
         /// <returns></returns>
-        internal SheetData BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder);
+        internal WorksheetBundle BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder);
 
-        /// <summary>
-        /// Create the columns of the <see cref="ISheet"/> which usually contains only information about width
-        /// </summary>
-        /// <returns></returns>
-        internal Columns BuildColumns();
+
     }
 }
