@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets
+namespace Beporsoft.TabularSheets.Options
 {
     /// <summary>
     /// A collection of common options during build of Spreadsheet
     /// </summary>
-    public class TabularSheetOptions
+    public class SheetOptions
     {
         /// <summary>
         /// The default Date time format applied to cells which contains a <see cref="DateTime"/> or <see cref="DateTimeOffset"/> value.

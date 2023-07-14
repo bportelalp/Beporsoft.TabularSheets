@@ -176,7 +176,6 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                     Assert.That(style.Border.Right, Is.EqualTo(borderType));
                 });
             }
-
         }
 
         [Test]
@@ -326,6 +325,29 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
                 Assert.That(style.NumberingPattern, Is.EqualTo("d-mmm-yy"));
             }
+        }
+
+        [Test]
+        public void TryAlignmentStyle()
+        {
+            AlignmentStyle.HorizontalAlignment horizontalCol3 = AlignmentStyle.HorizontalAlignment.Center;
+            AlignmentStyle.VerticalAlignment verticalCol3 = AlignmentStyle.VerticalAlignment.Center;
+
+            string path = GetPath($"Test{nameof(TryAlignmentStyle)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
+            Assert.That(() =>
+            {
+                table = Generate();
+                var col0 = table.Columns.Single(c => c.ColumnIndex == 0);
+                col0.SetStyle(s => { 
+                    s.Alignment.Horizontal = horizontalCol3;
+                    s.Alignment.Vertical = verticalCol3;
+                    s.Alignment.TextWrap = true;
+                });
+                table.Create(path);
+                sheet = new SheetWrapper(path);
+            }, Throws.Nothing);
         }
 
         #region TestHelpers

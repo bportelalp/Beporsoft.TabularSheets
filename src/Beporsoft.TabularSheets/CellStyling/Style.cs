@@ -27,6 +27,11 @@ namespace Beporsoft.TabularSheets.CellStyling
         public BorderStyle Border { get; set; } = new();
 
         /// <summary>
+        /// <inheritdoc cref="AlignmentStyle"/>
+        /// </summary>
+        public AlignmentStyle Alignment { get; set; } = new();
+
+        /// <summary>
         /// Defines the numbering pattern applied to numeric values
         /// </summary>
         public string? NumberingPattern { get; set; } = null;
@@ -48,13 +53,14 @@ namespace Beporsoft.TabularSheets.CellStyling
                    EqualityComparer<FontStyle>.Default.Equals(Font, other.Font) &&
                    EqualityComparer<FillStyle>.Default.Equals(Fill, other.Fill) &&
                    EqualityComparer<BorderStyle>.Default.Equals(Border, other.Border) &&
+                   EqualityComparer<AlignmentStyle>.Default.Equals(Alignment, other.Alignment) &&
                    NumberingPattern == other.NumberingPattern;
         }
 
         /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Font, Fill, Border, NumberingPattern);
+            return HashCode.Combine(Font, Fill, Border, Alignment, NumberingPattern);
         }
         #endregion
     }
