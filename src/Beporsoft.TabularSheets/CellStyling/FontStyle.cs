@@ -30,6 +30,16 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// </summary>
         public string? Font { get; set; }
 
+        /// <summary>
+        /// Text bold
+        /// </summary>
+        public bool? Bold { get; set; }
+
+        /// <summary>
+        /// Text Italic
+        /// </summary>
+        public bool? Italic { get; set; }
+
         internal static FontStyle Default { get; } = new FontStyle();
 
         #region IEquatable
@@ -46,13 +56,15 @@ namespace Beporsoft.TabularSheets.CellStyling
             return other is not null &&
                   EqualityComparer<Color?>.Default.Equals(Color, other.Color) &&
                   Size == other.Size &&
-                  Font == other.Font;
+                  Font == other.Font &&
+                  Bold == other.Bold &&
+                  Italic == other.Italic;
         }
 
         /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Color, Size, Font);
+            return HashCode.Combine(Color, Size, Font, Bold, Italic);
         }
 
 

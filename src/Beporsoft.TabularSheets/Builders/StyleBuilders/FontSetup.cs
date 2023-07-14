@@ -30,7 +30,9 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             {
                 FontSize = BuildFontSize(),
                 FontName = BuildFontName(),
-                Color = BuildColor()
+                Color = BuildColor(),
+                Bold = BuildBold(),
+                Italic = BuildItalic(),
             };
             return font;
         }
@@ -76,6 +78,32 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 };
             }
             return fontName;
+        }
+
+        private Bold? BuildBold()
+        {
+            Bold? bold = null;
+            if(FontStyle.Bold is not null)
+            {
+                bold = new Bold()
+                {
+                    Val = FontStyle.Bold
+                };
+            }
+            return bold;
+        }
+
+        private Italic? BuildItalic()
+        {
+            Italic? italic = null;
+            if (FontStyle.Italic is not null)
+            {
+                italic = new Italic()
+                {
+                    Val = FontStyle.Bold
+                };
+            }
+            return italic;
         }
 
         public override bool Equals(object? obj)

@@ -14,7 +14,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     /// </summary>
     internal class SharedStringBuilder
     {
-        private readonly ISetupCollection<SharedStringSetup> _strings = new IndexedSetupCollection<SharedStringSetup>();
+        private readonly ISetupCollection<SharedStringSetup> _strings = new SharedStringSetupCollection();
 
         public int RegisterString(string str)
         {

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Beporsoft.TabularSheets.CellStyling;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.CellStyling
+namespace Beporsoft.TabularSheets
 {
     /// <summary>
     /// A collection of common options during build of Spreadsheet
@@ -40,7 +41,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         public string TimeSpanFormat { get; set; } = "[HH]:mm:ss";
 
         /// <summary>
-        /// When <see langword="true"/>, <see cref="TabularSheet{T}.HeaderStyle"/> null properties will be overrided from
+        /// When <see langword="true"/>, <see cref="TabularSheet{T}.HeaderStyle"/> <see langword="null"/> properties will be overrided from
         /// the equivalent <see cref="TabularSheet{T}.BodyStyle"/> properties
         /// </summary>
         public bool InheritHeaderStyleFromBody { get; set; } = false;

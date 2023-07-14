@@ -27,7 +27,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         }
 
         [Test]
-        public void TestToDebug()
+        public void DebugFile()
         {
             Assert.That(() =>
             {
@@ -37,7 +37,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Font.Color = Color.White;
                 table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
-                string path = GetPath("DebugTest.xlsx");
+                string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
                 table.Create(path);
             }, Throws.Nothing);
         }
@@ -403,13 +403,13 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         private static TabularSheet<Product> Generate()
         {
             TabularSheet<Product> table = new();
-            table.AddRange(Product.GenerateProducts(50));
+            table.AddRange(Product.GenerateProducts(1000));
 
             table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
             table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
             table.AddColumn(t => t.Vendor).SetTitle(nameof(Product.Vendor));
             table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
-            table.AddColumn(nameof(Product.Cost), t => t.Cost);
+            table.AddColumn(t => t.Cost).SetTitle(nameof(Product.Cost));
             table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
             table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
             return table;
