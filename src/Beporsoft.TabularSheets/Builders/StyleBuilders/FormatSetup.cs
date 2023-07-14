@@ -53,6 +53,20 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return format;
         }
 
+        public static AlignmentStyle FromOpenXmlElement(Alignment alignment)
+        {
+            AlignmentStyle style = new();
+
+            style.TextWrap = alignment.WrapText?.Value;
+
+            bool horizontalOk = Enum.TryParse(alignment.Horizontal?.Value.ToString(), out AlignmentStyle.HorizontalAlignment horizontal);
+            bool verticalOk = Enum.TryParse(alignment.Vertical?.Value.ToString(), out AlignmentStyle.VerticalAlignment vertical);
+
+            style.Horizontal = horizontalOk ? horizontal : null;
+            style.Vertical = verticalOk ? vertical : null;
+            return style;
+        }
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as FormatSetup);
