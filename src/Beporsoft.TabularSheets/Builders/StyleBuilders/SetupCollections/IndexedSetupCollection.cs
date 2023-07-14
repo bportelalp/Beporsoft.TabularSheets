@@ -6,6 +6,10 @@ using System.Linq;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
 {
+    /// <summary>
+    /// Base class to implement <see cref="ISetupCollection{TSetup}"/>
+    /// </summary>
+    /// <typeparam name="TSetup"></typeparam>
     internal class IndexedSetupCollection<TSetup> : ISetupCollection<TSetup> where TSetup : Setup, IEquatable<TSetup>, IIndexedSetup
     {
         private readonly List<TSetup> _items = new();

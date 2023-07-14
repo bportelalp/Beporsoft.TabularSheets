@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {

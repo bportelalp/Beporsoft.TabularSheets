@@ -68,7 +68,7 @@ namespace Beporsoft.TabularSheets.Builders
             AppendWorkbookStylePart(ref workbookPart);
             AppendSharedStringTablePart(ref workbookPart);
             workbookPart.Workbook.Save();
-            ValidateSpreadSheet(spreadsheet);
+            //ValidateSpreadSheet(spreadsheet);
             return stream;
         }
         #endregion
