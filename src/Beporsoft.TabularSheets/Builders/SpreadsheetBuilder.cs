@@ -112,7 +112,7 @@ namespace Beporsoft.TabularSheets.Builders
             WorksheetBundle bundle = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
             if (bundle.FormatProperties is not null)
                 worksheetPart.Worksheet.AppendChild(bundle.FormatProperties);
-            if (bundle.Columns is null)
+            if (bundle.Columns is not null)
                 worksheetPart.Worksheet.AppendChild(bundle.Columns);
 
             worksheetPart.Worksheet.AppendChild(bundle.Data);

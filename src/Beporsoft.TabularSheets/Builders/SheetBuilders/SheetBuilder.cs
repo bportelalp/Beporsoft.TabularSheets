@@ -73,16 +73,13 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         public Columns? BuildColumns()
         {
             //Columns columns = new Columns();
-            //int index = 1;
-            //foreach (var colSheet in Table.Columns)
+            //foreach (var tableCol in Table.Columns)
             //{
             //    Column col = new Column();
-            //    col.BestFit = true;
-            //    col.Min = index.ToOpenXmlUInt32();
-            //    col.Max = index.ToOpenXmlUInt32();
-            //    col.Width = 15;
+            //    col.Min = (tableCol.ColumnIndex + 1).ToOpenXmlUInt32();
+            //    col.Max = (tableCol.ColumnIndex + 1).ToOpenXmlUInt32();
+            //    col.Width = 10;
             //    columns.Append(col);
-            //    index++;
             //}
             return null;
         }
@@ -160,17 +157,18 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         {
             Style combinedStyle = StyleCombiner.Combine(column.Style, Table.BodyStyle);
             FillSetup? fillSetup = combinedStyle.Fill.Equals(FillStyle.Default) ? null : new FillSetup(combinedStyle.Fill);
-            FontSetup? fontSetup = combinedStyle.Font.Equals(FillStyle.Default) ? null : new FontSetup(combinedStyle.Font);
-            BorderSetup? borderSetup = combinedStyle.Border.Equals(FillStyle.Default) ? null : new BorderSetup(combinedStyle.Border);
+            FontSetup? fontSetup = combinedStyle.Font.Equals(FontStyle.Default) ? null : new FontSetup(combinedStyle.Font);
+            BorderSetup? borderSetup = combinedStyle.Border.Equals(BorderStyle.Default) ? null : new BorderSetup(combinedStyle.Border);
             NumberingFormatSetup? numFmtSetup =
                 string.IsNullOrWhiteSpace(combinedStyle.NumberingPattern) is true ? null : new NumberingFormatSetup(combinedStyle.NumberingPattern!);
+            AlignmentStyle? align = combinedStyle.Alignment.Equals(AlignmentStyle.Default) ? null : combinedStyle.Alignment;
 
             numFmtSetup = FindSuitableNumberingFormat(value, numFmtSetup);
 
-            if (fillSetup is null && fontSetup is null && borderSetup is null && numFmtSetup is null)
+            if (fillSetup is null && fontSetup is null && borderSetup is null && numFmtSetup is null && align is null)
                 return null;
 
-            int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numFmtSetup);
+            int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numFmtSetup, align);
             return formatId;
         }
 
@@ -202,11 +200,12 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             FillSetup? fill = headerStyle.Fill.Equals(FillStyle.Default) ? null : new FillSetup(headerStyle.Fill);
             FontSetup? font = headerStyle.Font.Equals(FillStyle.Default) ? null : new FontSetup(headerStyle.Font);
             BorderSetup? border = headerStyle.Border.Equals(FillStyle.Default) ? null : new BorderSetup(headerStyle.Border);
+            AlignmentStyle? align = headerStyle.Alignment.Equals(AlignmentStyle.Default) ? null : headerStyle.Alignment;
 
             if (font is null && fill is null && border is null)
                 return null;
 
-            int formatId = StyleBuilder.RegisterFormat(fill, font, border);
+            int formatId = StyleBuilder.RegisterFormat(fill, font, border, null, align);
 
             return formatId;
         }

@@ -36,10 +36,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public int RegisteredFormats => _formats.Count;
         public int RegisteredNumberingFormats => _numFormats.Count;
 
-        public int RegisterFormat(FillSetup fill) => RegisterFormat(fill, null, null);
-        public int RegisterFormat(FontSetup font) => RegisterFormat(null, font, null);
-        public int RegisterFormat(BorderSetup border) => RegisterFormat(null, null, border);
-        public int RegisterFormat(NumberingFormatSetup numberingFormat) => RegisterFormat(null, null, null, numberingFormat);
+        public int RegisterFormat(FillSetup fill) => RegisterFormat(fill, null, null, null, null);
+        public int RegisterFormat(FontSetup font) => RegisterFormat(null, font, null, null, null);
+        public int RegisterFormat(BorderSetup border) => RegisterFormat(null, null, border, null, null);
+        public int RegisterFormat(NumberingFormatSetup numberingFormat) => RegisterFormat(null, null, null, numberingFormat, null);
 
         /// <summary>
         /// Register a cell format with the parameters provided
@@ -48,7 +48,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         /// The index which represents this style and must be linked to the cell. Repeated calls which match the <see cref="EqualityComparer{T}"/>
         /// of setups will return the same index
         /// </returns>
-        public int RegisterFormat(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat = null)
+        public int RegisterFormat(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat, AlignmentStyle? alignment)
         {
             if (fill is not null)
                 _fills.Register(fill);
@@ -60,7 +60,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 _numFormats.Register(numberingFormat);
 
 
-            var format = new FormatSetup(fill, font, border, numberingFormat);
+            var format = new FormatSetup(fill, font, border, numberingFormat, alignment);
             var formatId = _formats.Register(format);
             return formatId;
         }

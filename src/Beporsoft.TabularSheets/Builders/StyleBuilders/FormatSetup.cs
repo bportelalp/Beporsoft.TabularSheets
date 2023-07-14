@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -15,18 +16,20 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
     [DebuggerDisplay("Id={Index} | Fill={Fill is not null} | Font={Font is not null} | Border={Border is not null} | Numb={NumberingFormat is not null}")]
     internal class FormatSetup : Setup, IEquatable<FormatSetup?>, IIndexedSetup
     {
-        public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat)
+        public FormatSetup(FillSetup? fill, FontSetup? font, BorderSetup? border, NumberingFormatSetup? numberingFormat, AlignmentStyle? alignment)
         {
             Fill = fill;
             Font = font;
             Border = border;
             NumberingFormat = numberingFormat;
+            Alignment = alignment;
         }
 
         public FillSetup? Fill { get; set; }
         public FontSetup? Font { get; set; }
         public BorderSetup? Border { get; set; }
         public NumberingFormatSetup? NumberingFormat { get; set; }
+        public AlignmentStyle? Alignment { get; set; }
 
         public override OpenXmlElement Build()
         {
@@ -35,29 +38,33 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 FillId = GetSetupId(Fill),
                 FontId = GetSetupId(Font),
                 BorderId = GetSetupId(Border),
-                NumberFormatId = GetSetupId(NumberingFormat)
+                NumberFormatId = GetSetupId(NumberingFormat),
+                Alignment = BuildAlignment()
+
+
             };
-            if (format.FillId is null)
-                format.ApplyFill = false;
-            else
-                format.ApplyFill = true;
 
-            if (format.FontId is null)
-                format.ApplyFont = false;
-            else
-                format.ApplyFont = true;
-
-            if (format.BorderId is null)
-                format.ApplyBorder = false;
-            else
-                format.ApplyBorder = true;
-
-            if (format.NumberFormatId is null)
-                format.ApplyNumberFormat = false;
-            else
-                format.ApplyNumberFormat = true;
+            format.ApplyFill = format.FillId is not null;
+            format.ApplyFont = format.FontId is not null;
+            format.ApplyBorder = format.BorderId is not null;
+            format.ApplyNumberFormat = format.NumberFormatId is not null;
+            format.ApplyAlignment = format.Alignment is not null;
 
             return format;
+        }
+
+        public static AlignmentStyle FromOpenXmlElement(Alignment alignment)
+        {
+            AlignmentStyle style = new();
+
+            style.TextWrap = alignment.WrapText?.Value;
+
+            bool horizontalOk = Enum.TryParse(alignment.Horizontal?.Value.ToString(), out AlignmentStyle.HorizontalAlignment horizontal);
+            bool verticalOk = Enum.TryParse(alignment.Vertical?.Value.ToString(), out AlignmentStyle.VerticalAlignment vertical);
+
+            style.Horizontal = horizontalOk ? horizontal : null;
+            style.Vertical = verticalOk ? vertical : null;
+            return style;
         }
 
         public override bool Equals(object? obj)
@@ -71,21 +78,39 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                    EqualityComparer<FillSetup?>.Default.Equals(Fill, other.Fill) &&
                    EqualityComparer<FontSetup?>.Default.Equals(Font, other.Font) &&
                    EqualityComparer<BorderSetup?>.Default.Equals(Border, other.Border) &&
-                   EqualityComparer<NumberingFormatSetup?>.Default.Equals(NumberingFormat, other.NumberingFormat);
+                   EqualityComparer<NumberingFormatSetup?>.Default.Equals(NumberingFormat, other.NumberingFormat) &&
+                   EqualityComparer<AlignmentStyle?>.Default.Equals(Alignment, other.Alignment);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Fill, Font, Border);
+            return HashCode.Combine(Fill, Font, Border, Alignment);
         }
 
-        #region Assign Ids
+        #region Create OpenXmlElement
         private static UInt32Value? GetSetupId(Setup? setup)
         {
             UInt32Value? value = null;
             if (setup is not null)
                 value = setup.Index.ToOpenXmlUInt32();
             return value;
+        }
+
+        private Alignment? BuildAlignment()
+        {
+            Alignment? align = null;
+            if (Alignment is not null)
+            {
+                bool horizontalOk = Enum.TryParse(Alignment.Horizontal.ToString(), out HorizontalAlignmentValues horizontal);
+                bool verticalOk = Enum.TryParse(Alignment.Vertical.ToString(), out VerticalAlignmentValues vertical);
+                align = new Alignment()
+                {
+                    Horizontal = horizontalOk ? horizontal : null,
+                    Vertical = verticalOk ? vertical : null,
+                    WrapText = Alignment.TextWrap,
+                };
+            }
+            return align;
         }
         #endregion
     }

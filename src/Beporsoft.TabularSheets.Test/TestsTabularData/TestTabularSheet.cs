@@ -176,7 +176,6 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                     Assert.That(style.Border.Right, Is.EqualTo(borderType));
                 });
             }
-
         }
 
         [Test]
@@ -326,6 +325,46 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
                 Assert.That(style.NumberingPattern, Is.EqualTo("d-mmm-yy"));
             }
+        }
+
+        [Test]
+        public void TryAlignmentStyle()
+        {
+            AlignmentStyle.HorizontalAlignment horizontalCol0 = AlignmentStyle.HorizontalAlignment.Center;
+            AlignmentStyle.VerticalAlignment verticalCol0 = AlignmentStyle.VerticalAlignment.Center;
+            bool textWrapCol0 = false;
+
+            string path = GetPath($"Test{nameof(TryAlignmentStyle)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
+            Assert.That(() =>
+            {
+                table = Generate();
+                var col0 = table.Columns.Single(c => c.ColumnIndex == 0);
+                col0.SetStyle(s =>
+                {
+                    s.Alignment.Horizontal = horizontalCol0;
+                    s.Alignment.Vertical = verticalCol0;
+                    s.Alignment.TextWrap = textWrapCol0;
+                });
+                table.Create(path);
+                sheet = new SheetWrapper(path);
+            }, Throws.Nothing);
+
+            foreach (var cell in sheet.GetBodyCellsByColumn(0))
+            {
+                Assert.That(cell.StyleIndex, Is.Not.Null);
+                Style style = sheet.GetCellStyle(Convert.ToInt32(cell.StyleIndex.Value))!;
+                Assert.Multiple(() =>
+                {
+                    Assert.That(style, Is.Not.Null);
+                    Assert.That(style.Alignment.Vertical, Is.EqualTo(verticalCol0));
+                    Assert.That(style.Alignment.Horizontal, Is.EqualTo(horizontalCol0));
+                    Assert.That(style.Alignment.TextWrap, Is.EqualTo(textWrapCol0));
+                });
+
+            }
+
         }
 
         #region TestHelpers

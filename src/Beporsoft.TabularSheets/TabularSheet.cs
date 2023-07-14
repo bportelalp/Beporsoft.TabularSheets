@@ -3,6 +3,7 @@ using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the common options to configure the spreadsheet creation
         /// </summary>
-        public TabularSheetOptions Options { get; private set; } = new();
+        public SheetOptions Options { get; private set; } = new();
         #endregion
 
         #region Configure Table
