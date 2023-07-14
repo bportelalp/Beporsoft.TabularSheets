@@ -17,8 +17,9 @@
 		<PackageTags>spreadsheet;excel;export;generic;collection;OpenXml;tabular</PackageTags>
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReleaseNotes>Solved zero width of columns on MS Excel</PackageReleaseNotes>
 		
-		<VersionPrefix>0.1.0</VersionPrefix>
+		<VersionPrefix>0.1.1</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>

@@ -90,15 +90,19 @@ namespace Beporsoft.TabularSheets
         #region ISheet
         Type ISheet.ItemType => typeof(T);
 
-        SheetData ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
+        WorksheetBundle ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
-            return builder.BuildSheetData();
-        }
+            SheetData data = builder.BuildSheetData();
+            Columns? cols = builder.BuildColumns();
+            SheetFormatProperties formatProps = builder.BuildFormatProperties();
 
-        Columns ISheet.BuildColumns()
-        {
-            return SheetBuilder<T>.BuildColumns(this);
+            return new WorksheetBundle()
+            {
+                Data =data,
+                Columns =cols,
+                FormatProperties = formatProps,
+            };
         }
         #endregion
     }
