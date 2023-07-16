@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
@@ -26,7 +23,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         public double? Size { get; set; } = null;
 
         /// <summary>
-        /// The font family name, or <see langword="null"/> for default font
+        /// The font name, or <see langword="null"/> for default font
         /// </summary>
         public string? Font { get; set; }
 
@@ -34,6 +31,11 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// Text bold
         /// </summary>
         public bool? Bold { get; set; }
+
+        /// <summary>
+        /// <inheritdoc cref="UnderlineType"/>
+        /// </summary>
+        public UnderlineType? Underline { get; set; }
 
         /// <summary>
         /// Text Italic
@@ -58,16 +60,39 @@ namespace Beporsoft.TabularSheets.CellStyling
                   Size == other.Size &&
                   Font == other.Font &&
                   Bold == other.Bold &&
-                  Italic == other.Italic;
+                  Italic == other.Italic &&
+                  Underline == other.Underline;
         }
 
         /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Color, Size, Font, Bold, Italic);
+            return HashCode.Combine(Color, Size, Font, Bold, Italic, Underline);
         }
 
 
+        #endregion
+
+        #region Enum
+
+        /// <summary>
+        /// Underline style for font
+        /// </summary>
+        public enum UnderlineType
+        {
+            /// <summary>
+            /// Disabled
+            /// </summary>
+            None,
+            /// <summary>
+            /// Single underline
+            /// </summary>
+            Single,
+            /// <summary>
+            /// Double underline
+            /// </summary>
+            Double
+        }
         #endregion
     }
 }

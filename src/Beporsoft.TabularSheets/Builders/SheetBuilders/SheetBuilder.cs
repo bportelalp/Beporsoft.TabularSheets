@@ -72,15 +72,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
         public Columns? BuildColumns()
         {
-            //Columns columns = new Columns();
-            //foreach (var tableCol in Table.Columns)
-            //{
-            //    Column col = new Column();
-            //    col.Min = (tableCol.ColumnIndex + 1).ToOpenXmlUInt32();
-            //    col.Max = (tableCol.ColumnIndex + 1).ToOpenXmlUInt32();
-            //    col.Width = 10;
-            //    columns.Append(col);
-            //}
             return null;
         }
 

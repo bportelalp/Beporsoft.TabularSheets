@@ -3,8 +3,6 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Test.Helpers;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Reflection;
 
 namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
@@ -62,8 +60,10 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         public void TryHeaderStyles()
         {
             Color bgColor = Color.Azure;
-            double fontSize = 9.25;
+            double fontSize = 11.25;
             BorderStyle.BorderType borderType = BorderStyle.BorderType.Dashed;
+            bool bold = true;
+            bool italic = true;
 
             string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
             TabularSheet<Product> table = null!;
@@ -73,7 +73,10 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table = Generate();
                 table.HeaderStyle.Fill.BackgroundColor = bgColor;
                 table.HeaderStyle.Font.Size = fontSize;
+                table.HeaderStyle.Font.Bold = bold;
+                table.HeaderStyle.Font.Italic = italic;
                 table.HeaderStyle.Border.SetBorderType(borderType);
+
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
@@ -89,6 +92,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 {
                     Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColor.ToArgb()));
                     Assert.That(style.Font.Size, Is.EqualTo(fontSize));
+                    Assert.That(style.Font.Bold, Is.EqualTo(bold));
+                    Assert.That(style.Font.Italic, Is.EqualTo(italic));
                     Assert.That(style.Border.Top, Is.EqualTo(borderType));
                     Assert.That(style.Border.Bottom, Is.EqualTo(borderType));
                     Assert.That(style.Border.Left, Is.EqualTo(borderType));
@@ -271,6 +276,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 {
                     s.NumberingPattern = "0.00";
                     s.Fill.BackgroundColor = Color.AliceBlue;
+                    s.Font.Underline = FontStyle.UnderlineType.Single;
                 });
                 indexColExtra1 = colExtra1.ColumnIndex;
                 indexColExtra2 = colExtra2.ColumnIndex;
@@ -305,6 +311,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 {
                     Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(Color.AliceBlue.ToArgb()));
                     Assert.That(style.NumberingPattern, Is.EqualTo("0.00"));
+                    Assert.That(style.Font.Underline, Is.EqualTo(FontStyle.UnderlineType.Single));
                 });
             }
 

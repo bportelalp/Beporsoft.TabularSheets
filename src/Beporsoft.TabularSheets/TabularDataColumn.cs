@@ -1,9 +1,7 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
-using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Beporsoft.TabularSheets
 {
