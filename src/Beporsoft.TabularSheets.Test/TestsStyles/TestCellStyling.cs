@@ -1,9 +1,4 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Test.TestsStyles
 {
@@ -43,12 +38,12 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             Assert.That(font, Is.EqualTo(FontStyle.Default));
 
             font.Size = 12;
-            font.Font = "efa";
+            font.FontName = "efa";
             font.Color = System.Drawing.Color.Aquamarine;
             Assert.That(font, Is.Not.EqualTo(FontStyle.Default));
 
             font.Size = null;
-            font.Font = null;
+            font.FontName = null;
             font.Color = null;
             Assert.That(font, Is.EqualTo(FontStyle.Default));
         }

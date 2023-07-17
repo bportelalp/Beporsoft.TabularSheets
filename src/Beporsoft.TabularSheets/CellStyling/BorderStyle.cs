@@ -8,7 +8,7 @@ namespace Beporsoft.TabularSheets.CellStyling
     /// <summary>
     /// Defines the cell border style.
     /// </summary>
-    [DebuggerDisplay("Color={Color} | Borders=[{Top}, {Right}, {Bottom}, {Left}]")]
+    [DebuggerDisplay("Color={Color} | Borders=[{Top?.ToString()}, {Right?.ToString()}, {Bottom?.ToString()}, {Left?.ToString()}]")]
     public class BorderStyle : IEquatable<BorderStyle?>
     {
 

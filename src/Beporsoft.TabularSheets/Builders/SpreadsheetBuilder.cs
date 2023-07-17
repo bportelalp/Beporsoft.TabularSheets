@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace Beporsoft.TabularSheets.Builders
 {
@@ -49,7 +48,7 @@ namespace Beporsoft.TabularSheets.Builders
         #region Create Spreadsheet
         public void Create(string path, params ISheet[] tables)
         {
-            string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetsFileExtension.AllowedExtensions);
+            string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetFileExtension.AllowedExtensions);
             using var fs = new FileStream(pathCorrected, FileMode.Create);
             using MemoryStream ms = Create(tables);
             ms.Seek(0, SeekOrigin.Begin);
@@ -68,7 +67,7 @@ namespace Beporsoft.TabularSheets.Builders
             AppendWorkbookStylePart(ref workbookPart);
             AppendSharedStringTablePart(ref workbookPart);
             workbookPart.Workbook.Save();
-            ValidateSpreadSheet(spreadsheet);
+            //ValidateSpreadSheet(spreadsheet);
             return stream;
         }
         #endregion
@@ -112,7 +111,7 @@ namespace Beporsoft.TabularSheets.Builders
             WorksheetBundle bundle = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
             if (bundle.FormatProperties is not null)
                 worksheetPart.Worksheet.AppendChild(bundle.FormatProperties);
-            if (bundle.Columns is null)
+            if (bundle.Columns is not null)
                 worksheetPart.Worksheet.AppendChild(bundle.Columns);
 
             worksheetPart.Worksheet.AppendChild(bundle.Data);

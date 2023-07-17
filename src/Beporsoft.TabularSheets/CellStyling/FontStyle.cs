@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.CellStyling
 {
     /// <summary>
     /// Defines the font of cells.
     /// </summary>
-    [DebuggerDisplay("Size={Size} | Color={Color} | Font={Font}")]
+    [DebuggerDisplay("Size={Size} | Color={Color} | Font={FontName}")]
     public class FontStyle : IEquatable<FontStyle?>
     {
 
@@ -26,9 +23,24 @@ namespace Beporsoft.TabularSheets.CellStyling
         public double? Size { get; set; } = null;
 
         /// <summary>
-        /// The font family name, or <see langword="null"/> for default font
+        /// The font name, or <see langword="null"/> for default font
         /// </summary>
-        public string? Font { get; set; }
+        public string? FontName { get; set; }
+
+        /// <summary>
+        /// Text bold
+        /// </summary>
+        public bool? Bold { get; set; }
+
+        /// <summary>
+        /// Text Italic
+        /// </summary>
+        public bool? Italic { get; set; }
+
+        /// <summary>
+        /// <inheritdoc cref="UnderlineType"/>
+        /// </summary>
+        public UnderlineType? Underline { get; set; }
 
         internal static FontStyle Default { get; } = new FontStyle();
 
@@ -46,16 +58,41 @@ namespace Beporsoft.TabularSheets.CellStyling
             return other is not null &&
                   EqualityComparer<Color?>.Default.Equals(Color, other.Color) &&
                   Size == other.Size &&
-                  Font == other.Font;
+                  FontName == other.FontName &&
+                  Bold == other.Bold &&
+                  Italic == other.Italic &&
+                  Underline == other.Underline;
         }
 
         /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Color, Size, Font);
+            return HashCode.Combine(Color, Size, FontName, Bold, Italic, Underline);
         }
 
 
+        #endregion
+
+        #region Enum
+
+        /// <summary>
+        /// Underline style for font
+        /// </summary>
+        public enum UnderlineType
+        {
+            /// <summary>
+            /// Disabled
+            /// </summary>
+            None,
+            /// <summary>
+            /// Single underline
+            /// </summary>
+            Single,
+            /// <summary>
+            /// Double underline
+            /// </summary>
+            Double
+        }
         #endregion
     }
 }

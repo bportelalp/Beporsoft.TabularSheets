@@ -1,13 +1,8 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Beporsoft.TabularSheets.Tools;
-using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
 
 namespace Beporsoft.TabularSheets.Test.Helpers
 {
@@ -90,6 +85,8 @@ namespace Beporsoft.TabularSheets.Test.Helpers
                     style.Border = GetBorder(Convert.ToInt32(cellFormat.BorderId.Value));
                 if (cellFormat.NumberFormatId is not null)
                     style.NumberingFormat = GetNumberingFormat(Convert.ToInt32(cellFormat.NumberFormatId.Value));
+                if(cellFormat.Alignment is not null)
+                    style.Alignment = cellFormat.Alignment;
                 return style.ToStyle();
             }
             else
@@ -158,6 +155,7 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         public Fill? Fill { get; set; }
         public Font? Font { get; set; }
         public NumberingFormat? NumberingFormat { get; set; }
+        public Alignment? Alignment { get; set; }
 
         public Beporsoft.TabularSheets.CellStyling.Style ToStyle()
         {
@@ -174,6 +172,8 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             if (NumberingFormat is not null)
                 style.NumberingPattern = Builders.StyleBuilders.NumberingFormatSetup.FromOpenXmlNumberingFormat(NumberingFormat).Pattern;
 
+            if (Alignment is not null)
+                style.Alignment = Builders.StyleBuilders.FormatSetup.FromOpenXmlElement(Alignment);
 
             return style;
         }

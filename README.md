@@ -1,12 +1,12 @@
 # Tabular data sheets
 
-[![NuGet version (Beporsoft.TabularSheets)](https://img.shields.io/nuget/v/Beporsoft.TabularSheets.svg?style=flat-square)](https://www.nuget.org/packages/Beporsoft.TabularSheets/)
+![Nuget](https://img.shields.io/nuget/v/Beporsoft.TabularSheets?logo=nuget) [![](https://img.shields.io/badge/Docs-GitHub%20wiki-brightgreen)](https://github.com/bportelalp/Beporsoft.TabularSheets/wiki)
 
-Tools to create data tables on file formats like Excel or Csv.
+Tools to export object collections in spreadsheet documents like Microsoft Excel
 
 ## Introduction
 
-`Beporsoft.TabularSheets` allow to create simple Excel data tables based on a collection of items of type `T`.
+`Beporsoft.TabularSheets` allow to create simple spreadsheet data tables based on a collection of items of type `T`.
 
 The package uses `DocumentFormat.OpenXml` to create OpenXml Spreadsheets document. The aim of the package is to simplify the creation of a simple spreadsheet to store the information of instances of `T`, where each row represent an instance and the columns is specified using predicates.
 

@@ -3,6 +3,7 @@ using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -41,8 +42,7 @@ namespace Beporsoft.TabularSheets
         public string Title { get; set; } = "Sheet";
 
         /// <summary>
-        /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
-        /// If no property is modified, header style will inherit <see cref="BodyStyle"/>
+        /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 
@@ -54,7 +54,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the common options to configure the spreadsheet creation
         /// </summary>
-        public TabularSheetOptions Options { get; private set; } = new();
+        public SheetOptions Options { get; private set; } = new();
         #endregion
 
         #region Configure Table

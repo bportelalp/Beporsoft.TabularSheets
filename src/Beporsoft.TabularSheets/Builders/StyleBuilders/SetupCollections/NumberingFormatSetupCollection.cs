@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
 {
+    /// <summary>
+    /// A specific implementation of <see cref="ISetupCollection{TSetup}"/> for <see cref="NumberingFormatSetup"/> because there are indexes
+    /// reserved for builtin numFmt which cannot be superposed. Non builtin indexes must start in <see cref="NumberingFormatSetup.StartIndexNotBuiltin"/>
+    /// </summary>
     internal class NumberingFormatSetupCollection : ISetupCollection<NumberingFormatSetup>
     {
         private readonly List<NumberingFormatSetup> _items = new();

@@ -14,7 +14,7 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
             Uri uri = CreateUri(region);
             HttpClient client = new HttpClient();
             client.BaseAddress = uri;
-
+            
             HttpResponseMessage response = await client.GetAsync(uri);
 
             List<Country>? countries = await response.Content.ReadFromJsonAsync<List<Country>>();
@@ -37,7 +37,7 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.AddColumn("Population", c => c.Population)
                     .SetStyle(s => s.NumberingPattern = "#,##0"); // Style with no decimals and thousands separator
                 sheet.AddColumn("Currencies", c => string.Join("; ", c.Currencies.Values.Select(v => $"{v.Name} ({v.Symbol})")));
-                
+
                 // Add some style
                 Console.WriteLine($"Adding some style");
                 sheet.HeaderStyle.Fill.BackgroundColor = Color.DarkOliveGreen;
@@ -93,9 +93,13 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
 
         private static string PrepareDirectory(string filename)
         {
-            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName;
-            string resultDirectory = Path.Combine(projectDirectory, "Results");
-            Directory.CreateDirectory(resultDirectory);
+            string? projectDirectory = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
+            string resultDirectory = string.Empty;
+            if (!string.IsNullOrWhiteSpace(projectDirectory))
+            {
+                resultDirectory = Path.Combine(projectDirectory, "Results");
+                Directory.CreateDirectory(resultDirectory);
+            }
             string resultPath = Path.Combine(resultDirectory, filename);
             return resultPath;
         }
