@@ -1,6 +1,7 @@
 # Tabular data sheets
 
-![Nuget](https://img.shields.io/nuget/v/Beporsoft.TabularSheets?logo=nuget) [![](https://img.shields.io/badge/Docs-GitHub%20wiki-brightgreen)](https://github.com/bportelalp/Beporsoft.TabularSheets/wiki)
+[![Nuget](https://img.shields.io/nuget/v/Beporsoft.TabularSheets?logo=nuget)](https://www.nuget.org/packages/Beporsoft.TabularSheets/) 
+[![](https://img.shields.io/badge/Docs-GitHub%20wiki-brightgreen)](https://github.com/bportelalp/Beporsoft.TabularSheets/wiki)
 
 Tools to export object collections in spreadsheet documents like Microsoft Excel
 
