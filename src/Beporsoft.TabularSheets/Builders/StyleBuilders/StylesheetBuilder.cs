@@ -5,7 +5,6 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
-using static System.Net.WebRequestMethods;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {

@@ -1,11 +1,6 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Tools;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters
 {
@@ -42,7 +37,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters
             defaults.PredefinedNumberingFormats.Add(numFormatGeneral);
 
             // Predefined Font
-            FontSetup fontCalibri11 = new FontSetup(new FontStyle() { Font = KnownFont.Calibri, Size = 11 });
+            FontSetup fontCalibri11 = new FontSetup(new FontStyle() { FontName = KnownFont.Calibri, Size = 11 });
             defaults.PredefinedFonts.Add(fontCalibri11);
 
             // Predefined Format

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace Beporsoft.TabularSheets.Test.TestsTabularData
 {
@@ -23,7 +16,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             var orderSequence = Enumerable.Range(0, table.Columns.Count());
             Assert.Multiple(() =>
             {
-                Assert.That(table.Columns.Select(c => c.ColumnIndex), Is.EquivalentTo(orderSequence));
+                Assert.That(table.Columns.Select(c => c.Index), Is.EquivalentTo(orderSequence));
                 Assert.That(table.Columns.Select(c => c.Title).Distinct().Count(), Is.EqualTo(table.Columns.Count()));
             });
             foreach (var col in table.Columns)
@@ -50,26 +43,26 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             var originCol4 = table.Columns.Skip(4).First();
             Assert.Multiple(() =>
             {
-                Assert.That(originCol2.ColumnIndex, Is.EqualTo(2));
-                Assert.That(originCol4.ColumnIndex, Is.EqualTo(4));
+                Assert.That(originCol2.Index, Is.EqualTo(2));
+                Assert.That(originCol4.Index, Is.EqualTo(4));
             });
             originCol2.SetIndex(4);
             Assert.Multiple(() =>
             {
-                Assert.That(originCol2.ColumnIndex, Is.EqualTo(4)); // The set position is correct
-                Assert.That(table.Columns.Single(c => c.ColumnIndex == 4), Is.EqualTo(originCol2)); // The col in 4th position is the original col2
+                Assert.That(originCol2.Index, Is.EqualTo(4)); // The set position is correct
+                Assert.That(table.Columns.Single(c => c.Index == 4), Is.EqualTo(originCol2)); // The col in 4th position is the original col2
                 // There are columns in col 2, 3 and 4
-                Assert.That(table.Columns.Any(c => c.ColumnIndex == 4), Is.True);
-                Assert.That(table.Columns.Any(c => c.ColumnIndex == 3), Is.True);
-                Assert.That(table.Columns.Any(c => c.ColumnIndex == 2), Is.True);
+                Assert.That(table.Columns.Any(c => c.Index == 4), Is.True);
+                Assert.That(table.Columns.Any(c => c.Index == 3), Is.True);
+                Assert.That(table.Columns.Any(c => c.Index == 2), Is.True);
 
                 // The column in position 3 is the column which was previously in position 4
-                Assert.That(table.Columns.Single(c => c.ColumnIndex == 3), Is.EqualTo(originCol4));
+                Assert.That(table.Columns.Single(c => c.Index == 3), Is.EqualTo(originCol4));
                 // The column in position 2 is the column which was previously in position 3
-                Assert.That(table.Columns.Single(c => c.ColumnIndex == 2), Is.EqualTo(originCol3));
+                Assert.That(table.Columns.Single(c => c.Index == 2), Is.EqualTo(originCol3));
 
                 // There aren't duplicities of order
-                Assert.That(table.Columns.GroupBy(c => c.ColumnIndex).Any(group => group.Count() > 1), Is.False);
+                Assert.That(table.Columns.GroupBy(c => c.Index).Any(group => group.Count() > 1), Is.False);
 
                 // The names, which weren't previously setted, keep coherence.
                 Assert.That(originCol2.Title.EndsWith("Col4"), Is.True); // 4th because now is in the 4 position
@@ -98,7 +91,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                     Assert.Multiple(() =>
                     {
                         Assert.That(column.Title, Is.EqualTo(initialTitle));
-                        Assert.That(column.Title, Does.EndWith(column.ColumnIndex.ToString()));
+                        Assert.That(column.Title, Does.EndWith(column.Index.ToString()));
                     });
                 }
                 else
@@ -108,7 +101,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                     Assert.Multiple(() =>
                     {
                         Assert.That(regexDefaultColumnName.Match(column.Title).Success, Is.True);
-                        Assert.That(column.Title, Does.EndWith(column.ColumnIndex.ToString()));
+                        Assert.That(column.Title, Does.EndWith(column.Index.ToString()));
                     });
                     column.SetTitle(initialTitle);
                     Assert.That(column.Title, Is.EqualTo(initialTitle));
@@ -131,18 +124,18 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             int x1 = x + 1;
             TabularData<Product> table = Generate();
 
-            var oldColX = table.Columns.Single(c => c.ColumnIndex == x);
-            var oldColX1 = table.Columns.SingleOrDefault(c => c.ColumnIndex == x1);
+            var oldColX = table.Columns.Single(c => c.Index == x);
+            var oldColX1 = table.Columns.SingleOrDefault(c => c.Index == x1);
 
             table.RemoveColumn(oldColX);
 
-            var newColX = table.Columns.SingleOrDefault(c => c.ColumnIndex == x);
+            var newColX = table.Columns.SingleOrDefault(c => c.Index == x);
 
             Assert.Multiple(() =>
             {
                 Assert.That(oldColX1, Is.EqualTo(newColX));
                 var orderSequence = Enumerable.Range(0, table.Columns.Count());
-                Assert.That(table.Columns.Select(c => c.ColumnIndex).OrderBy(c => c), Is.EquivalentTo(orderSequence));
+                Assert.That(table.Columns.Select(c => c.Index).OrderBy(c => c), Is.EquivalentTo(orderSequence));
             });
         }
 

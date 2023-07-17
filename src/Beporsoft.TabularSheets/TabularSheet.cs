@@ -42,8 +42,7 @@ namespace Beporsoft.TabularSheets
         public string Title { get; set; } = "Sheet";
 
         /// <summary>
-        /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.<br/> 
-        /// If no property is modified, header style will inherit <see cref="BodyStyle"/>
+        /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.
         /// </summary>
         public Style HeaderStyle { get; private set; } = new();
 

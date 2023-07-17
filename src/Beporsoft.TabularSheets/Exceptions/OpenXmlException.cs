@@ -11,7 +11,7 @@ namespace Beporsoft.TabularSheets.Exceptions
     /// <summary>
     /// Represent an exception raised after validating the OpenXml Structure
     /// </summary>
-    public class OpenXmlException : Exception
+    internal class OpenXmlException : Exception
     {
         internal OpenXmlException(IEnumerable<ValidationErrorInfo> errors) : base("Errors occurred during validation of the OpenXml document")
         {

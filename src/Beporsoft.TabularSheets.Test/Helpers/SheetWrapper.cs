@@ -1,13 +1,8 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Beporsoft.TabularSheets.Tools;
-using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
 
 namespace Beporsoft.TabularSheets.Test.Helpers
 {

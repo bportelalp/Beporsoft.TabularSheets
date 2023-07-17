@@ -33,6 +33,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 Color = BuildColor(),
                 Bold = BuildBold(),
                 Italic = BuildItalic(),
+                Underline = BuildUnderline(),
             };
             return font;
         }
@@ -41,10 +42,17 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             FontStyle font = new FontStyle()
             {
-                Font = fontXml.FontName?.Val?.Value,
+                FontName = fontXml.FontName?.Val?.Value,
                 Color = fontXml.Color?.Rgb?.FromOpenXmlHexBinaryValue(),
                 Size = fontXml.FontSize?.Val?.Value,
+                Bold = fontXml?.Bold?.Val?.Value,
+                Italic = fontXml?.Italic?.Val?.Value,
             };
+            if (fontXml?.Underline?.Val?.Value is not null)
+            {
+                bool underlineOk = Enum.TryParse(fontXml.Underline.Val.Value.ToString(), out FontStyle.UnderlineType underline);
+                font.Underline = underlineOk is true ? underline : null;
+            }
             return new FontSetup(font);
         }
 
@@ -70,11 +78,11 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private FontName? BuildFontName()
         {
             FontName? fontName = null;
-            if (!string.IsNullOrWhiteSpace(FontStyle.Font))
+            if (!string.IsNullOrWhiteSpace(FontStyle.FontName))
             {
                 fontName = new FontName()
                 {
-                    Val = FontStyle.Font
+                    Val = FontStyle.FontName
                 };
             }
             return fontName;
@@ -83,7 +91,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private Bold? BuildBold()
         {
             Bold? bold = null;
-            if(FontStyle.Bold is not null)
+            if (FontStyle.Bold is not null)
             {
                 bold = new Bold()
                 {
@@ -106,6 +114,23 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return italic;
         }
 
+        private Underline? BuildUnderline()
+        {
+            Underline? underline = null;
+            if (FontStyle.Underline is not null)
+            {
+                bool underlineOk = Enum.TryParse(FontStyle.Underline.ToString(), out UnderlineValues underlineValues);
+                if (underlineOk)
+                {
+                    underline = new Underline()
+                    {
+                        Val = underlineValues
+                    };
+                }
+            }
+            return underline;
+        }
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as FontSetup);
@@ -113,7 +138,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 
         public bool Equals(FontSetup? other)
         {
-            return other is not null  &&
+            return other is not null &&
                    EqualityComparer<FontStyle>.Default.Equals(FontStyle, other.FontStyle);
         }
 

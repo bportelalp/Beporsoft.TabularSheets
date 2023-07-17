@@ -1,15 +1,11 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Options
 {
     /// <summary>
-    /// A collection of common options during build of Spreadsheet
+    /// Settings for table and the building of sheet
     /// </summary>
     public class SheetOptions
     {
