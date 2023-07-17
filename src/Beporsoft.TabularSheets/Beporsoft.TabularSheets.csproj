@@ -14,7 +14,7 @@
 		<RepositoryUrl>https://github.com/bportelalp/Beporsoft.TabularSheets</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>spreadsheet;excel;export;generic;collection;openxml;tabular;sheet;xlsx</PackageTags>
+		<PackageTags>spreadsheet;excel;export;generic;collection;openxml;tabular;sheet;xlsx;data;table;dataset</PackageTags>
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		
@@ -29,7 +29,7 @@
 
 		<PackageReleaseNotes>
 			First major version: 
-			- Solved performance issues with large collections with shared strings. 
+			- Solved performance issues with large collections of shared strings. 
 			- Added more style settings.
 			- Make private DocumentFormat.OpenXml API
 		</PackageReleaseNotes>
