@@ -6,7 +6,7 @@ namespace Beporsoft.TabularSheets.CellStyling
     /// <summary>
     /// Defines the alignment of the content inside the cell
     /// </summary>
-    [DebuggerDisplay("Horizontal={Horizontal.ToString()} | Vertical={Vertical.ToString()} | TextWrap={TextWrap}")]
+    [DebuggerDisplay("Horizontal={Horizontal?.ToString()} | Vertical={Vertical?.ToString()} | TextWrap={TextWrap}")]
     public class AlignmentStyle : IEquatable<AlignmentStyle?>
     {
         /// <summary>
@@ -26,6 +26,31 @@ namespace Beporsoft.TabularSheets.CellStyling
 
         internal static AlignmentStyle Default = new AlignmentStyle();
 
+
+        #region IEquatable
+
+        /// <inheritdoc cref="object.Equals(object?)"/>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as AlignmentStyle);
+        }
+
+        /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
+        public bool Equals(AlignmentStyle? other)
+        {
+            return other is not null &&
+                   TextWrap == other.TextWrap &&
+                   Horizontal == other.Horizontal &&
+                   Vertical == other.Vertical;
+        }
+
+        /// <inheritdoc cref="GetHashCode"/>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(TextWrap, Horizontal, Vertical);
+        }
+        #endregion
+
         /// <summary>
         /// Possible values for horizontal alignment
         /// </summary>
@@ -36,8 +61,8 @@ namespace Beporsoft.TabularSheets.CellStyling
             /// </summary>
             Center,
             /// <summary>
-            /// Text data is left-aligned.<br/>
-            /// Numbers, dates and times are right-aligned.<br/>
+            /// Text data is left-aligned. <br/>
+            /// Numbers, dates and times are right-aligned. <br/>
             /// Booleans are centered
             /// </summary>
             General,
@@ -74,28 +99,5 @@ namespace Beporsoft.TabularSheets.CellStyling
             Top,
         }
 
-        #region IEquatable
-
-        /// <inheritdoc cref="object.Equals(object?)"/>
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as AlignmentStyle);
-        }
-
-        /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
-        public bool Equals(AlignmentStyle? other)
-        {
-            return other is not null &&
-                   TextWrap == other.TextWrap &&
-                   Horizontal == other.Horizontal &&
-                   Vertical == other.Vertical;
-        }
-
-        /// <inheritdoc cref="GetHashCode"/>
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(TextWrap, Horizontal, Vertical);
-        }
-        #endregion
     }
 }

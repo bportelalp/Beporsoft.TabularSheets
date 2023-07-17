@@ -8,7 +8,7 @@ namespace Beporsoft.TabularSheets.CellStyling
     /// <summary>
     /// Defines the font of cells.
     /// </summary>
-    [DebuggerDisplay("Size={Size} | Color={Color} | Font={Font}")]
+    [DebuggerDisplay("Size={Size} | Color={Color} | Font={FontName}")]
     public class FontStyle : IEquatable<FontStyle?>
     {
 
@@ -25,7 +25,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// <summary>
         /// The font name, or <see langword="null"/> for default font
         /// </summary>
-        public string? Font { get; set; }
+        public string? FontName { get; set; }
 
         /// <summary>
         /// Text bold
@@ -33,14 +33,14 @@ namespace Beporsoft.TabularSheets.CellStyling
         public bool? Bold { get; set; }
 
         /// <summary>
-        /// <inheritdoc cref="UnderlineType"/>
-        /// </summary>
-        public UnderlineType? Underline { get; set; }
-
-        /// <summary>
         /// Text Italic
         /// </summary>
         public bool? Italic { get; set; }
+
+        /// <summary>
+        /// <inheritdoc cref="UnderlineType"/>
+        /// </summary>
+        public UnderlineType? Underline { get; set; }
 
         internal static FontStyle Default { get; } = new FontStyle();
 
@@ -58,7 +58,7 @@ namespace Beporsoft.TabularSheets.CellStyling
             return other is not null &&
                   EqualityComparer<Color?>.Default.Equals(Color, other.Color) &&
                   Size == other.Size &&
-                  Font == other.Font &&
+                  FontName == other.FontName &&
                   Bold == other.Bold &&
                   Italic == other.Italic &&
                   Underline == other.Underline;
@@ -67,7 +67,7 @@ namespace Beporsoft.TabularSheets.CellStyling
         /// <inheritdoc cref="GetHashCode"/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Color, Size, Font, Bold, Italic, Underline);
+            return HashCode.Combine(Color, Size, FontName, Bold, Italic, Underline);
         }
 
 

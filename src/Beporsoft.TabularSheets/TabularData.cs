@@ -21,7 +21,7 @@ namespace Beporsoft.TabularSheets
         public IList<T> Items { get => _items; protected set => _items = value.ToList(); }
 
         /// <summary>
-        /// Gets the collection of columns which will define which data is displayed on each row, each cell.
+        /// Gets the collection of columns that will define which data is displayed on each row, each cell.
         /// </summary>
         public IEnumerable<TabularDataColumn<T>> Columns => ColumnsCollection.AsReadOnly();
 
@@ -49,15 +49,7 @@ namespace Beporsoft.TabularSheets
 
         #region Manipulate Rows
 
-        #region Interface ICollection
-        /// <inheritdoc cref="IList{T}.IndexOf(T)"/>
-        public int IndexOf(T item) => _items.IndexOf(item);
-
-        /// <inheritdoc cref="IList{T}.Insert(int, T)"/>
-        public void Insert(int index, T item) => _items.Insert(index, item);
-
-        /// <inheritdoc cref="IList{T}.RemoveAt(int)"/>
-        public void RemoveAt(int index) => _items.RemoveAt(index);
+        #region Interface IList
 
         /// <inheritdoc cref="ICollection{T}.Add(T)"/>
         public void Add(T item) => _items.Add(item);
@@ -71,8 +63,17 @@ namespace Beporsoft.TabularSheets
         /// <inheritdoc cref="ICollection{T}.CopyTo(T[], int)"/>
         public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
 
+        /// <inheritdoc cref="IList{T}.IndexOf(T)"/>
+        public int IndexOf(T item) => _items.IndexOf(item);
+
+        /// <inheritdoc cref="IList{T}.Insert(int, T)"/>
+        public void Insert(int index, T item) => _items.Insert(index, item);
+
         /// <inheritdoc cref="ICollection{T}.Remove(T)"/>
         public bool Remove(T item) => _items.Remove(item);
+
+        /// <inheritdoc cref="IList{T}.RemoveAt(int)"/>
+        public void RemoveAt(int index) => _items.RemoveAt(index);
 
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
         public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
@@ -87,9 +88,9 @@ namespace Beporsoft.TabularSheets
 
         #region Manipulate Columns
         /// <summary>
-        /// Adds a new column which the information that will be displayed on a column.
+        /// Adds a new column with the information that will be displayed on it.
         /// </summary>
-        /// <param name="predicate">A expression which will be evaluated for fill the cell</param>
+        /// <param name="predicate">A expression which will be evaluated to populate the cell</param>
         /// <returns>The column created, so additional calls can be chained</returns>
         public virtual TabularDataColumn<T> AddColumn(Func<T, object> predicate)
         {
@@ -102,7 +103,7 @@ namespace Beporsoft.TabularSheets
         /// <inheritdoc cref="AddColumn(Func{T, object})"/>
         /// </summary>
         /// <param name="title">The title of the column</param>
-        /// <param name="predicate">A expression which will be evaluated for fill the cell</param>
+        /// <param name="predicate">A expression which will be evaluated to populate the cell</param>
         /// <returns>The column created, so additional calls can be chained</returns>
         public virtual TabularDataColumn<T> AddColumn(string title, Func<T, object> predicate)
         {

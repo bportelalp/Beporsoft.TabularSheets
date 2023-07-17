@@ -14,12 +14,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         {
             TabularSheet<Product> table = Generate();
             string pathOk = GetPath("ExcelCheckFileName.xlsx");
-            string pathOkAlternative = GetPath("ExcelCheckFileName.xls");
+            string pathNotOk = GetPath("ExcelCheckFileName.xls");
             string pathWrongExtension = GetPath("ExcelCheckFileName.csv");
             Assert.Multiple(() =>
             {
                 Assert.That(() => table.Create(pathOk), Throws.Nothing);
-                Assert.That(() => table.Create(pathOkAlternative), Throws.Nothing);
+                Assert.Catch<FileLoadException>(() => table.Create(pathNotOk));
                 Assert.That(() => table.Create(pathWrongExtension), Throws.Exception);
             });
         }
@@ -114,7 +114,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                     });
 
                     (int row, int col) = CellRefBuilder.GetIndexes(cell.CellReference!.Value!);
-                    object value = table.Columns.Single(c => c.ColumnIndex == col).Apply(table.Items[row - 1]);
+                    object value = table.Columns.Single(c => c.Index == col).Apply(table.Items[row - 1]);
                     if (value.GetType() == typeof(DateTime) || value.GetType() == typeof(TimeSpan))
                     {
                         Assert.That(style.NumberingPattern, Is.Not.Null);
@@ -143,7 +143,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 table = Generate();
                 table.BodyStyle.Fill.BackgroundColor = bgColor;
-                table.BodyStyle.Font.Font = font;
+                table.BodyStyle.Font.FontName = font;
                 table.BodyStyle.Font.Size = fontSize;
                 table.BodyStyle.Border.SetBorderType(borderType);
                 table.Create(path);
@@ -165,7 +165,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 }
             }
 
-            // Body has the specified style, Not check for numbering for datetime. Assumed ok due the previous test
+            //Body has the specified style, Not check for numbering for datetime.Assumed ok due the previous test
             foreach (var cell in sheet.GetBodyCells())
             {
                 Assert.That(cell.StyleIndex, Is.Not.Null);
@@ -174,7 +174,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 {
                     Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColor.ToArgb()));
                     Assert.That(style.Font.Size, Is.EqualTo(fontSize));
-                    Assert.That(style.Font.Font, Is.EqualTo(font));
+                    Assert.That(style.Font.FontName, Is.EqualTo(font));
                     Assert.That(style.Border.Top, Is.EqualTo(borderType));
                     Assert.That(style.Border.Bottom, Is.EqualTo(borderType));
                     Assert.That(style.Border.Left, Is.EqualTo(borderType));
@@ -193,7 +193,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             int fontSizeBody = 8;
             BorderStyle.BorderType borderTypeBody = BorderStyle.BorderType.Thin;
             BorderStyle.BorderType borderTypeHead = BorderStyle.BorderType.Medium;
-            Color borderColorHead = Color.Yellow;
+            Color borderColorHead = Color.Coral;
+            bool inheritHeaderFromBody = true;
 
             string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
             TabularSheet<Product> table = null!;
@@ -202,7 +203,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 table = Generate();
                 table.BodyStyle.Fill.BackgroundColor = bgColorBody;
-                table.BodyStyle.Font.Font = fontBody;
+                table.BodyStyle.Font.FontName = fontBody;
                 table.BodyStyle.Font.Size = fontSizeBody;
                 table.BodyStyle.Border.SetBorderType(borderTypeBody);
 
@@ -211,7 +212,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Border.SetBorderType(borderTypeHead);
                 table.HeaderStyle.Border.Color = borderColorHead;
 
-                table.Options.InheritHeaderStyleFromBody = true;
+                table.Options.InheritHeaderStyleFromBody = inheritHeaderFromBody;
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
@@ -224,7 +225,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 Assert.Multiple(() =>
                 {
                     Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColorHead.ToArgb()));
-                    Assert.That(style.Font.Font, Is.EqualTo(fontBody));
+                    Assert.That(style.Font.FontName, Is.EqualTo(fontBody));
                     Assert.That(style.Font.Color?.ToArgb(), Is.EqualTo(fontColorHeader.ToArgb()));
                     Assert.That(style.Font.Size, Is.EqualTo(fontSizeBody));
                     Assert.That(style.Border.Color?.ToArgb(), Is.EqualTo(borderColorHead.ToArgb()));
@@ -243,7 +244,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 Assert.Multiple(() =>
                 {
                     Assert.That(style.Fill.BackgroundColor?.ToArgb(), Is.EqualTo(bgColorBody.ToArgb()));
-                    Assert.That(style.Font.Font, Is.EqualTo(fontBody));
+                    Assert.That(style.Font.FontName, Is.EqualTo(fontBody));
                     Assert.That(style.Font.Size, Is.EqualTo(fontSizeBody));
                     Assert.That(style.Font.Color?.ToArgb(), Is.Not.EqualTo(fontColorHeader.ToArgb()));
                     Assert.That(style.Border.Color?.ToArgb(), Is.Not.EqualTo(borderColorHead.ToArgb()));
@@ -278,8 +279,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                     s.Fill.BackgroundColor = Color.AliceBlue;
                     s.Font.Underline = FontStyle.UnderlineType.Single;
                 });
-                indexColExtra1 = colExtra1.ColumnIndex;
-                indexColExtra2 = colExtra2.ColumnIndex;
+                indexColExtra1 = colExtra1.Index;
+                indexColExtra2 = colExtra2.Index;
 
                 var colExtra3 = table.AddColumn(t => t.LastPriceUpdate)
                                         .SetTitle("Data unmodify Numbering")
@@ -287,8 +288,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 var colExtra4 = table.AddColumn(t => t.LastPriceUpdate)
                                         .SetTitle("Data modify Numbering")
                                         .SetStyle(s => s.NumberingPattern = "d-mmm-yy");
-                indexColExtra3 = colExtra3.ColumnIndex;
-                indexColExtra4 = colExtra4.ColumnIndex;
+                indexColExtra3 = colExtra3.Index;
+                indexColExtra4 = colExtra4.Index;
 
                 string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
                 table.Create(path);
@@ -339,7 +340,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         {
             AlignmentStyle.HorizontalAlignment horizontalCol0 = AlignmentStyle.HorizontalAlignment.Center;
             AlignmentStyle.VerticalAlignment verticalCol0 = AlignmentStyle.VerticalAlignment.Center;
-            bool textWrapCol0 = false;
+            bool textWrapCol0 = true;
 
             string path = GetPath($"Test{nameof(TryAlignmentStyle)}.xlsx");
             TabularSheet<Product> table = null!;
@@ -347,7 +348,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             Assert.That(() =>
             {
                 table = Generate();
-                var col0 = table.Columns.Single(c => c.ColumnIndex == 0);
+                var col0 = table.Columns.Single(c => c.Index == 0);
                 col0.SetStyle(s =>
                 {
                     s.Alignment.Horizontal = horizontalCol0;
@@ -392,7 +393,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
         private static void AssertColumnHeaderData(TabularDataColumn<Product> column, SheetWrapper sheet)
         {
-            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.ColumnIndex);
+            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.Index);
             Assert.Multiple(() =>
             {
                 Assert.That(headerCell.InnerText, Is.Not.Null);
@@ -405,7 +406,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
         private static void AssertColumnBodyData(TabularSheet<Product> table, TabularDataColumn<Product> column, SheetWrapper sheet)
         {
-            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.ColumnIndex);
+            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.Index);
             foreach (var cell in bodyCells)
             {
                 Assert.Multiple(() =>

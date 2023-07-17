@@ -19,9 +19,7 @@ namespace Beporsoft.TabularSheets
         internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
         {
             Owner = parentTabularData;
-            ColumnContent = columnData;
-            //Order = Owner.Columns.Any() ? Owner.Columns.Max(x => x.Order) + 1 : 0;
-            //SetDefaultName();
+            CellContent = columnData;
         }
 
         internal TabularDataColumn(string title, TabularData<T> parentTabularData, Func<T, object> columnData) : this(parentTabularData, columnData)
@@ -32,9 +30,9 @@ namespace Beporsoft.TabularSheets
 
         #region Properties
         /// <summary>
-        /// Gets or sets the function which will be evaluated to fill the respective column for each item.
+        /// Gets the function which will be evaluated to fill the respective column for each item.
         /// </summary>
-        public Func<T, object> ColumnContent { get; set; }
+        public Func<T, object> CellContent { get; private set; }
 
         /// <summary>
         /// Gets title of the column. If no title are provided before, the default one is displayed.<br/>
@@ -45,12 +43,12 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the column index of the column on the parent table
         /// </summary>
-        public int ColumnIndex => Owner.ColumnsCollection.IndexOf(this);
+        public int Index => Owner.ColumnsCollection.IndexOf(this);
 
         /// <summary>
         /// Gets the style to apply to all the column.
         /// </summary>
-        public Style Style { get; private set; } = Style.Default;
+        public Style Style { get; private set; } = new();
 
         /// <summary>
         /// Gets the <see cref="TabularData{T}"/> to which belongs this <see cref="TabularDataColumn{T}"/>
@@ -72,7 +70,7 @@ namespace Beporsoft.TabularSheets
 
 
         /// <summary>
-        /// Set the style of all the column. Header is excluded
+        /// Set the style for all the column. Header is excluded
         /// </summary>
         /// <param name="style"></param>
         /// <returns>The same column instance, so additional calls can be chained</returns>
@@ -87,18 +85,7 @@ namespace Beporsoft.TabularSheets
         /// <returns></returns>
         public TabularDataColumn<T> SetStyle(Action<Style> styleActionEdition)
         {
-            // take the current style, or create a new one to edit fields
-            Style editionStyle = Style;
-            if (Style.Equals(Style.Default))
-                editionStyle = new();
-
-            styleActionEdition.Invoke(editionStyle);
-            // If it is equals default, set the default again
-            if (editionStyle.Equals(Style.Default))
-                Style = Style.Default;
-            else
-                Style = editionStyle;
-
+            styleActionEdition.Invoke(Style);
             return this;
         }
 
@@ -110,7 +97,7 @@ namespace Beporsoft.TabularSheets
         public TabularDataColumn<T> SetIndex(int index)
         {
             if (index < 0 || index >= Owner.ColumnsCollection.Count)
-                throw new ArgumentOutOfRangeException(nameof(index), $"{nameof(index)} is less than 0 or is greater than the current amount of items");
+                throw new ArgumentOutOfRangeException(nameof(index), $"{nameof(index)} is less than 0 or is greater than the current amount of columns");
             Owner.ColumnsCollection.Remove(this);
             Owner.ColumnsCollection.Insert(index, this);
             return this;
@@ -121,10 +108,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Retrieve the current value of the cell for this column applied to <paramref name="value"/>
         /// </summary>
-        internal object Apply(T value)
-        {
-            return ColumnContent.Invoke(value);
-        }
+        internal object Apply(T value) => CellContent.Invoke(value);
 
         /// <summary>
         /// Gets the defined title or build a default one if it is empry
@@ -134,7 +118,7 @@ namespace Beporsoft.TabularSheets
             if (string.IsNullOrWhiteSpace(_columnTitle))
             {
                 string format = $"D{Owner.Columns.Count().ToString().Length}"; // Get the significant digits of the columns count, to give format
-                return $"{typeof(T).Name}{_defaultColumnName}{ColumnIndex.ToString(format)}";
+                return $"{typeof(T).Name}{_defaultColumnName}{Index.ToString(format)}";
             }
             else
             {

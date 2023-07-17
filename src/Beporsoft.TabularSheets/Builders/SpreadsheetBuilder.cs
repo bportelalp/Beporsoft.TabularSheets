@@ -48,7 +48,7 @@ namespace Beporsoft.TabularSheets.Builders
         #region Create Spreadsheet
         public void Create(string path, params ISheet[] tables)
         {
-            string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetsFileExtension.AllowedExtensions);
+            string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetFileExtension.AllowedExtensions);
             using var fs = new FileStream(pathCorrected, FileMode.Create);
             using MemoryStream ms = Create(tables);
             ms.Seek(0, SeekOrigin.Begin);

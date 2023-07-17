@@ -5,7 +5,7 @@ using System.Globalization;
 namespace Beporsoft.TabularSheets.Options
 {
     /// <summary>
-    /// Settings for table and built sheet
+    /// Settings for table and the building of sheet
     /// </summary>
     public class SheetOptions
     {

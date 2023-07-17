@@ -42,7 +42,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         {
             FontStyle font = new FontStyle()
             {
-                Font = fontXml.FontName?.Val?.Value,
+                FontName = fontXml.FontName?.Val?.Value,
                 Color = fontXml.Color?.Rgb?.FromOpenXmlHexBinaryValue(),
                 Size = fontXml.FontSize?.Val?.Value,
                 Bold = fontXml?.Bold?.Val?.Value,
@@ -78,11 +78,11 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         private FontName? BuildFontName()
         {
             FontName? fontName = null;
-            if (!string.IsNullOrWhiteSpace(FontStyle.Font))
+            if (!string.IsNullOrWhiteSpace(FontStyle.FontName))
             {
                 fontName = new FontName()
                 {
-                    Val = FontStyle.Font
+                    Val = FontStyle.FontName
                 };
             }
             return fontName;
