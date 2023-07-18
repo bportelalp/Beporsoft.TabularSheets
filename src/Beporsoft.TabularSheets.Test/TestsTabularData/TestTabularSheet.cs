@@ -35,7 +35,9 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Font.Color = Color.White;
                 table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
+                table.Options.DefaultColumnOptions.AutoWidth = true;
                 string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
+                //table.Columns.Single(c => c.Index == 1).Options.Width = 10;
                 table.Create(path);
             }, Throws.Nothing);
         }

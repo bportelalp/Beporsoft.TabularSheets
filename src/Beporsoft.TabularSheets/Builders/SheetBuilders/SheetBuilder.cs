@@ -1,9 +1,11 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Collections.Generic;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
@@ -45,6 +47,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// The cell builder, which helps on building <see cref="Cell"/> instances
         /// </summary>
         public CellBuilder CellBuilder { get; }
+
+        internal Dictionary<int, int> ContentColumnMaxLength { get; set; } = new();
         #endregion
 
         #region Public
@@ -72,7 +76,36 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
         public Columns? BuildColumns()
         {
-            return null;
+            Columns cols = new Columns();
+            foreach (var column in Table.ColumnsCollection)
+            {
+                double? width = null;
+                const double coefficient = 1.4;
+                // If oreder by priority
+                if (column.Options.Width is not null)
+                    width = column.Options.Width;
+                else if (Table.Options.DefaultColumnOptions.Width is not null)
+                    width = Table.Options.DefaultColumnOptions.Width;
+                else if (column.Options.AutoWidth is true || Table.Options.DefaultColumnOptions.AutoWidth is true)
+                    width = ContentColumnMaxLength[column.Index];
+
+                if (width is not null)
+                {
+                    Column col = new Column
+                    {
+                        Min = (column.Index + 1).ToOpenXmlUInt32(),
+                        Max = (column.Index + 1).ToOpenXmlUInt32(),
+                        // TODO - Improve coefficient based on font
+                        Width = (width.Value + coefficient) * 11 / 11,
+                        CustomWidth = true
+                    };
+                    cols.AppendChild(col);
+                }
+            }
+            if (cols.ChildElements.Count > 0)
+                return cols;
+            else
+                return null;
         }
 
         public SheetFormatProperties BuildFormatProperties()
@@ -103,7 +136,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                     cell.StyleIndex = formatId.Value.ToOpenXmlUInt32();
 
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
-
+                MeasureAndSaveContentLength(col.Index, col.Title);
                 header.Append(cell);
             }
             return header;
@@ -141,6 +174,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             // Populate with style
             int? formatId = BuildCellStyle(value, col);
             cell.StyleIndex = formatId.ToOpenXmlUInt32();
+            MeasureAndSaveContentLength(col.Index, value);
             return cell;
         }
 
@@ -199,6 +233,16 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             int formatId = StyleBuilder.RegisterFormat(fill, font, border, null, align);
 
             return formatId;
+        }
+
+        private void MeasureAndSaveContentLength(int col, object? content)
+        {
+            int? length = content?.ToString()?.Length;
+            if (length.HasValue)
+            {
+                if (!ContentColumnMaxLength.ContainsKey(col) || ContentColumnMaxLength[col] < length)
+                    ContentColumnMaxLength[col] = length.Value;
+            }
         }
         #endregion
     }
