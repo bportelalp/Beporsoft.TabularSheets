@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Beporsoft.TabularSheets.Builders.Interfaces
 {
@@ -20,6 +21,8 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         /// Amount of <typeparamref name="TSetup"/> items contained in this collection
         /// </summary>
         internal int Count { get; }
+
+        internal TSetup? this[int index] { get; }
 
         /// <summary>
         /// Register a new <paramref name="setup"/> if there isn't a equivalent one and return it index inside the collection.<br/>

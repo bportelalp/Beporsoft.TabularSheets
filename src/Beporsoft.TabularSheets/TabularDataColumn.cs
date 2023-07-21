@@ -57,6 +57,7 @@ namespace Beporsoft.TabularSheets
         /// Gets the <see cref="TabularData{T}"/> to which belongs this <see cref="TabularDataColumn{T}"/>
         /// </summary>
         public TabularData<T> Owner { get; }
+
         #endregion
 
         #region Edition

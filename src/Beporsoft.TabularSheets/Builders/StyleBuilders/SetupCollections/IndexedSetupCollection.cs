@@ -16,6 +16,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
 
         public int Count => _items.Count;
 
+        public TSetup? this[int index] => index < Count ? this[index] : null;
+
         public int Register(TSetup setup)
         {
             if (!_items.Contains(setup))

@@ -1,3 +1,4 @@
+using Beporsoft.TabularSheets.Builders;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Test.Helpers;
@@ -37,7 +38,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
                 table.Options.DefaultColumnOptions.AutoWidth = true;
                 string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
-                //table.Columns.Single(c => c.Index == 1).Options.Width = 10;
+                table.Columns.Single(c => c.Index == 0).Options.Width = 10;
                 table.Create(path);
             }, Throws.Nothing);
         }
@@ -422,14 +423,14 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                         string? content = sheet.GetSharedString(indexSharedString);
                         Assert.That(value.ToString(), Is.EqualTo(content));
                     }
-                    else if (CellBuilder.DateTimeTypes.Contains(value.GetType()))
+                    else if (BuildHelpers.DateTimeTypes.Contains(value.GetType()))
                     {
                         var date = ((DateTime)value).ToOADate();
                         double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
                         Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
                         Assert.That(date, Is.EqualTo(content));
                     }
-                    else if (CellBuilder.TimeSpanTypes.Contains(value.GetType()))
+                    else if (BuildHelpers.TimeSpanTypes.Contains(value.GetType()))
                     {
                         var totalDays = ((TimeSpan)value).TotalDays;
                         double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);

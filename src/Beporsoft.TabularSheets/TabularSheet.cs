@@ -93,16 +93,9 @@ namespace Beporsoft.TabularSheets
         WorksheetBundle ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
-            SheetData data = builder.BuildSheetData();
-            Columns? cols = builder.BuildColumns();
-            SheetFormatProperties formatProps = builder.BuildFormatProperties();
+            WorksheetBundle bundle = builder.BuildSheetContext();
 
-            return new WorksheetBundle()
-            {
-                Data =data,
-                Columns =cols,
-                FormatProperties = formatProps,
-            };
+            return bundle;
         }
         #endregion
     }
