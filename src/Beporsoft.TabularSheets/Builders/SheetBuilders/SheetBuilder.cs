@@ -54,6 +54,10 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
         #region Public
 
+        /// <summary>
+        /// Build all the Open Xml elements which represent the sheet
+        /// </summary>
+        /// <returns></returns>
         public WorksheetBundle BuildSheetContext()
         {
             _colMeasurer.Initialize(Table);
@@ -68,7 +72,10 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 FormatProperties = formatProps,
             };
         }
+        #endregion
 
+
+        #region BuildSheetData
         /// <summary>
         /// Build the <see cref="SheetData"/> node using values from <see cref="Table"/>. <br/>
         /// In addition, handles the required styles and include it inside the <see cref="StyleBuilder"/>
@@ -90,38 +97,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             return sheetData;
         }
 
-        private Columns? BuildColumns()
-        {
-            Columns cols = new Columns();
-            foreach (var column in Table.ColumnsCollection)
-            {
-                double? width = _colMeasurer.EstimateColumnWidth(column.Index, 11);
-                if (width.HasValue)
-                {
-                    Column col = new Column
-                    {
-                        Min = (column.Index + 1).ToOpenXmlUInt32(),
-                        Max = (column.Index + 1).ToOpenXmlUInt32(),
-                        Width = width,
-                        CustomWidth = true
-                    };
-                    cols.AppendChild(col);
-                }
-            }
-            if (cols.ChildElements.Count > 0)
-                return cols;
-            else
-                return null;
-        }
-
-
-        private SheetFormatProperties BuildFormatProperties()
-        {
-            return ExcelPredefinedFormatProperties.Create();
-        }
-        #endregion
-
-        #region Privates BuildSheetData
         /// <summary>
         /// Create the <see cref="Row"/> which represents the header of the table, including the registry of
         /// styles inside <see cref="StyleBuilder"/>
@@ -242,9 +217,36 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
         #endregion
 
-        #region Privates BuildColumns
+        #region Columns and format properties
+        private Columns? BuildColumns()
+        {
+            Columns cols = new Columns();
+            foreach (var column in Table.ColumnsCollection)
+            {
+                double? width = _colMeasurer.EstimateColumnWidth(column.Index, 11);
+                if (width.HasValue)
+                {
+                    Column col = new Column
+                    {
+                        Min = (column.Index + 1).ToOpenXmlUInt32(),
+                        Max = (column.Index + 1).ToOpenXmlUInt32(),
+                        Width = width,
+                        CustomWidth = true
+                    };
+                    cols.AppendChild(col);
+                }
+            }
+            if (cols.ChildElements.Count > 0)
+                return cols;
+            else
+                return null;
+        }
 
 
+        private SheetFormatProperties BuildFormatProperties()
+        {
+            return ExcelPredefinedFormatProperties.Create();
+        }
         #endregion
     }
 }
