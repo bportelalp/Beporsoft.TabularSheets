@@ -31,7 +31,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 {
                     measure = new()
                     {
-                        Width = column.Options.Width.Value,
+                        MaxContentWidth = column.Options.Width.Value,
                         AutoWidth = false
                     };
                 }
@@ -43,7 +43,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 {
                     measure = new()
                     {
-                        Width = widthDefault!.Value,
+                        MaxContentWidth = widthDefault!.Value,
                         AutoWidth = false
                     };
                 }
@@ -64,7 +64,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// <param name="col"></param>
         /// <param name="content"></param>
         /// <param name="format"></param>
-        internal void MeasureContent(int col, object? content, string? format)
+        internal void MeasureContent(int col, object? content, string? format, double? fontSize)
         {
             if (!ColumnMeasurements.ContainsKey(col) || ColumnMeasurements[col].AutoWidth is false)
                 return;
@@ -114,7 +114,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             }
 
             if (ColumnMeasurements.ContainsKey(col))
-                ColumnMeasurements[col].EvaluateWidth(length);
+                ColumnMeasurements[col].EvaluateWidth(length, fontSize);
         }
 
         /// <summary>
@@ -123,20 +123,16 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// <param name="col"></param>
         /// <param name="fontSize"></param>
         /// <returns></returns>
-        public double? EstimateColumnWidth(int col, double? fontSize)
+        public double? EstimateColumnWidth(int col)
         {
             if (!ColumnMeasurements.ContainsKey(col))
                 return null;
 
             ColMeasure measure = ColumnMeasurements[col];
-            //const double calibri11Width = 7.0;
-            const double calibri11 = 11.0; // Points of Calibri 11, treated as the default.
             const double coefficient = 1.4; // Extra increment to reach the value of excel
-            double inputWidth = measure.Width < 10 ? 10 : measure.Width;
-            double size = fontSize is null ? calibri11 : fontSize.Value;
-            double sizeFactor = size / calibri11;
+            double sizeFactor = measure.MaxFontSize / BuildHelpers.DefaultFontSize;
 
-            double result = (inputWidth + coefficient) * sizeFactor;
+            double result = (measure.MaxContentWidth + coefficient) * sizeFactor;
             return result;
         }
 
@@ -147,26 +143,31 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private class ColMeasure
         {
             /// <summary>
-            /// If <see langword="true"/>, <see cref="Width"/> will be updating with new values.
-            /// Otherwise, <see cref="Width"/> is the default value on the initialization and it doesn't change.
+            /// If <see langword="true"/>, <see cref="MaxContentWidth"/> will be updating with new values.
+            /// Otherwise, <see cref="MaxContentWidth"/> is the default value on the initialization and it doesn't change.
             /// </summary>
             public bool AutoWidth { get; set; }
 
             /// <summary>
             /// Value of width to apply to the column
             /// </summary>
-            public double Width { get; set; }
+            public double MaxContentWidth { get; set; }
+
+            public double MaxFontSize { get; set; } = BuildHelpers.DefaultFontSize;
 
             /// <summary>
             /// Check a new value and save if it is greather than the current.
             /// </summary>
             /// <param name="width"></param>
-            public void EvaluateWidth(double width)
+            /// <param name="fontSize"></param>
+            public void EvaluateWidth(double width, double? fontSize)
             {
                 if (!AutoWidth)
                     return;
-                if (Width < width)
-                    Width = width;
+                if (MaxContentWidth < width)
+                    MaxContentWidth = width;
+                if (fontSize is not null && fontSize > MaxFontSize)
+                    MaxFontSize = fontSize.Value;
             }
         }
     }

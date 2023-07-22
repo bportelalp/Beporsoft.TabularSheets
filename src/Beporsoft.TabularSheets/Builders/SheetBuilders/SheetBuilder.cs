@@ -117,7 +117,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 if (formatId is not null)
                     cell.StyleIndex = formatId.Value.ToOpenXmlUInt32();
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
-                _colMeasurer.MeasureContent(col.Index, col.Title, null);
+                _colMeasurer.MeasureContent(col.Index, col.Title, null, null);
                 header.Append(cell);
             }
             return header;
@@ -174,7 +174,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 return null;
 
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numFmtSetup, align);
-            _colMeasurer.MeasureContent(column.Index, value, numFmtSetup?.Pattern);
+            _colMeasurer.MeasureContent(column.Index, value, numFmtSetup?.Pattern, fontSetup?.FontStyle.Size);
             return formatId;
         }
 
@@ -223,7 +223,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             Columns cols = new Columns();
             foreach (var column in Table.ColumnsCollection)
             {
-                double? width = _colMeasurer.EstimateColumnWidth(column.Index, 11);
+                double? width = _colMeasurer.EstimateColumnWidth(column.Index);
                 if (width.HasValue)
                 {
                     Column col = new Column

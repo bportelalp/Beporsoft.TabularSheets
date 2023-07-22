@@ -378,6 +378,34 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
         }
 
+        [Test]
+        public void TryColumnWidth()
+        {
+            bool? tableAutoWidth = true;
+            double? tableWidth = null;
+            string fontName = "Times New Roman";
+            double fontSize = 15;
+
+
+            string path = GetPath($"Test{nameof(TryColumnWidth)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
+            Assert.That(() =>
+            {
+                table = Generate();
+                table.BodyStyle.Font.FontName = fontName;
+                table.BodyStyle.Font.Size = fontSize;
+                table.Options.InheritHeaderStyleFromBody = true;
+                table.Options.DefaultColumnOptions.AutoWidth = tableAutoWidth;
+                table.Options.DefaultColumnOptions.Width = tableWidth;
+                table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
+
+                table.Columns.Single(c => c.Index == 4).Style.NumberingPattern = "0.0000000000000";
+                table.Create(path);
+                sheet = new SheetWrapper(path);
+            }, Throws.Nothing);
+        }
+
         #region TestHelpers
         /// <summary>
         /// Verify the data on every column is OK as expected
