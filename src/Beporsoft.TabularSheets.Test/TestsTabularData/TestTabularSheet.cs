@@ -1,6 +1,8 @@
 using Beporsoft.TabularSheets.Builders;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options;
+using Beporsoft.TabularSheets.Options.ColumnWidth;
 using Beporsoft.TabularSheets.Test.Helpers;
 using System.Drawing;
 using System.Globalization;
@@ -36,9 +38,9 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Font.Color = Color.White;
                 table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
-                table.Options.DefaultColumnOptions.AutoWidth = true;
+                table.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
                 string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
-                table.Columns.Single(c => c.Index == 0).Options.Width = 10;
+                table.Columns.Single(c => c.Index == 0).Options.Width =  new FixedColumnWidth(10);
                 table.Create(path);
             }, Throws.Nothing);
         }
@@ -381,9 +383,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         [Test]
         public void TryColumnWidth()
         {
-            bool? tableAutoWidth = true;
-            double? tableWidth = null;
-            string fontName = "Times New Roman";
+            IColumnWidth? tableWidth = new AutoColumnWidth(1.1);
+            string fontName = "Arial";
             double fontSize = 15;
 
 
@@ -396,10 +397,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.BodyStyle.Font.FontName = fontName;
                 table.BodyStyle.Font.Size = fontSize;
                 table.Options.InheritHeaderStyleFromBody = true;
-                table.Options.DefaultColumnOptions.AutoWidth = tableAutoWidth;
                 table.Options.DefaultColumnOptions.Width = tableWidth;
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
-
                 table.Columns.Single(c => c.Index == 4).Style.NumberingPattern = "0.0000000000000";
                 table.Create(path);
                 sheet = new SheetWrapper(path);

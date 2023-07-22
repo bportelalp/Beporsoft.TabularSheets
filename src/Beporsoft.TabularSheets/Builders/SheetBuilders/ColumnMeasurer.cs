@@ -1,4 +1,7 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+﻿using Beporsoft.TabularSheets.Options;
+using Beporsoft.TabularSheets.Options.ColumnWidth;
+using Beporsoft.TabularSheets.Tools;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,34 +25,42 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         internal void Initialize<T>(TabularSheet<T> table)
         {
             ColumnMeasurements.Clear();
-            bool autoWidthDefault = table.Options.DefaultColumnOptions.AutoWidth ?? false;
-            double? widthDefault = table.Options.DefaultColumnOptions.Width;
+            //bool autoWidthDefault = table.Options.DefaultColumnOptions.AutoWidth ?? false;
+            IColumnWidth? widthDefault = table.Options.DefaultColumnOptions.Width;
             foreach (var column in table.Columns)
             {
                 ColMeasure? measure = null;
-                if (column.Options.Width.HasValue)
+                if (column.Options.Width is FixedColumnWidth fixedWidth)
                 {
                     measure = new()
                     {
-                        MaxContentWidth = column.Options.Width.Value,
+                        MaxContentWidth = fixedWidth.Width,
                         AutoWidth = false
                     };
                 }
-                else if (column.Options.AutoWidth is true)
-                {
-                    measure = new() { AutoWidth = true };
-                }
-                else if (widthDefault.HasValue)
+                else if (column.Options.Width is AutoColumnWidth autoWidth)
                 {
                     measure = new()
                     {
-                        MaxContentWidth = widthDefault!.Value,
+                        AutoWidth = true,
+                        FontFactor = autoWidth.ScaleFactor
+                    };
+                }
+                else if (widthDefault is FixedColumnWidth fixedWidthDefault)
+                {
+                    measure = new()
+                    {
+                        MaxContentWidth = fixedWidthDefault.Width,
                         AutoWidth = false
                     };
                 }
-                else if (autoWidthDefault is true)
+                else if (widthDefault is AutoColumnWidth autoWidthDefault)
                 {
-                    measure = new() { AutoWidth = true };
+                    measure = new()
+                    {
+                        AutoWidth = true,
+                        FontFactor = autoWidthDefault.ScaleFactor
+                    };
                 }
 
                 if (measure is not null)
@@ -61,9 +72,10 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// Evaluate the column content trying to measure with the specified format and save the results.
         /// This operation is not performed if the respective column has no autowidth
         /// </summary>
-        /// <param name="col"></param>
-        /// <param name="content"></param>
-        /// <param name="format"></param>
+        /// <param name="col">Index of the column</param>
+        /// <param name="content">Content of the cell</param>
+        /// <param name="format">Numbering format of the cell</param>
+        /// <param name="fontSize"></param>
         internal void MeasureContent(int col, object? content, string? format, double? fontSize)
         {
             if (!ColumnMeasurements.ContainsKey(col) || ColumnMeasurements[col].AutoWidth is false)
@@ -95,7 +107,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                     }
                     else if (BuildHelpers.TimeSpanTypes.Contains(type))
                     {
-                        //length = ((TimeSpan)content).ToString(format).Length;
+                        //length = ((TimeSpan)content).ToString("c").Length;
                     }
                     else if (BuildHelpers.DateTimeTypes.Contains(type))
                     {
@@ -110,7 +122,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 {
                     // Omit format exceptions
                 }
-
             }
 
             if (ColumnMeasurements.ContainsKey(col))
@@ -121,7 +132,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// Calculate the ideal width of che column, or <see langword="null"/> if no width to configure.
         /// </summary>
         /// <param name="col"></param>
-        /// <param name="fontSize"></param>
         /// <returns></returns>
         public double? EstimateColumnWidth(int col)
         {
@@ -132,7 +142,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             const double coefficient = 1.4; // Extra increment to reach the value of excel
             double sizeFactor = measure.MaxFontSize / BuildHelpers.DefaultFontSize;
 
-            double result = (measure.MaxContentWidth + coefficient) * sizeFactor;
+            double result = (measure.MaxContentWidth + coefficient) * sizeFactor * measure.FontFactor;
             return result;
         }
 
@@ -153,7 +163,15 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             /// </summary>
             public double MaxContentWidth { get; set; }
 
+            /// <summary>
+            /// Max font size applied to any cell column
+            /// </summary>
             public double MaxFontSize { get; set; } = BuildHelpers.DefaultFontSize;
+
+            /// <summary>
+            /// A scale applied for fonts different from calibri
+            /// </summary>
+            public double FontFactor { get; set; } = 1.0;
 
             /// <summary>
             /// Check a new value and save if it is greather than the current.

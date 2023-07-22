@@ -45,7 +45,7 @@ namespace Beporsoft.TabularSheets.Test
                     CountryOrigin = new string(Enumerable.Repeat(letters, 8).Select(s => s[rnd.Next(s.Length)]).ToArray()).ToLower(),
                     Cost = rnd.NextDouble() * 10.0,
                     LastPriceUpdate = new DateTime(2010, 1, 1).AddDays(rnd.Next((DateTime.Now - new DateTime(2010, 1, 1)).Days)),
-                    DeliveryTime = TimeSpan.FromSeconds(rnd.NextDouble() * 10000.0)
+                    DeliveryTime = TimeSpan.FromSeconds(rnd.NextDouble() * 200000.0)
                 };
                 products.Add(product);
             }

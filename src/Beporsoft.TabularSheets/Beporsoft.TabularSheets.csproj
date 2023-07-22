@@ -58,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" PrivateAssets="compile"/>
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" PrivateAssets="compile" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
