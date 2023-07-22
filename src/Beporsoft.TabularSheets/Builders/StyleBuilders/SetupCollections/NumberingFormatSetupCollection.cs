@@ -14,6 +14,9 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
         private readonly List<NumberingFormatSetup> _items = new();
 
         public int Count => _items.Where(i => i.Index >= NumberingFormatSetup.StartIndexNotBuiltin).Count();
+
+        public NumberingFormatSetup? this[int index] => index < Count? this[index] : null;
+
         public int Register(NumberingFormatSetup setup)
         {
             if (!_items.Contains(setup))

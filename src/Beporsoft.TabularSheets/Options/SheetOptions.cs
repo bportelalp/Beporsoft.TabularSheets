@@ -41,5 +41,10 @@ namespace Beporsoft.TabularSheets.Options
         /// the equivalent <see cref="TabularSheet{T}.BodyStyle"/> properties
         /// </summary>
         public bool InheritHeaderStyleFromBody { get; set; } = false;
+
+        /// <summary>
+        /// The default column options for those which haven't configured their own options
+        /// </summary>
+        public ColumnOptions DefaultColumnOptions { get; set; } = new();
     }
 }

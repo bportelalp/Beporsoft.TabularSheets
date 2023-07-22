@@ -64,6 +64,12 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return formatId;
         }
 
+        public FillSetup? GetFillSetup(int index) => _fills[index];
+        public FontSetup? GetFontSetup(int index) => _fonts[index];
+        public BorderSetup? GetBorderSetup(int index) => _borders[index];
+        public NumberingFormatSetup? GetNumberingFormatSetup(int index) => _numFormats[index];
+        public FormatSetup? GetFormatSetup(int index) => _formats[index];
+
         public Fills GetFills()
         {
             Fills fills = _fills.BuildContainer<Fills>();

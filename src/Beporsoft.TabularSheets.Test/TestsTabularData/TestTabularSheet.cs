@@ -1,5 +1,8 @@
+using Beporsoft.TabularSheets.Builders;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options;
+using Beporsoft.TabularSheets.Options.ColumnWidth;
 using Beporsoft.TabularSheets.Test.Helpers;
 using System.Drawing;
 using System.Globalization;
@@ -35,7 +38,9 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Font.Color = Color.White;
                 table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
+                table.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
                 string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
+                table.Columns.Single(c => c.Index == 0).Options.Width =  new FixedColumnWidth(10);
                 table.Create(path);
             }, Throws.Nothing);
         }
@@ -375,6 +380,31 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
         }
 
+        [Test]
+        public void TryColumnWidth()
+        {
+            IColumnWidth? tableWidth = new AutoColumnWidth(1.1);
+            string fontName = "Arial";
+            double fontSize = 15;
+
+
+            string path = GetPath($"Test{nameof(TryColumnWidth)}.xlsx");
+            TabularSheet<Product> table = null!;
+            SheetWrapper sheet = null!;
+            Assert.That(() =>
+            {
+                table = Generate();
+                table.BodyStyle.Font.FontName = fontName;
+                table.BodyStyle.Font.Size = fontSize;
+                table.Options.InheritHeaderStyleFromBody = true;
+                table.Options.DefaultColumnOptions.Width = tableWidth;
+                table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
+                table.Columns.Single(c => c.Index == 4).Style.NumberingPattern = "0.0000000000000";
+                table.Create(path);
+                sheet = new SheetWrapper(path);
+            }, Throws.Nothing);
+        }
+
         #region TestHelpers
         /// <summary>
         /// Verify the data on every column is OK as expected
@@ -420,14 +450,14 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                         string? content = sheet.GetSharedString(indexSharedString);
                         Assert.That(value.ToString(), Is.EqualTo(content));
                     }
-                    else if (CellBuilder.DateTimeTypes.Contains(value.GetType()))
+                    else if (BuildHelpers.DateTimeTypes.Contains(value.GetType()))
                     {
                         var date = ((DateTime)value).ToOADate();
                         double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
                         Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
                         Assert.That(date, Is.EqualTo(content));
                     }
-                    else if (CellBuilder.TimeSpanTypes.Contains(value.GetType()))
+                    else if (BuildHelpers.TimeSpanTypes.Contains(value.GetType()))
                     {
                         var totalDays = ((TimeSpan)value).TotalDays;
                         double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
