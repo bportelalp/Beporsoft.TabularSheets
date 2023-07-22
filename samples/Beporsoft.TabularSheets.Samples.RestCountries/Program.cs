@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options.ColumnWidth;
 using System.Drawing;
 using System.Net.Http.Json;
 
@@ -44,8 +45,10 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.HeaderStyle.Font.Color = Color.White;
                 sheet.HeaderStyle.Border.Bottom = BorderStyle.BorderType.Medium;
 
-                sheet.BodyStyle.Border.Top = BorderStyle.BorderType.Thin;
-                sheet.BodyStyle.Border.Bottom = BorderStyle.BorderType.Thin;
+                sheet.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin, null);
+                sheet.BodyStyle.Font.FontName = "Calibri";
+                sheet.Options.InheritHeaderStyleFromBody = true;
+                sheet.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
 
                 // Export
                 Console.WriteLine($"Creating file");
