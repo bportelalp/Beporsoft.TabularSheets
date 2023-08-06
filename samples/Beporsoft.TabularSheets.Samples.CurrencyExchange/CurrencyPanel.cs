@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,7 +23,8 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
     public partial class CurrencyPanel : Form
     {
         private readonly HttpClient _apiClient;
-
+        private bool _applyFontHeader = false;
+        private bool _applyFontBody = false;
         public CurrencyPanel()
         {
             InitializeComponent();
@@ -40,6 +42,9 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
             _dateTimeTo.Value = DateTime.Today;
             _ = LoadSelectors();
             LoadColorPicker(comboHeaderFill);
+            LoadColorPicker(comboBodyFill);
+            LoadColorPicker(comboHeaderBorderColor);
+            LoadColorPicker(comboBodyBorderColor);
         }
 
         private async Task LoadSelectors()
@@ -148,9 +153,9 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
             // Add some style
             table.Options.DateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
             table.BodyStyle.Border.SetBorderType(CellStyling.BorderStyle.BorderType.Thin);
-            table.BodyStyle.Font.FontName = "Calibri";
             table.BodyStyle.NumberingPattern = "0.000";
             ApplyHeaderStyle(table);
+            ApplyBodyStyle(table);
 
 
             string fileName = GetPathSave();
@@ -160,20 +165,34 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
                 MessageBox.Show("File created");
             }
         }
-
         private void ApplyHeaderStyle(TabularSheet<ExchangeRecord> table)
         {
             Style header = table.HeaderStyle;
+            Style header = table.HeaderStyle;
             if ((Color)comboHeaderFill.SelectedItem != Color.Empty)
                 header.Fill.BackgroundColor = (Color)comboHeaderFill.SelectedItem;
+            if (_applyFontHeader)
+            {
+                header.Font.FontName = dialogFontHeader.Font.Name;
+                header.Font.Bold = dialogFontHeader.Font.Bold;
+                header.Font.Italic = dialogFontHeader.Font.Italic;
+                header.Font.Color = dialogFontHeader.Color;
+            }
+        }
 
-            header.Font.FontName = dialogFontHeader.Font.Name;
-            header.Font.Bold = dialogFontHeader.Font.Bold;
-            header.Font.Italic = dialogFontHeader.Font.Italic;
-            header.Font.Color = dialogFontHeader.Color;
+        private void ApplyBodyStyle(TabularSheet<ExchangeRecord> table)
+        {
+            Style body = table.BodyStyle;
+            if ((Color)comboBodyFill.SelectedItem != Color.Empty)
+                body.Fill.BackgroundColor = (Color)comboBodyFill.SelectedItem;
 
-
-
+            if (_applyFontBody)
+            {
+                body.Font.FontName = dialogFontBody.Font.Name;
+                body.Font.Bold = dialogFontBody.Font.Bold;
+                body.Font.Italic = dialogFontBody.Font.Italic;
+                body.Font.Color = dialogFontBody.Color;
+            }
         }
         #endregion
 
@@ -255,7 +274,23 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
         #endregion
 
         #region Configuration Styles
-        private void OnClickConfigureHeaderFont(object sender, EventArgs e) => dialogFontHeader.ShowDialog();
+        private void OnClickConfigureHeaderFont(object sender, EventArgs e)
+        {
+            var result = dialogFontHeader.ShowDialog();
+            if (result == DialogResult.OK)
+                _applyFontHeader = true;
+            else
+                _applyFontHeader = false;
+        }
+
+        private void OnClickConfigureBodyFont(object sender, EventArgs e)
+        {
+            var result = dialogFontBody.ShowDialog();
+            if (result == DialogResult.OK)
+                _applyFontBody = true;
+            else
+                _applyFontBody = false;
+        }
         #endregion
 
         #endregion

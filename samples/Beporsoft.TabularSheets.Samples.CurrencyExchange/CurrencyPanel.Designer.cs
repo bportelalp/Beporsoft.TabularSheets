@@ -50,11 +50,23 @@
             this.lblHeaderColor = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.btnConfigureHeaderFont = new System.Windows.Forms.Button();
-            this.dialogFontHeader = new System.Windows.Forms.FontDialog();
             this.comboHeaderFill = new System.Windows.Forms.ComboBox();
+            this.dialogFontHeader = new System.Windows.Forms.FontDialog();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.comboBodyFill = new System.Windows.Forms.ComboBox();
+            this.dialogFontBody = new System.Windows.Forms.FontDialog();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.comboHeaderBorderColor = new System.Windows.Forms.ComboBox();
+            this.comboBodyBorderColor = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this._dataCurrencies)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // _lblTitle
@@ -241,17 +253,20 @@
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.77273F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.22727F));
+            this.tableLayoutPanel2.Controls.Add(this.comboHeaderBorderColor, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.label5, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.lblHeaderColor, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.btnConfigureHeaderFont, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.comboHeaderFill, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnConfigureHeaderFont, 1, 3);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(508, 430);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
+            this.tableLayoutPanel2.RowCount = 4;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(203, 121);
             this.tableLayoutPanel2.TabIndex = 16;
             // 
@@ -259,9 +274,9 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.Location = new System.Drawing.Point(3, 41);
+            this.label5.Location = new System.Drawing.Point(3, 30);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(74, 41);
+            this.label5.Size = new System.Drawing.Size(74, 30);
             this.label5.TabIndex = 1;
             this.label5.Text = "Border";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -272,7 +287,7 @@
             this.lblHeaderColor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblHeaderColor.Location = new System.Drawing.Point(3, 0);
             this.lblHeaderColor.Name = "lblHeaderColor";
-            this.lblHeaderColor.Size = new System.Drawing.Size(74, 41);
+            this.lblHeaderColor.Size = new System.Drawing.Size(74, 30);
             this.lblHeaderColor.TabIndex = 0;
             this.lblHeaderColor.Text = "Fill color";
             this.lblHeaderColor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -281,29 +296,22 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label6.Location = new System.Drawing.Point(3, 82);
+            this.label6.Location = new System.Drawing.Point(3, 90);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(74, 39);
+            this.label6.Size = new System.Drawing.Size(74, 31);
             this.label6.TabIndex = 2;
             this.label6.Text = "Font";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnConfigureHeaderFont
             // 
-            this.btnConfigureHeaderFont.Location = new System.Drawing.Point(83, 85);
+            this.btnConfigureHeaderFont.Location = new System.Drawing.Point(83, 93);
             this.btnConfigureHeaderFont.Name = "btnConfigureHeaderFont";
-            this.btnConfigureHeaderFont.Size = new System.Drawing.Size(97, 33);
+            this.btnConfigureHeaderFont.Size = new System.Drawing.Size(97, 25);
             this.btnConfigureHeaderFont.TabIndex = 3;
             this.btnConfigureHeaderFont.Text = "Font";
             this.btnConfigureHeaderFont.UseVisualStyleBackColor = true;
             this.btnConfigureHeaderFont.Click += new System.EventHandler(this.OnClickConfigureHeaderFont);
-            // 
-            // dialogFontHeader
-            // 
-            this.dialogFontHeader.AllowScriptChange = false;
-            this.dialogFontHeader.AllowSimulations = false;
-            this.dialogFontHeader.ShowApply = true;
-            this.dialogFontHeader.ShowColor = true;
             // 
             // comboHeaderFill
             // 
@@ -313,11 +321,139 @@
             this.comboHeaderFill.Size = new System.Drawing.Size(117, 26);
             this.comboHeaderFill.TabIndex = 4;
             // 
+            // dialogFontHeader
+            // 
+            this.dialogFontHeader.AllowScriptChange = false;
+            this.dialogFontHeader.AllowSimulations = false;
+            this.dialogFontHeader.ShowApply = true;
+            this.dialogFontHeader.ShowColor = true;
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.77273F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.22727F));
+            this.tableLayoutPanel3.Controls.Add(this.comboBodyBorderColor, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label7, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label8, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.label9, 0, 3);
+            this.tableLayoutPanel3.Controls.Add(this.comboBodyFill, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.button1, 1, 3);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(714, 433);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 4;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(203, 118);
+            this.tableLayoutPanel3.TabIndex = 17;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label7.Location = new System.Drawing.Point(3, 29);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(74, 29);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Border";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label8.Location = new System.Drawing.Point(3, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(74, 29);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Fill color";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label9.Location = new System.Drawing.Point(3, 87);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(74, 31);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Font";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(83, 90);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(97, 25);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Font";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.OnClickConfigureBodyFont);
+            // 
+            // comboBodyFill
+            // 
+            this.comboBodyFill.FormattingEnabled = true;
+            this.comboBodyFill.Location = new System.Drawing.Point(83, 3);
+            this.comboBodyFill.Name = "comboBodyFill";
+            this.comboBodyFill.Size = new System.Drawing.Size(117, 26);
+            this.comboBodyFill.TabIndex = 4;
+            // 
+            // dialogFontBody
+            // 
+            this.dialogFontBody.AllowScriptChange = false;
+            this.dialogFontBody.AllowSimulations = false;
+            this.dialogFontBody.ShowApply = true;
+            this.dialogFontBody.ShowColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(509, 401);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(73, 24);
+            this.label10.TabIndex = 18;
+            this.label10.Text = "Header";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(710, 401);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(53, 24);
+            this.label11.TabIndex = 19;
+            this.label11.Text = "Body";
+            // 
+            // comboHeaderBorderColor
+            // 
+            this.comboHeaderBorderColor.FormattingEnabled = true;
+            this.comboHeaderBorderColor.Location = new System.Drawing.Point(83, 33);
+            this.comboHeaderBorderColor.Name = "comboHeaderBorderColor";
+            this.comboHeaderBorderColor.Size = new System.Drawing.Size(117, 26);
+            this.comboHeaderBorderColor.TabIndex = 5;
+            // 
+            // comboBodyBorderColor
+            // 
+            this.comboBodyBorderColor.FormattingEnabled = true;
+            this.comboBodyBorderColor.Location = new System.Drawing.Point(83, 32);
+            this.comboBodyBorderColor.Name = "comboBodyBorderColor";
+            this.comboBodyBorderColor.Size = new System.Drawing.Size(117, 26);
+            this.comboBodyBorderColor.TabIndex = 5;
+            // 
             // CurrencyPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(975, 623);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.btnUnselectAll);
@@ -340,6 +476,8 @@
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -371,6 +509,17 @@
         private System.Windows.Forms.Button btnConfigureHeaderFont;
         private System.Windows.Forms.FontDialog dialogFontHeader;
         private System.Windows.Forms.ComboBox comboHeaderFill;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboBodyFill;
+        private System.Windows.Forms.FontDialog dialogFontBody;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox comboHeaderBorderColor;
+        private System.Windows.Forms.ComboBox comboBodyBorderColor;
     }
 }
 
