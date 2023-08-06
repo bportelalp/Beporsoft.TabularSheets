@@ -46,23 +46,27 @@
             this._saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.comboHeaderBorderColor = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.lblHeaderColor = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.btnConfigureHeaderFont = new System.Windows.Forms.Button();
             this.comboHeaderFill = new System.Windows.Forms.ComboBox();
+            this.btnConfigureHeaderFont = new System.Windows.Forms.Button();
             this.dialogFontHeader = new System.Windows.Forms.FontDialog();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.comboBodyFill = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.dialogFontBody = new System.Windows.Forms.FontDialog();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.comboHeaderBorderColor = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.comboHeaderBorderStyle = new System.Windows.Forms.ComboBox();
             this.comboBodyBorderColor = new System.Windows.Forms.ComboBox();
+            this.comboBodyBorderStyle = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this._dataCurrencies)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -253,6 +257,8 @@
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.77273F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.22727F));
+            this.tableLayoutPanel2.Controls.Add(this.comboHeaderBorderStyle, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label12, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.comboHeaderBorderColor, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.label5, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.lblHeaderColor, 0, 0);
@@ -270,6 +276,14 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(203, 121);
             this.tableLayoutPanel2.TabIndex = 16;
             // 
+            // comboHeaderBorderColor
+            // 
+            this.comboHeaderBorderColor.FormattingEnabled = true;
+            this.comboHeaderBorderColor.Location = new System.Drawing.Point(83, 33);
+            this.comboHeaderBorderColor.Name = "comboHeaderBorderColor";
+            this.comboHeaderBorderColor.Size = new System.Drawing.Size(117, 26);
+            this.comboHeaderBorderColor.TabIndex = 5;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -278,7 +292,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(74, 30);
             this.label5.TabIndex = 1;
-            this.label5.Text = "Border";
+            this.label5.Text = "Border Fill";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblHeaderColor
@@ -289,7 +303,7 @@
             this.lblHeaderColor.Name = "lblHeaderColor";
             this.lblHeaderColor.Size = new System.Drawing.Size(74, 30);
             this.lblHeaderColor.TabIndex = 0;
-            this.lblHeaderColor.Text = "Fill color";
+            this.lblHeaderColor.Text = "Fill";
             this.lblHeaderColor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label6
@@ -303,6 +317,14 @@
             this.label6.Text = "Font";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // comboHeaderFill
+            // 
+            this.comboHeaderFill.FormattingEnabled = true;
+            this.comboHeaderFill.Location = new System.Drawing.Point(83, 3);
+            this.comboHeaderFill.Name = "comboHeaderFill";
+            this.comboHeaderFill.Size = new System.Drawing.Size(117, 26);
+            this.comboHeaderFill.TabIndex = 4;
+            // 
             // btnConfigureHeaderFont
             // 
             this.btnConfigureHeaderFont.Location = new System.Drawing.Point(83, 93);
@@ -312,14 +334,6 @@
             this.btnConfigureHeaderFont.Text = "Font";
             this.btnConfigureHeaderFont.UseVisualStyleBackColor = true;
             this.btnConfigureHeaderFont.Click += new System.EventHandler(this.OnClickConfigureHeaderFont);
-            // 
-            // comboHeaderFill
-            // 
-            this.comboHeaderFill.FormattingEnabled = true;
-            this.comboHeaderFill.Location = new System.Drawing.Point(83, 3);
-            this.comboHeaderFill.Name = "comboHeaderFill";
-            this.comboHeaderFill.Size = new System.Drawing.Size(117, 26);
-            this.comboHeaderFill.TabIndex = 4;
             // 
             // dialogFontHeader
             // 
@@ -333,6 +347,8 @@
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.77273F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.22727F));
+            this.tableLayoutPanel3.Controls.Add(this.comboBodyBorderStyle, 1, 2);
+            this.tableLayoutPanel3.Controls.Add(this.label13, 0, 2);
             this.tableLayoutPanel3.Controls.Add(this.comboBodyBorderColor, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.label7, 0, 1);
             this.tableLayoutPanel3.Controls.Add(this.label8, 0, 0);
@@ -358,7 +374,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(74, 29);
             this.label7.TabIndex = 1;
-            this.label7.Text = "Border";
+            this.label7.Text = "Border Fill";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label8
@@ -369,7 +385,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(74, 29);
             this.label8.TabIndex = 0;
-            this.label8.Text = "Fill color";
+            this.label8.Text = "Fill";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label9
@@ -383,6 +399,14 @@
             this.label9.Text = "Font";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // comboBodyFill
+            // 
+            this.comboBodyFill.FormattingEnabled = true;
+            this.comboBodyFill.Location = new System.Drawing.Point(83, 3);
+            this.comboBodyFill.Name = "comboBodyFill";
+            this.comboBodyFill.Size = new System.Drawing.Size(117, 26);
+            this.comboBodyFill.TabIndex = 4;
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(83, 90);
@@ -392,14 +416,6 @@
             this.button1.Text = "Font";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.OnClickConfigureBodyFont);
-            // 
-            // comboBodyFill
-            // 
-            this.comboBodyFill.FormattingEnabled = true;
-            this.comboBodyFill.Location = new System.Drawing.Point(83, 3);
-            this.comboBodyFill.Name = "comboBodyFill";
-            this.comboBodyFill.Size = new System.Drawing.Size(117, 26);
-            this.comboBodyFill.TabIndex = 4;
             // 
             // dialogFontBody
             // 
@@ -430,13 +446,35 @@
             this.label11.TabIndex = 19;
             this.label11.Text = "Body";
             // 
-            // comboHeaderBorderColor
+            // label12
             // 
-            this.comboHeaderBorderColor.FormattingEnabled = true;
-            this.comboHeaderBorderColor.Location = new System.Drawing.Point(83, 33);
-            this.comboHeaderBorderColor.Name = "comboHeaderBorderColor";
-            this.comboHeaderBorderColor.Size = new System.Drawing.Size(117, 26);
-            this.comboHeaderBorderColor.TabIndex = 5;
+            this.label12.AutoSize = true;
+            this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label12.Location = new System.Drawing.Point(3, 60);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(74, 30);
+            this.label12.TabIndex = 6;
+            this.label12.Text = "Border";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label13.Location = new System.Drawing.Point(3, 58);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(74, 29);
+            this.label13.TabIndex = 6;
+            this.label13.Text = "Border";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // comboHeaderBorderStyle
+            // 
+            this.comboHeaderBorderStyle.FormattingEnabled = true;
+            this.comboHeaderBorderStyle.Location = new System.Drawing.Point(83, 63);
+            this.comboHeaderBorderStyle.Name = "comboHeaderBorderStyle";
+            this.comboHeaderBorderStyle.Size = new System.Drawing.Size(117, 26);
+            this.comboHeaderBorderStyle.TabIndex = 7;
             // 
             // comboBodyBorderColor
             // 
@@ -445,6 +483,14 @@
             this.comboBodyBorderColor.Name = "comboBodyBorderColor";
             this.comboBodyBorderColor.Size = new System.Drawing.Size(117, 26);
             this.comboBodyBorderColor.TabIndex = 5;
+            // 
+            // comboBodyBorderStyle
+            // 
+            this.comboBodyBorderStyle.FormattingEnabled = true;
+            this.comboBodyBorderStyle.Location = new System.Drawing.Point(83, 61);
+            this.comboBodyBorderStyle.Name = "comboBodyBorderStyle";
+            this.comboBodyBorderStyle.Size = new System.Drawing.Size(117, 26);
+            this.comboBodyBorderStyle.TabIndex = 7;
             // 
             // CurrencyPanel
             // 
@@ -519,6 +565,10 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.ComboBox comboHeaderBorderColor;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox comboHeaderBorderStyle;
+        private System.Windows.Forms.ComboBox comboBodyBorderStyle;
         private System.Windows.Forms.ComboBox comboBodyBorderColor;
     }
 }

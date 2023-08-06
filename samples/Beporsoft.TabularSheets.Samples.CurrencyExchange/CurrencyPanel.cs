@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options.ColumnWidth;
 using Beporsoft.TabularSheets.Samples.CurrencyExchange.DTO;
 using Beporsoft.TabularSheets.Samples.CurrencyExchange.Models;
 using Newtonsoft.Json;
@@ -16,7 +17,6 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
 {
@@ -45,6 +45,8 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
             LoadColorPicker(comboBodyFill);
             LoadColorPicker(comboHeaderBorderColor);
             LoadColorPicker(comboBodyBorderColor);
+            LoadBorderTypePicker(comboHeaderBorderStyle);
+            LoadBorderTypePicker(comboBodyBorderStyle);
         }
 
         private async Task LoadSelectors()
@@ -76,6 +78,11 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
                 MessageBox.Show("Data of currencies cannot be loaded", "Oops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+
+        private void LoadBorderTypePicker(ComboBox combo)
+        {
+            combo.DataSource = Enum.GetValues(typeof(CellStyling.BorderStyle.BorderType));
         }
 
         private void LoadColorPicker(System.Windows.Forms.ComboBox combo)
@@ -152,11 +159,10 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
 
             // Add some style
             table.Options.DateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
-            table.BodyStyle.Border.SetBorderType(CellStyling.BorderStyle.BorderType.Thin);
-            table.BodyStyle.NumberingPattern = "0.000";
-            ApplyHeaderStyle(table);
-            ApplyBodyStyle(table);
+            ApplyStyle(table.HeaderStyle, _applyFontHeader ? dialogFontHeader : null, comboHeaderFill, comboHeaderBorderColor, comboHeaderBorderStyle);
+            ApplyStyle(table.BodyStyle, _applyFontBody ? dialogFontBody : null, comboBodyFill, comboBodyBorderColor, comboBodyBorderStyle);
 
+            table.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
 
             string fileName = GetPathSave();
             if (fileName != null)
@@ -165,34 +171,25 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
                 MessageBox.Show("File created");
             }
         }
-        private void ApplyHeaderStyle(TabularSheet<ExchangeRecord> table)
-        {
-            Style header = table.HeaderStyle;
-            Style header = table.HeaderStyle;
-            if ((Color)comboHeaderFill.SelectedItem != Color.Empty)
-                header.Fill.BackgroundColor = (Color)comboHeaderFill.SelectedItem;
-            if (_applyFontHeader)
-            {
-                header.Font.FontName = dialogFontHeader.Font.Name;
-                header.Font.Bold = dialogFontHeader.Font.Bold;
-                header.Font.Italic = dialogFontHeader.Font.Italic;
-                header.Font.Color = dialogFontHeader.Color;
-            }
-        }
 
-        private void ApplyBodyStyle(TabularSheet<ExchangeRecord> table)
+        private void ApplyStyle(Style style, FontDialog font, ComboBox fill, ComboBox borderFill, ComboBox borderStyle)
         {
-            Style body = table.BodyStyle;
-            if ((Color)comboBodyFill.SelectedItem != Color.Empty)
-                body.Fill.BackgroundColor = (Color)comboBodyFill.SelectedItem;
+            if ((Color)fill.SelectedItem != Color.Empty)
+                style.Fill.BackgroundColor = (Color)fill.SelectedItem;
+            if ((Color)borderFill.SelectedItem != Color.Empty)
+                style.Border.Color = (Color)borderFill.SelectedItem;
 
-            if (_applyFontBody)
+            if ((CellStyling.BorderStyle.BorderType)borderStyle.SelectedItem != CellStyling.BorderStyle.BorderType.None)
+                style.Border.SetBorderType((CellStyling.BorderStyle.BorderType)borderStyle.SelectedItem);
+
+            if (font != null)
             {
-                body.Font.FontName = dialogFontBody.Font.Name;
-                body.Font.Bold = dialogFontBody.Font.Bold;
-                body.Font.Italic = dialogFontBody.Font.Italic;
-                body.Font.Color = dialogFontBody.Color;
+                style.Font.FontName = font.Font.Name;
+                style.Font.Bold = font.Font.Bold;
+                style.Font.Italic = font.Font.Italic;
+                style.Font.Color = font.Color;
             }
+
         }
         #endregion
 
