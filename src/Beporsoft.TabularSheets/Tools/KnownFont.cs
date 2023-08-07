@@ -12,5 +12,7 @@ namespace Beporsoft.TabularSheets.Tools
         public const string Arial = "Arial";
         public const string Cambria = "Cambria";
         public const string CascadiaCode = "Cascadia Code";
+        public const string TimesNewRoman = "Times New Roman";
     }
+
 }

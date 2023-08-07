@@ -17,6 +17,11 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
 
         public int Count => _items.Count;
 
+        public SharedStringSetup? this[int index]
+        {
+            get => _items.Values.FirstOrDefault(i => i.Index == index);
+        }
+
         public int Register(SharedStringSetup setup)
         {
             if (!_items.ContainsKey(setup.Text))

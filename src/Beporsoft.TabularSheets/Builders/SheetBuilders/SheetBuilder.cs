@@ -1,9 +1,12 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Collections.Generic;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
@@ -15,6 +18,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     internal class SheetBuilder<T>
     {
         private readonly CellRefIterator _cellRefIterator = new CellRefIterator();
+        private readonly ColumnMeasurer _colMeasurer = new ColumnMeasurer();
 
         public SheetBuilder(TabularSheet<T> table, StylesheetBuilder styleBuilder, SharedStringBuilder sharedStrings)
         {
@@ -45,17 +49,40 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         /// The cell builder, which helps on building <see cref="Cell"/> instances
         /// </summary>
         public CellBuilder CellBuilder { get; }
+
         #endregion
 
         #region Public
 
+        /// <summary>
+        /// Build all the Open Xml elements which represent the sheet
+        /// </summary>
+        /// <returns></returns>
+        public WorksheetBundle BuildSheetContext()
+        {
+            _colMeasurer.Initialize(Table);
+            SheetData data = BuildSheetData();
+            Columns? cols = BuildColumns();
+            SheetFormatProperties formatProps = BuildFormatProperties();
+
+            return new WorksheetBundle()
+            {
+                Data = data,
+                Columns = cols,
+                FormatProperties = formatProps,
+            };
+        }
+        #endregion
+
+
+        #region BuildSheetData
         /// <summary>
         /// Build the <see cref="SheetData"/> node using values from <see cref="Table"/>. <br/>
         /// In addition, handles the required styles and include it inside the <see cref="StyleBuilder"/>
         /// for after treatment
         /// </summary>
         /// <returns>An instance of the OpenXml element <see cref="SheetData"/></returns>
-        public SheetData BuildSheetData()
+        private SheetData BuildSheetData()
         {
             SheetData sheetData = new();
             _cellRefIterator.Reset();
@@ -70,18 +97,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             return sheetData;
         }
 
-        public Columns? BuildColumns()
-        {
-            return null;
-        }
-
-        public SheetFormatProperties BuildFormatProperties()
-        {
-            return ExcelPredefinedFormatProperties.Create();
-        }
-        #endregion
-
-        #region Create SheetData components
         /// <summary>
         /// Create the <see cref="Row"/> which represents the header of the table, including the registry of
         /// styles inside <see cref="StyleBuilder"/>
@@ -101,9 +116,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                 Cell cell = CellBuilder.CreateCell(col.Title);
                 if (formatId is not null)
                     cell.StyleIndex = formatId.Value.ToOpenXmlUInt32();
-
                 cell.CellReference = _cellRefIterator.MoveNextColAfter();
-
+                _colMeasurer.MeasureContent(col.Index, col.Title, null, null);
                 header.Append(cell);
             }
             return header;
@@ -156,6 +170,8 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
             numFmtSetup = FindSuitableNumberingFormat(value, numFmtSetup);
 
+            _colMeasurer.MeasureContent(column.Index, value, numFmtSetup?.Pattern, fontSetup?.FontStyle.Size);
+
             if (fillSetup is null && fontSetup is null && borderSetup is null && numFmtSetup is null && align is null)
                 return null;
 
@@ -199,6 +215,38 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             int formatId = StyleBuilder.RegisterFormat(fill, font, border, null, align);
 
             return formatId;
+        }
+        #endregion
+
+        #region Columns and format properties
+        private Columns? BuildColumns()
+        {
+            Columns cols = new Columns();
+            foreach (var column in Table.ColumnsCollection)
+            {
+                double? width = _colMeasurer.EstimateColumnWidth(column.Index);
+                if (width.HasValue)
+                {
+                    Column col = new Column
+                    {
+                        Min = (column.Index + 1).ToOpenXmlUInt32(),
+                        Max = (column.Index + 1).ToOpenXmlUInt32(),
+                        Width = width,
+                        CustomWidth = true
+                    };
+                    cols.AppendChild(col);
+                }
+            }
+            if (cols.ChildElements.Count > 0)
+                return cols;
+            else
+                return null;
+        }
+
+
+        private SheetFormatProperties BuildFormatProperties()
+        {
+            return ExcelPredefinedFormatProperties.Create();
         }
         #endregion
     }

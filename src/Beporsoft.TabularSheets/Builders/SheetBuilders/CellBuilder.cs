@@ -39,26 +39,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             SharedStrings = sharedStrings;
         }
 
-        public static List<Type> DateTimeTypes { get; } = new List<Type>() { typeof(DateTime), typeof(DateTimeOffset) };
-        public static List<Type> TimeSpanTypes { get; } = new List<Type>()
-        {
-            typeof(TimeSpan),
-#if NET6_0_OR_GREATER 
-            typeof(TimeOnly) 
-#endif 
-        };
-
-        public static List<Type> CellTypesWithStyle { get; } = new List<Type>() 
-        { 
-            typeof(DateTime), 
-            typeof(DateTimeOffset), 
-            typeof(TimeSpan),
-#if NET6_0_OR_GREATER 
-            typeof(TimeOnly) 
-#endif 
-        };
-
-
         /// <summary>
         /// The <see cref="SharedStringBuilder"/> to fill with strings.
         /// </summary>

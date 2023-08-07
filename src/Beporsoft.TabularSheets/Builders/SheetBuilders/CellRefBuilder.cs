@@ -7,7 +7,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     /// <summary>
     /// A class to build cell reference values from row and col indexes
     /// </summary>
-    public static class CellRefBuilder
+    internal static class CellRefBuilder
     {
         internal const string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         internal static readonly Regex RegexReference = new(@"^\D{1,}\d{1,}$");

@@ -1,4 +1,6 @@
-﻿using Beporsoft.TabularSheets.Samples.CurrencyExchange.DTO;
+﻿using Beporsoft.TabularSheets.CellStyling;
+using Beporsoft.TabularSheets.Options.ColumnWidth;
+using Beporsoft.TabularSheets.Samples.CurrencyExchange.DTO;
 using Beporsoft.TabularSheets.Samples.CurrencyExchange.Models;
 using Newtonsoft.Json;
 using System;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,50 +23,16 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
     public partial class CurrencyPanel : Form
     {
         private readonly HttpClient _apiClient;
-
+        private bool _applyFontHeader = false;
+        private bool _applyFontBody = false;
         public CurrencyPanel()
         {
             InitializeComponent();
             this._apiClient = new HttpClient { BaseAddress = new Uri("https://api.frankfurter.app/") };
             Configure();
-            _ = LoadSelectors();
         }
 
-        #region Building Sheet
-        private void BuildExcel(List<ExchangeRecord> records)
-        {
-            List<string> targetCurrencies = GetTargetCurrencies();
-
-            TabularSheet<ExchangeRecord> table = new TabularSheet<ExchangeRecord>();
-            table.AddRange(records);
-            table.AddColumn(t => t.Date).SetTitle("Date");
-            table.AddColumn(t => t.BaseCurrency).SetTitle("Base Currency");
-            // Build a column for each possible currency
-            foreach (var currency in targetCurrencies)
-            {
-                table.AddColumn(t => t.Exchanges.SingleOrDefault(ex => ex.TargetCurrencyCode == currency)?.Conversion)
-                    .SetTitle(currency);
-            }
-
-            // Add some style
-            table.Options.DateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
-            table.BodyStyle.Border.SetBorderType(CellStyling.BorderStyle.BorderType.Thin);
-            table.BodyStyle.Font.FontName = "Calibri";
-            table.BodyStyle.NumberingPattern = "0.000";
-            table.HeaderStyle.Font.Color = Color.White;
-            table.HeaderStyle.Fill.BackgroundColor = Color.Black;
-
-
-            string fileName = GetPathSave();
-            if (fileName != null)
-            {
-                table.Create(fileName);
-                MessageBox.Show("File created");
-            }
-        }
-        #endregion
-
-        #region HandleUIControls
+        #region Initialization
         private void Configure()
         {
             _dataCurrencies.Columns.Clear();
@@ -72,7 +41,14 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
             _dateTimeFrom.Value = DateTime.Today.AddDays(-30);
             _dateTimeTo.Value = DateTime.Today;
             _ = LoadSelectors();
+            LoadColorPicker(comboHeaderFill);
+            LoadColorPicker(comboBodyFill);
+            LoadColorPicker(comboHeaderBorderColor);
+            LoadColorPicker(comboBodyBorderColor);
+            LoadBorderTypePicker(comboHeaderBorderStyle);
+            LoadBorderTypePicker(comboBodyBorderStyle);
         }
+
         private async Task LoadSelectors()
         {
             try
@@ -104,7 +80,124 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
 
         }
 
-        private List<string> GetTargetCurrencies()
+        private void LoadBorderTypePicker(ComboBox combo)
+        {
+            combo.DataSource = Enum.GetValues(typeof(CellStyling.BorderStyle.BorderType));
+        }
+
+        private void LoadColorPicker(System.Windows.Forms.ComboBox combo)
+        {
+            var colors = typeof(Color).GetProperties()
+                            .Where(x => x.PropertyType == typeof(Color))
+                            .Select(x => x.GetValue(null)).ToList();
+            colors.Insert(0, Color.Empty);
+            combo.DataSource = colors;
+            combo.MaxDropDownItems = 10;
+            combo.IntegralHeight = false;
+            combo.DrawMode = DrawMode.OwnerDrawFixed;
+            combo.DropDownStyle = ComboBoxStyle.DropDownList;
+            combo.DrawItem += (s, e) =>
+            {
+                e.DrawBackground();
+                if (e.Index >= 0)
+                {
+                    var txt = combo.GetItemText(combo.Items[e.Index]);
+                    var color = (Color)combo.Items[e.Index];
+                    var r1 = new Rectangle(e.Bounds.Left + 1, e.Bounds.Top + 1,
+                        2 * (e.Bounds.Height - 2), e.Bounds.Height - 2);
+                    var r2 = Rectangle.FromLTRB(r1.Right + 2, e.Bounds.Top,
+                        e.Bounds.Right, e.Bounds.Bottom);
+                    if (!color.IsEmpty)
+                    {
+                        using (var b = new SolidBrush(color))
+                            e.Graphics.FillRectangle(b, r1);
+                        e.Graphics.DrawRectangle(Pens.Black, r1);
+                    }
+                    TextRenderer.DrawText(e.Graphics, txt, comboHeaderFill.Font, r2,
+                        combo.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                }
+            };
+        }
+
+        private void OnDrawComboHeaderFill(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            if (e.Index >= 0)
+            {
+                var txt = comboHeaderFill.GetItemText(comboHeaderFill.Items[e.Index]);
+                var color = (Color)comboHeaderFill.Items[e.Index];
+                var r1 = new Rectangle(e.Bounds.Left + 1, e.Bounds.Top + 1,
+                    2 * (e.Bounds.Height - 2), e.Bounds.Height - 2);
+                var r2 = Rectangle.FromLTRB(r1.Right + 2, e.Bounds.Top,
+                    e.Bounds.Right, e.Bounds.Bottom);
+                using (var b = new SolidBrush(color))
+                    e.Graphics.FillRectangle(b, r1);
+                e.Graphics.DrawRectangle(Pens.Black, r1);
+                TextRenderer.DrawText(e.Graphics, txt, comboHeaderFill.Font, r2,
+                    comboHeaderFill.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+            }
+        }
+
+
+        #endregion
+
+        #region Building Sheet
+        private void BuildExcel(List<ExchangeRecord> records)
+        {
+            List<string> targetCurrencies = GetSelectedTargetCurrencies();
+
+            TabularSheet<ExchangeRecord> table = new TabularSheet<ExchangeRecord>();
+            table.AddRange(records);
+            table.AddColumn(t => t.Date).SetTitle("Date");
+            table.AddColumn(t => t.BaseCurrency).SetTitle("Base Currency");
+            // Build a column for each possible currency
+            foreach (var currency in targetCurrencies)
+            {
+                table.AddColumn(t => t.Exchanges.SingleOrDefault(ex => ex.TargetCurrencyCode == currency)?.Conversion)
+                    .SetTitle(currency);
+            }
+
+            // Add some style
+            table.Options.DateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+            ApplyStyle(table.HeaderStyle, _applyFontHeader ? dialogFontHeader : null, comboHeaderFill, comboHeaderBorderColor, comboHeaderBorderStyle);
+            ApplyStyle(table.BodyStyle, _applyFontBody ? dialogFontBody : null, comboBodyFill, comboBodyBorderColor, comboBodyBorderStyle);
+
+            table.Options.ColumnOptions.Width = new AutoColumnWidth();
+
+            string fileName = GetPathSave();
+            if (fileName != null)
+            {
+                table.Create(fileName);
+                MessageBox.Show("File created");
+            }
+        }
+
+        private void ApplyStyle(Style style, FontDialog font, ComboBox fill, ComboBox borderFill, ComboBox borderStyle)
+        {
+            if ((Color)fill.SelectedItem != Color.Empty)
+                style.Fill.BackgroundColor = (Color)fill.SelectedItem;
+            if ((Color)borderFill.SelectedItem != Color.Empty)
+                style.Border.Color = (Color)borderFill.SelectedItem;
+
+            if ((CellStyling.BorderStyle.BorderType)borderStyle.SelectedItem != CellStyling.BorderStyle.BorderType.None)
+                style.Border.SetBorderType((CellStyling.BorderStyle.BorderType)borderStyle.SelectedItem);
+
+            if (font != null)
+            {
+                style.Font.FontName = font.Font.Name;
+                style.Font.Bold = font.Font.Bold;
+                style.Font.Italic = font.Font.Italic;
+                style.Font.Color = font.Color;
+            }
+
+        }
+        #endregion
+
+        #region UIControls
+
+        #region Currency selection and visualization
+
+        private List<string> GetSelectedTargetCurrencies()
         {
             var targets = _listDestinationCurrencies.CheckedItems.Cast<Currency>().Select(x => x.CurrencyCode).ToList();
             var selected = _comboOriginCurrency.SelectedItem as Currency;
@@ -118,6 +211,85 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
                 _dataCurrencies.Rows.Add(rate.TargetCurrencyCode, rate.Conversion);
             }
         }
+
+        private async void OnClickSearch(object sender, EventArgs e)
+        {
+            Currency selected = _comboOriginCurrency.SelectedItem as Currency;
+            string currencyCode = selected.CurrencyCode;
+            List<string> to = GetSelectedTargetCurrencies();
+            var latest = await GetExchangeLatest(currencyCode, to.ToArray());
+            FillGrid(latest);
+        }
+
+        private void OnClickSelectAll(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _listDestinationCurrencies.Items.Count; i++)
+            {
+                _listDestinationCurrencies.SetItemChecked(i, true);
+            }
+        }
+
+        private void OnClickUnselectAll(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _listDestinationCurrencies.Items.Count; i++)
+            {
+                _listDestinationCurrencies.SetItemChecked(i, false);
+            }
+        }
+        #endregion
+
+        #region Export
+        private async void OnClickExportSheetHistory(object sender, EventArgs e)
+        {
+            DateTime from = _dateTimeFrom.Value;
+            DateTime to = _dateTimeTo.Value;
+            Currency selected = _comboOriginCurrency.SelectedItem as Currency;
+            string currencyCode = selected.CurrencyCode;
+            if (from > to)
+            {
+                MessageBox.Show("The input dates are incoherent!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            List<string> targetCurrencies = GetSelectedTargetCurrencies();
+            var result = await GetExchangeHistory(currencyCode, from, to, targetCurrencies.ToArray());
+            BuildExcel(result);
+        }
+
+        private string GetPathSave()
+        {
+            _saveFileDialog.Filter = "Excel files|.xlsx";
+            _saveFileDialog.FileName = "Currency.xlsx";
+
+            if (_saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                return _saveFileDialog.FileName;
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Configuration Styles
+        private void OnClickConfigureHeaderFont(object sender, EventArgs e)
+        {
+            var result = dialogFontHeader.ShowDialog();
+            if (result == DialogResult.OK)
+                _applyFontHeader = true;
+            else
+                _applyFontHeader = false;
+        }
+
+        private void OnClickConfigureBodyFont(object sender, EventArgs e)
+        {
+            var result = dialogFontBody.ShowDialog();
+            if (result == DialogResult.OK)
+                _applyFontBody = true;
+            else
+                _applyFontBody = false;
+        }
+        #endregion
+
         #endregion
 
         #region API Requests
@@ -203,65 +375,9 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
             }
             return list;
         }
+
+
+
         #endregion
-
-        #region UIEvents
-        private async void OnSearch(object sender, EventArgs e)
-        {
-            Currency selected = _comboOriginCurrency.SelectedItem as Currency;
-            string currencyCode = selected.CurrencyCode;
-            List<string> to = GetTargetCurrencies();
-            var latest = await GetExchangeLatest(currencyCode, to.ToArray());
-            FillGrid(latest);
-        }
-
-        private async void ExportSheetHistory(object sender, EventArgs e)
-        {
-            DateTime from = _dateTimeFrom.Value;
-            DateTime to = _dateTimeTo.Value;
-            Currency selected = _comboOriginCurrency.SelectedItem as Currency;
-            string currencyCode = selected.CurrencyCode;
-            if (from > to)
-            {
-                MessageBox.Show("The input dates are incoherent!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            List<string> targetCurrencies = GetTargetCurrencies();
-            var result = await GetExchangeHistory(currencyCode, from, to, targetCurrencies.ToArray());
-            BuildExcel(result);
-        }
-
-        private string GetPathSave()
-        {
-            _saveFileDialog.Filter = "Excel files|.xlsx";
-            _saveFileDialog.FileName = "Currency.xlsx";
-
-            if (_saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                return _saveFileDialog.FileName;
-            }
-            return null;
-
-        }
-
-        private void BtnSelectAll(object sender, EventArgs e)
-        {
-            for (int i = 0; i < _listDestinationCurrencies.Items.Count; i++)
-            {
-                _listDestinationCurrencies.SetItemChecked(i, true);
-            }
-        }
-
-        private void BtnUnselectAll(object sender, EventArgs e)
-        {
-            for (int i = 0; i < _listDestinationCurrencies.Items.Count; i++)
-            {
-                _listDestinationCurrencies.SetItemChecked(i, false);
-            }
-        }
-        #endregion
-
-
     }
 }
