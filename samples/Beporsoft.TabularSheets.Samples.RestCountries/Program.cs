@@ -48,7 +48,7 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin, null);
                 sheet.BodyStyle.Font.FontName = "Calibri";
                 sheet.Options.InheritHeaderStyleFromBody = true;
-                sheet.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
+                sheet.Options.ColumnOptions.Width = new AutoColumnWidth();
 
                 // Export
                 Console.WriteLine($"Creating file");

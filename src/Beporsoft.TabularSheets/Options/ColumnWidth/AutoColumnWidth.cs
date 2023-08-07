@@ -22,7 +22,7 @@ namespace Beporsoft.TabularSheets.Options.ColumnWidth
         }
 
         /// <summary>
-        /// A scale factor to improve the performance of the method
+        /// A scale factor to improve the performance of the method for fonts different of Calibri.
         /// </summary>
         /// <param name="scaleFactor">A factor applied for fonts different of calibri</param>
         public AutoColumnWidth(double scaleFactor)

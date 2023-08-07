@@ -45,6 +45,6 @@ namespace Beporsoft.TabularSheets.Options
         /// <summary>
         /// The default column options for those which haven't configured their own options
         /// </summary>
-        public ColumnOptions DefaultColumnOptions { get; set; } = new();
+        public ColumnOptions ColumnOptions { get; set; } = new();
     }
 }

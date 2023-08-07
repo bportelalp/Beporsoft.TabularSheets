@@ -170,11 +170,12 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
             numFmtSetup = FindSuitableNumberingFormat(value, numFmtSetup);
 
+            _colMeasurer.MeasureContent(column.Index, value, numFmtSetup?.Pattern, fontSetup?.FontStyle.Size);
+
             if (fillSetup is null && fontSetup is null && borderSetup is null && numFmtSetup is null && align is null)
                 return null;
 
             int formatId = StyleBuilder.RegisterFormat(fillSetup, fontSetup, borderSetup, numFmtSetup, align);
-            _colMeasurer.MeasureContent(column.Index, value, numFmtSetup?.Pattern, fontSetup?.FontStyle.Size);
             return formatId;
         }
 

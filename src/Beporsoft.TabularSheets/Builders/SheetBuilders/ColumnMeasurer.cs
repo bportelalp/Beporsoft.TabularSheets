@@ -26,7 +26,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         {
             ColumnMeasurements.Clear();
             //bool autoWidthDefault = table.Options.DefaultColumnOptions.AutoWidth ?? false;
-            IColumnWidth? widthDefault = table.Options.DefaultColumnOptions.Width;
+            IColumnWidth? widthDefault = table.Options.ColumnOptions.Width;
             foreach (var column in table.Columns)
             {
                 ColMeasure? measure = null;
@@ -107,7 +107,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
                     }
                     else if (BuildHelpers.TimeSpanTypes.Contains(type))
                     {
-                        //length = ((TimeSpan)content).ToString("c").Length;
+                        length = ((TimeSpan)content).ToString("c").Length;
                     }
                     else if (BuildHelpers.DateTimeTypes.Contains(type))
                     {
