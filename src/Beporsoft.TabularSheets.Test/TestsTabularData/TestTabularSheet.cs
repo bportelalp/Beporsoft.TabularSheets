@@ -38,7 +38,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.HeaderStyle.Font.Color = Color.White;
                 table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
-                table.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
+                table.Options.ColumnOptions.Width = new AutoColumnWidth();
                 string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
                 table.Columns.Single(c => c.Index == 0).Options.Width =  new FixedColumnWidth(10);
                 table.Create(path);
@@ -397,12 +397,28 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.BodyStyle.Font.FontName = fontName;
                 table.BodyStyle.Font.Size = fontSize;
                 table.Options.InheritHeaderStyleFromBody = true;
-                table.Options.DefaultColumnOptions.Width = tableWidth;
+                table.Options.ColumnOptions.Width = tableWidth;
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
                 table.Columns.Single(c => c.Index == 4).Style.NumberingPattern = "0.0000000000000";
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
+
+            List<int> list = new List<int>();
+            Random rn = new Random();
+            for (int i = 0; i < 10000; i++)
+            {
+                list.Add(rn.Next(int.MaxValue));
+            }
+            TabularSheet<int> table2 = new TabularSheet<int>(list);
+            table2.AddColumn(i => i).SetStyle(c => c.NumberingPattern = "#,###");
+
+            table2.AddColumn(i => "N" + Convert.ToString(i));
+            table2.Options.ColumnOptions.Width = new AutoColumnWidth();
+            table2.HeaderStyle.Fill.BackgroundColor = Color.Azure;
+            table2.Options.InheritHeaderStyleFromBody = true;
+            //table.BodyStyle.Font.Font = "Calibri";
+            table2.Create(GetPath("Lista enteros.xlsx"));
         }
 
         #region TestHelpers

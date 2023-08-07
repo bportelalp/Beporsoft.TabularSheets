@@ -18,19 +18,21 @@
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
-		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionPrefix>1.1.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
 
 		<PackageReleaseNotes>
+			# [1.1.0] - 2023-08-07
+			- Configure column width or calculate based on content.
+			
 			# [1.0.0] - 2023-07-17
 			First major version:
 			- Solved performance issues with large collections of shared strings.

@@ -162,7 +162,7 @@ namespace Beporsoft.TabularSheets.Samples.CurrencyExchange
             ApplyStyle(table.HeaderStyle, _applyFontHeader ? dialogFontHeader : null, comboHeaderFill, comboHeaderBorderColor, comboHeaderBorderStyle);
             ApplyStyle(table.BodyStyle, _applyFontBody ? dialogFontBody : null, comboBodyFill, comboBodyBorderColor, comboBodyBorderStyle);
 
-            table.Options.DefaultColumnOptions.Width = new AutoColumnWidth();
+            table.Options.ColumnOptions.Width = new AutoColumnWidth();
 
             string fileName = GetPathSave();
             if (fileName != null)
