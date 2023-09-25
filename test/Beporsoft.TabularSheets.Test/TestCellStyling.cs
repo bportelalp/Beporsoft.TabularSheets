@@ -1,11 +1,12 @@
 ﻿using Beporsoft.TabularSheets.CellStyling;
 
-namespace Beporsoft.TabularSheets.Test.TestsStyles
+namespace Beporsoft.TabularSheets.Test
 {
+    [Category("Style")]
     internal class TestCellStyling
     {
 
-        [Test]
+        [Test, Category("StyleEquality")]
         public void CheckBorderEqualityContract()
         {
             var border = new BorderStyle();
@@ -31,7 +32,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             });
         }
 
-        [Test]
+        [Test, Category("StyleEquality")]
         public void CheckFontEqualityContract()
         {
             var font = new FontStyle();
@@ -48,7 +49,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             Assert.That(font, Is.EqualTo(FontStyle.Default));
         }
 
-        [Test]
+        [Test, Category("StyleEquality")]
         public void CheckFillEqualityContract()
         {
             var fill = new FillStyle();
@@ -61,7 +62,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             Assert.That(fill, Is.EqualTo(FillStyle.Default));
         }
 
-        [Test]
+        [Test, Category("StyleEquality")]
         public void CheckStyleEqualityContract()
         {
             var style = new Style();
@@ -84,7 +85,7 @@ namespace Beporsoft.TabularSheets.Test.TestsStyles
             });
         }
 
-        [Test]
+        [Test, Category("StyleCombination")]
         [TestCaseSource(nameof(CombineStylesCases))]
         public void CombineStyles(Style style1, Style style2, Style styleExpected)
         {

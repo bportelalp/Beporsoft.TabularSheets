@@ -1,14 +1,15 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Beporsoft.TabularSheets.Test.TestsTabularData
+namespace Beporsoft.TabularSheets.Test
 {
+    [Category("SheetStructure")]
     internal class TestTabularData
     {
 
         /// <summary>
         /// Create a table and verify correct ordering.
         /// </summary>
-        [Test]
+        [Test, Category("Columns")]
         public void CreateTableAndColumnsCoherent()
         {
             TabularData<Product> table = Generate();
@@ -34,7 +35,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         /// <summary>
         /// Reorder a column and verify the names and the reordering of the rest of columns
         /// </summary>
-        [Test]
+        [Test, Category("Columns")]
         public void ReorderColumns()
         {
             TabularData<Product> table = Generate();
@@ -73,7 +74,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         /// <summary>
         /// Ensure that when title of column is empty, the title is the default and when not, is the established
         /// </summary>
-        [Test]
+        [Test, Category("Columns")]
         public void RenamingColumns()
         {
             const string customTitle = "CustomTitle";
@@ -113,11 +114,8 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         /// <summary>
         /// Remove column and preserve order on the following
         /// </summary>
-        [Test]
-        [TestCase(0)]
-        [TestCase(2)]
-        [TestCase(5)]
-        [TestCase(6)]
+        [Test, Category("Columns")]
+        [TestCase(0), TestCase(2), TestCase(5), TestCase(6)]
         public void RemoveColumn(int positionRemove)
         {
             int x = positionRemove;
@@ -139,7 +137,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             });
         }
 
-        [Test]
+        [Test, Category("Rows")]
         public void AddItemsKeepInvariantOriginalLists()
         {
             IEnumerable<Product> initial = Product.GenerateProducts(10);

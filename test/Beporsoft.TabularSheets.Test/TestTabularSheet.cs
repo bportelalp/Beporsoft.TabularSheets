@@ -7,53 +7,39 @@ using Beporsoft.TabularSheets.Test.Helpers;
 using System.Drawing;
 using System.Globalization;
 
-namespace Beporsoft.TabularSheets.Test.TestsTabularData
+namespace Beporsoft.TabularSheets.Test
 {
+    [Category("SheetStructure")]
     public class TestTabularSheet
     {
-
-        [Test]
-        public void CheckFileName()
-        {
-            TabularSheet<Product> table = Generate();
-            string pathOk = GetPath("ExcelCheckFileName.xlsx");
-            string pathNotOk = GetPath("ExcelCheckFileName.xls");
-            string pathWrongExtension = GetPath("ExcelCheckFileName.csv");
-            Assert.Multiple(() =>
-            {
-                Assert.That(() => table.Create(pathOk), Throws.Nothing);
-                Assert.Catch<FileLoadException>(() => table.Create(pathNotOk));
-                Assert.That(() => table.Create(pathWrongExtension), Throws.Exception);
-            });
-        }
 
         [Test]
         public void DebugFile()
         {
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Generate();
+                TabularSheet<Product> table = Product.GenerateTestSheet();
                 table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
                 table.BodyStyle.Font.Color = Color.Red;
                 table.HeaderStyle.Font.Color = Color.White;
                 table.BodyStyle.Fill.BackgroundColor = Color.AliceBlue;
                 table.BodyStyle.Border.SetBorderType(BorderStyle.BorderType.Thin);
                 table.Options.ColumnOptions.Width = new AutoColumnWidth();
-                string path = GetPath($"Test{nameof(DebugFile)}.xlsx");
-                table.Columns.Single(c => c.Index == 0).Options.Width =  new FixedColumnWidth(10);
+                string path = TestDirectory.GetPath($"Test{nameof(DebugFile)}.xlsx");
+                table.Columns.Single(c => c.Index == 0).Options.Width = new FixedColumnWidth(10);
                 table.Create(path);
             }, Throws.Nothing);
         }
 
-        [Test]
+        [Test, Category("Cells"), Category("Data")]
         public void TryDataIntegrity()
         {
-            string path = GetPath($"Test{nameof(TryDataIntegrity)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryDataIntegrity)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                table = Generate();
+                table = Product.GenerateTestSheet();
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
@@ -61,7 +47,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             AssertTabularSheetData(table, sheet);
         }
 
-        [Test]
+        [Test, Category("Style")]
         public void TryHeaderStyles()
         {
             Color bgColor = Color.Azure;
@@ -70,12 +56,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             bool bold = true;
             bool italic = true;
 
-            string path = GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryHeaderStyles)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                table = Generate();
+                table = Product.GenerateTestSheet(); 
                 table.HeaderStyle.Fill.BackgroundColor = bgColor;
                 table.HeaderStyle.Font.Size = fontSize;
                 table.HeaderStyle.Font.Bold = bold;
@@ -85,8 +71,6 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
-
-            AssertTabularSheetData(table, sheet);
 
             foreach (var cell in sheet.GetHeaderCells())
             {
@@ -133,7 +117,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             }
         }
 
-        [Test]
+        [Test, Category("Style")]
         public void TryBodyStyle()
         {
             Color bgColor = Color.Azure;
@@ -141,12 +125,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             double fontSize = 8;
             BorderStyle.BorderType borderType = BorderStyle.BorderType.Thin;
 
-            string path = GetPath($"Test{nameof(TryBodyStyle)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryBodyStyle)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                table = Generate();
+                table = Product.GenerateTestSheet();
                 table.BodyStyle.Fill.BackgroundColor = bgColor;
                 table.BodyStyle.Font.FontName = font;
                 table.BodyStyle.Font.Size = fontSize;
@@ -154,7 +138,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
-            AssertTabularSheetData(table, sheet);
+
             // Header default style
             foreach (var cell in sheet.GetHeaderCells())
             {
@@ -188,7 +172,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             }
         }
 
-        [Test]
+        [Test, Category("Style"), Category("StyleCombination")]
         public void TryOverrideStyle()
         {
             Color bgColorHead = Color.DarkBlue;
@@ -201,12 +185,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             Color borderColorHead = Color.Coral;
             bool inheritHeaderFromBody = true;
 
-            string path = GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryOverrideStyle)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                table = Generate();
+                table = Product.GenerateTestSheet();
                 table.BodyStyle.Fill.BackgroundColor = bgColorBody;
                 table.BodyStyle.Font.FontName = fontBody;
                 table.BodyStyle.Font.Size = fontSizeBody;
@@ -221,7 +205,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 table.Create(path);
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
-            AssertTabularSheetData(table, sheet);
+
             // Header merged style
             foreach (var cell in sheet.GetHeaderCells())
             {
@@ -262,10 +246,10 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             }
         }
 
-        [Test]
+        [Test, Category("Style"), Category("StyleCombination")]
         public void TryColumnStyle()
         {
-            string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             int indexColExtra1 = 0;
@@ -276,7 +260,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             {
                 Style style = new Style();
                 style.Fill.BackgroundColor = Color.Red;
-                table = Generate();
+                table = Product.GenerateTestSheet();
                 var colExtra1 = table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
                 var colExtra2 = table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
                 {
@@ -296,13 +280,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
                 indexColExtra3 = colExtra3.Index;
                 indexColExtra4 = colExtra4.Index;
 
-                string path = GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
+                string path = TestDirectory.GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
                 table.Create(path);
 
                 sheet = new SheetWrapper(path);
             }, Throws.Nothing);
 
-            AssertTabularSheetData(table, sheet);
             foreach (var cell in sheet.GetBodyCellsByColumn(indexColExtra1))
             {
                 Assert.That(cell.StyleIndex, Is.Not.Null);
@@ -340,19 +323,19 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             }
         }
 
-        [Test]
+        [Test, Category("Style")]
         public void TryAlignmentStyle()
         {
             AlignmentStyle.HorizontalAlignment horizontalCol0 = AlignmentStyle.HorizontalAlignment.Center;
             AlignmentStyle.VerticalAlignment verticalCol0 = AlignmentStyle.VerticalAlignment.Center;
             bool textWrapCol0 = true;
 
-            string path = GetPath($"Test{nameof(TryAlignmentStyle)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryAlignmentStyle)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                table = Generate();
+                table = Product.GenerateTestSheet();
                 var col0 = table.Columns.Single(c => c.Index == 0);
                 col0.SetStyle(s =>
                 {
@@ -380,7 +363,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
 
         }
 
-        [Test]
+        [Test, Category("Style")]
         public void TryColumnWidth()
         {
             IColumnWidth? tableWidth = new AutoColumnWidth(1.1);
@@ -388,12 +371,12 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             double fontSize = 15;
 
 
-            string path = GetPath($"Test{nameof(TryColumnWidth)}.xlsx");
+            string path = TestDirectory.GetPath($"Test{nameof(TryColumnWidth)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetWrapper sheet = null!;
             Assert.That(() =>
             {
-                table = Generate();
+                table = Product.GenerateTestSheet();
                 table.BodyStyle.Font.FontName = fontName;
                 table.BodyStyle.Font.Size = fontSize;
                 table.Options.InheritHeaderStyleFromBody = true;
@@ -418,7 +401,7 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
             table2.HeaderStyle.Fill.BackgroundColor = Color.Azure;
             table2.Options.InheritHeaderStyleFromBody = true;
             //table.BodyStyle.Font.Font = "Calibri";
-            table2.Create(GetPath("Lista enteros.xlsx"));
+            table2.Create(TestDirectory.GetPath("Lista enteros.xlsx"));
         }
 
         #region TestHelpers
@@ -492,29 +475,6 @@ namespace Beporsoft.TabularSheets.Test.TestsTabularData
         }
         #endregion
 
-        #region Data Helpers
-        private static TabularSheet<Product> Generate()
-        {
-            TabularSheet<Product> table = new();
-            table.AddRange(Product.GenerateProducts(1000));
-
-            table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
-            table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
-            table.AddColumn(t => t.Vendor).SetTitle(nameof(Product.Vendor));
-            table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
-            table.AddColumn(t => t.Cost).SetTitle(nameof(Product.Cost));
-            table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
-            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
-            return table;
-        }
-
-
-        private static string GetPath(string fileName)
-        {
-            DirectoryInfo? projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)?.Parent?.Parent?.Parent;
-            return $"{projectDir!.FullName}\\Results\\{fileName}";
-        }
-        #endregion
 
     }
 }

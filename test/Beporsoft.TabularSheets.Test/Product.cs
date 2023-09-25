@@ -51,5 +51,20 @@ namespace Beporsoft.TabularSheets.Test
             }
             return products;
         }
+
+        internal static TabularSheet<Product> GenerateTestSheet()
+        {
+            TabularSheet<Product> table = new();
+            table.AddRange(Product.GenerateProducts(1000));
+
+            table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
+            table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
+            table.AddColumn(t => t.Vendor).SetTitle(nameof(Product.Vendor));
+            table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
+            table.AddColumn(t => t.Cost).SetTitle(nameof(Product.Cost));
+            table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
+            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
+            return table;
+        }
     }
 }
