@@ -31,7 +31,7 @@ namespace Beporsoft.TabularSheets.Test
             }, Throws.Nothing);
         }
 
-        [Test, Category("Cells"), Category("Data")]
+        [Test, Category("Cells"), Category("Worksheet")]
         public void TryDataIntegrity()
         {
             string path = TestDirectory.GetPath($"Test{nameof(TryDataIntegrity)}.xlsx");
@@ -47,7 +47,7 @@ namespace Beporsoft.TabularSheets.Test
             AssertTabularSheetData(table, sheet);
         }
 
-        [Test, Category("Style")]
+        [Test, Category("Stylesheet"), Category("Worksheet")]
         public void TryHeaderStyles()
         {
             Color bgColor = Color.Azure;
@@ -117,7 +117,7 @@ namespace Beporsoft.TabularSheets.Test
             }
         }
 
-        [Test, Category("Style")]
+        [Test, Category("Stylesheet"), Category("Worksheet")]
         public void TryBodyStyle()
         {
             Color bgColor = Color.Azure;
@@ -172,7 +172,7 @@ namespace Beporsoft.TabularSheets.Test
             }
         }
 
-        [Test, Category("Style"), Category("StyleCombination")]
+        [Test, Category("Stylesheet"), Category("StyleCombination"), Category("Worksheet")]
         public void TryOverrideStyle()
         {
             Color bgColorHead = Color.DarkBlue;
@@ -246,7 +246,7 @@ namespace Beporsoft.TabularSheets.Test
             }
         }
 
-        [Test, Category("Style"), Category("StyleCombination")]
+        [Test, Category("Stylesheet"), Category("StyleCombination"), Category("Worksheet")]
         public void TryColumnStyle()
         {
             string path = TestDirectory.GetPath($"Test{nameof(TryColumnStyle)}.xlsx");
@@ -323,7 +323,7 @@ namespace Beporsoft.TabularSheets.Test
             }
         }
 
-        [Test, Category("Style")]
+        [Test, Category("Stylesheet"), Category("Worksheet")]
         public void TryAlignmentStyle()
         {
             AlignmentStyle.HorizontalAlignment horizontalCol0 = AlignmentStyle.HorizontalAlignment.Center;
@@ -363,7 +363,7 @@ namespace Beporsoft.TabularSheets.Test
 
         }
 
-        [Test, Category("Style")]
+        [Test, Category("Stylesheet"), Category("Worksheet"), Category("Columns")]
         public void TryColumnWidth()
         {
             IColumnWidth? tableWidth = new AutoColumnWidth(1.1);

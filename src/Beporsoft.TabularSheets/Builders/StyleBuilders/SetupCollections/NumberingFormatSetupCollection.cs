@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
+using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using DocumentFormat.OpenXml;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
             return container;
         }
 
+        public IEnumerable<NumberingFormatSetup> GetRegisteredItems() => _items;
 
 
         internal static readonly Dictionary<int, string> PredefinedFormats = new Dictionary<int, string>()

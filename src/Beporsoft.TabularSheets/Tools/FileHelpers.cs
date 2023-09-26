@@ -32,22 +32,23 @@ namespace Beporsoft.TabularSheets.Tools
         /// <summary>
         /// File extension for Microsoft Excel spreadsheet documents according to the Office Open XML SpreadsheetML file format.
         /// </summary>
-        public static string Excel2007_365 = ".xlsx";
-        internal static string Excel97_2003 = ".xls";
+        public const string Excel2007_365 = ".xlsx";
+        internal const string Excel97_2003 = ".xls";
         internal static string[] AllowedExtensions = new string[] { Excel2007_365 };
     }
 
     internal struct SpreadsheetMimeTypes
     {
-        public static string Excel2007_365 = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        public static string Excel97_2003 = "application/vnd.ms-excel";
+        public const string Excel2007_365 = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public const string Excel97_2003 = "application/vnd.ms-excel";
         public static string[] AllowedMimeTypes = new string[] { Excel2007_365, Excel97_2003 };
 
     }
 
     internal struct CsvFileExtension
     {
-        public static string Csv = ".csv";
-        public static string MIME_Csv = "text/csv";
+        public const string Csv = ".csv";
+        public const string MIME_Csv = "text/csv";
+        internal static string[] AllowedExtensions = new string[] { Csv };
     }
 }
