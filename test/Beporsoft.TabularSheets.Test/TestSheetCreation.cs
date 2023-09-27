@@ -11,6 +11,7 @@ namespace Beporsoft.TabularSheets.Test
     
     public class TestSheetCreation
     {
+        private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SheetCreation");
 
         [Test, Category("StreamCreation")]
         [TestCaseSource(nameof(Data_FileHelpers_Verifypath))]
@@ -34,15 +35,21 @@ namespace Beporsoft.TabularSheets.Test
         public void Create_CheckFileName()
         {
             TabularSheet<Product> table = Product.GenerateTestSheet();
-            string pathOk = TestDirectory.GetPath($"{nameof(Create_CheckFileName)}.xlsx");
-            string pathNotOk = TestDirectory.GetPath($"{nameof(Create_CheckFileName)}.xls");
-            string pathWrongExtension = TestDirectory.GetPath($"{nameof(Create_CheckFileName)}.csv");
+            string pathOk = _filesHandler.BuildPath($"{nameof(Create_CheckFileName)}.xlsx");
+            string pathNotOk = _filesHandler.BuildPath($"{nameof(Create_CheckFileName)}.xls");
+            string pathWrongExtension = _filesHandler.BuildPath($"{nameof(Create_CheckFileName)}.csv");
             Assert.Multiple(() =>
             {
                 Assert.That(() => table.Create(pathOk), Throws.Nothing);
                 Assert.Catch<FileLoadException>(() => table.Create(pathNotOk));
                 Assert.Catch<FileLoadException>(() => table.Create(pathWrongExtension));
             });
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            _filesHandler.ClearFiles();
         }
 
         private static IEnumerable<object?[]> Data_FileHelpers_Verifypath
