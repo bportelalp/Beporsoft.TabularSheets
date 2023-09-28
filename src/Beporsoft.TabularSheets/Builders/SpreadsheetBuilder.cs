@@ -99,7 +99,7 @@ namespace Beporsoft.TabularSheets.Builders
 
             UInt32Value sheetIdValue = FindSuitableSheetId(sheets);
             string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.ItemType.Name : table.Title;
-            nameSheet = BuildSuitableSheetName(sheets, nameSheet);
+            nameSheet = SpreadsheetBuilder.BuildSuitableSheetName(sheets, nameSheet);
 
             var sheet = new Sheet()
             {
@@ -127,8 +127,10 @@ namespace Beporsoft.TabularSheets.Builders
         private void AppendWorkbookStylePart(ref WorkbookPart workbookPart)
         {
             WorkbookStylesPart stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
-            var stylesheet = new Stylesheet();
-            stylesheet.CellStyleFormats = new CellStyleFormats(new CellFormat());
+            var stylesheet = new Stylesheet
+            {
+                CellStyleFormats = new CellStyleFormats(new CellFormat())
+            };
 
             // Protect the SpreadsheetML Schema adding containers only if there is any registered item
             if (StyleBuilder.RegisteredFills > 0)
@@ -179,7 +181,7 @@ namespace Beporsoft.TabularSheets.Builders
         /// <param name="sheets"></param>
         /// <param name="nameSheet"></param>
         /// <returns></returns>
-        private string BuildSuitableSheetName(Sheets sheets, string nameSheet)
+        private static string BuildSuitableSheetName(Sheets sheets, string nameSheet)
         {
             if (sheets.Select(s => s as Sheet).Any(s => s?.Name == nameSheet))
             {

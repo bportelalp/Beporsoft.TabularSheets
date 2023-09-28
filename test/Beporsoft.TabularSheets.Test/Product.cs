@@ -33,8 +33,8 @@ namespace Beporsoft.TabularSheets.Test
         /// <returns></returns>
         internal static IEnumerable<Product> GenerateProducts(int amount = 10)
         {
-            const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-            List<Product> products = new List<Product>();
+            const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÊÌÖ";
+            List<Product> products = new();
             foreach (var idx in Enumerable.Range(0, amount))
             {
                 var rnd = new Random();
