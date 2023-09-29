@@ -1,10 +1,11 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 
-namespace Beporsoft.TabularSheets.Test.TestsCellRefBuilder
+namespace Beporsoft.TabularSheets.Test
 {
     /// <summary>
     /// Test class to create cell references
     /// </summary>
+    [Category("Cells")]
     internal class TestCellRef
     {
 

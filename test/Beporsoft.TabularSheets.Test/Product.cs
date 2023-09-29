@@ -33,8 +33,8 @@ namespace Beporsoft.TabularSheets.Test
         /// <returns></returns>
         internal static IEnumerable<Product> GenerateProducts(int amount = 10)
         {
-            const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-            List<Product> products = new List<Product>();
+            const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÊÌÖ";
+            List<Product> products = new();
             foreach (var idx in Enumerable.Range(0, amount))
             {
                 var rnd = new Random();
@@ -50,6 +50,21 @@ namespace Beporsoft.TabularSheets.Test
                 products.Add(product);
             }
             return products;
+        }
+
+        internal static TabularSheet<Product> GenerateTestSheet(int amount = 1000)
+        {
+            TabularSheet<Product> table = new();
+            table.AddRange(Product.GenerateProducts(amount));
+
+            table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
+            table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
+            table.AddColumn(t => t.Vendor).SetTitle(nameof(Product.Vendor));
+            table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
+            table.AddColumn(t => t.Cost).SetTitle(nameof(Product.Cost));
+            table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
+            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
+            return table;
         }
     }
 }
