@@ -1,7 +1,9 @@
-﻿using Beporsoft.TabularSheets.Builders.StyleBuilders;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Beporsoft.TabularSheets.Builders.Interfaces
@@ -38,5 +40,11 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         /// <typeparam name="TContainer">The type which represent parent container</typeparam>
         /// <returns>The <see cref="OpenXmlElement"/> which acts as container of <typeparamref name="TSetup"/> items</returns>
         internal TContainer BuildContainer<TContainer>() where TContainer : OpenXmlElement, new();
+
+        /// <summary>
+        /// Retrieve the list of registered items
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<TSetup> GetRegisteredItems();
     }
 }

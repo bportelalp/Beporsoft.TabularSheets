@@ -18,7 +18,7 @@
 		<PackageIcon>Beporsoft.TabularSheets.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
-		<VersionPrefix>1.1.0</VersionPrefix>
+		<VersionPrefix>1.2.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
@@ -30,6 +30,9 @@
 
 
 		<PackageReleaseNotes>
+			# [1.2.0] - 2023-09-28
+			- Support for export as CSV.
+			
 			# [1.1.0] - 2023-08-07
 			- Configure column width or calculate based on content.
 			

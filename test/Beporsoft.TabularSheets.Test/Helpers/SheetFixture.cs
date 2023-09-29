@@ -3,23 +3,35 @@ using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Beporsoft.TabularSheets.Test.Helpers
 {
     /// <summary>
     /// Enclosure of content of a workbook
     /// </summary>
-    internal class SheetWrapper
+    internal class SheetFixture
     {
 
-        public SheetWrapper(string path)
+        public SheetFixture(Stream stream)
         {
-            Load(path);
+            Load(stream);
         }
+
+        public SheetFixture(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            Load(fs);
+        }
+
+
 
         public SheetData Data { get; private set; } = null!;
         public Stylesheet Stylesheet { get; private set; } = null!;
         public SharedStringTable SharedStrings { get; private set; } = null!;
+        public string Title { get; private set; } = null!;
 
         public Cell GetHeaderCellByColumn(int col)
         {
@@ -134,16 +146,17 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             return numberingPattern!;
         }
 
-        private void Load(string filePath)
+        private void Load(Stream stream)
         {
-            using (var spreadsheet = SpreadsheetDocument.Open(filePath, false))
-            {
-                WorkbookPart workbookPart = spreadsheet.WorkbookPart!;
-                Worksheet worksheet = workbookPart.WorksheetParts.First().Worksheet;
-                Data = worksheet.Descendants<SheetData>()!.Single();
-                Stylesheet = workbookPart.WorkbookStylesPart!.Stylesheet;
-                SharedStrings = workbookPart.SharedStringTablePart!.SharedStringTable;
-            }
+            using var spreadsheet = SpreadsheetDocument.Open(stream, false);
+            WorkbookPart workbookPart = spreadsheet.WorkbookPart!;
+            Worksheet worksheet = workbookPart.WorksheetParts.First().Worksheet;
+            Data = worksheet.Descendants<SheetData>()!.Single();
+            Stylesheet = workbookPart.WorkbookStylesPart!.Stylesheet;
+            SharedStrings = workbookPart.SharedStringTablePart!.SharedStringTable;
+
+            var sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().Single();
+            Title = sheet.Name!.Value!;
         }
     }
 

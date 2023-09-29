@@ -11,17 +11,17 @@ namespace Beporsoft.TabularSheets.Builders
         /// <summary>
         /// Default column width of a standard column, in terms of number of digit characters
         /// </summary>
-        internal const int DefaultColumnWidth = 10;
+        public const int DefaultColumnWidth = 10;
 
         /// <summary>
         /// Default font size in points applied for excell by default
         /// </summary>
-        internal const double DefaultFontSize = 11.0;
+        public const double DefaultFontSize = 11.0;
 
         /// <summary>
         /// Collection of <see cref="Type"/> which are numeric types
         /// </summary>
-        internal static readonly HashSet<Type> NumericTypes = new HashSet<Type>
+        public static readonly HashSet<Type> NumericTypes = new HashSet<Type>
         {
             typeof(int),  typeof(double),  typeof(decimal),
             typeof(long), typeof(short),   typeof(sbyte),
@@ -32,12 +32,12 @@ namespace Beporsoft.TabularSheets.Builders
         /// <summary>
         /// Collection of <see cref="Type"/> which are datetime types
         /// </summary>
-        internal static readonly HashSet<Type> DateTimeTypes = new HashSet<Type>() { typeof(DateTime), typeof(DateTimeOffset) };
+        public static readonly HashSet<Type> DateTimeTypes = new HashSet<Type>() { typeof(DateTime), typeof(DateTimeOffset) };
 
         /// <summary>
         /// Collection of <see cref="Type"/> which time span types
         /// </summary>
-        internal static readonly HashSet<Type> TimeSpanTypes = new HashSet<Type>()
+        public static readonly HashSet<Type> TimeSpanTypes = new HashSet<Type>()
         {
             typeof(TimeSpan),
 #if NET6_0_OR_GREATER 

@@ -21,7 +21,7 @@ namespace Beporsoft.TabularSheets.Options
         /// is required to apply as the default <see cref="Style.NumberingPattern"/> to every cell which contains a <see cref="DateTime"/> or 
         /// <see cref="DateTimeOffset"/> type, if no more specific style is applied on the styling properties.
         /// </summary>
-        public string DateTimeFormat { get; set; } = $"{CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern} {CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern}";
+        public string DateTimeFormat { get; set; } = DefaultDateTimeFormat;
 
         /// <summary>
         /// The default time format applied to cells which contains a <see cref="TimeSpan"/> value. <br/>
@@ -46,5 +46,9 @@ namespace Beporsoft.TabularSheets.Options
         /// The default column options for those which haven't configured their own options
         /// </summary>
         public ColumnOptions ColumnOptions { get; set; } = new();
+
+        internal static string DefaultDateTimeFormat { get; set; } = 
+            $"{CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern} {CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern}";
+
     }
 }
