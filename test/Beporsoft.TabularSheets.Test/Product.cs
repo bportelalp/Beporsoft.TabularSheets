@@ -52,10 +52,10 @@ namespace Beporsoft.TabularSheets.Test
             return products;
         }
 
-        internal static TabularSheet<Product> GenerateTestSheet()
+        internal static TabularSheet<Product> GenerateTestSheet(int amount = 1000)
         {
             TabularSheet<Product> table = new();
-            table.AddRange(Product.GenerateProducts(1000));
+            table.AddRange(Product.GenerateProducts(amount));
 
             table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
             table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
