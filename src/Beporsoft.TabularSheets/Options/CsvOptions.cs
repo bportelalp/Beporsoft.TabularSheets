@@ -9,15 +9,16 @@ namespace Beporsoft.TabularSheets.Options
     public class CsvOptions
     {
         /// <summary>
-        /// The separator between columns, commonly <see cref="CommaSeparator"/>, <see cref="SemicolonSeparator"/>
+        /// The separator between columns, commonly <see cref="SemicolonSeparator"/>, <see cref="CommaSeparator"/>
         /// <para>
         ///     A special attention deserves to avoid conflicts with culture specific numbering separator.
         /// </para>
+        /// Default is <see cref="SemicolonSeparator"/>.
         /// </summary>
         public string Separator { get; set; } = SemicolonSeparator;
 
         /// <summary>
-        /// Character encoding for file. Default is UTF-8.
+        /// Character encoding for csv file. Default is UTF-8.
         /// </summary>
         public Encoding Encoding { get; set; } = Encoding.UTF8;
 
@@ -30,7 +31,5 @@ namespace Beporsoft.TabularSheets.Options
         /// Represent the separator ";".
         /// </summary>
         public const string SemicolonSeparator = ";";
-
-
     }
 }
