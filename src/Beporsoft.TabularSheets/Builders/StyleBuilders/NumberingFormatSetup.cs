@@ -20,7 +20,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             Pattern = pattern;
         }
 
-        public static int StartIndexNotBuiltin = 164;
+        public const int StartIndexNotBuiltin = 164;
         public string Pattern { get; set; } = null!;
 
         public override OpenXmlElement Build()

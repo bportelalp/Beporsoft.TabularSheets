@@ -9,7 +9,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
     /// <summary>
     /// Specific class to implement ISetupCollection for sharedStrings. Improve the preformance using a internal dictionary being the
     /// string the key. Due to dictionary is a lookup, the checking of contained string performs better than a list, which uses iteration.
-    /// For large sets of data, this shorten the search time of coincidences
+    /// For large sets of data, this shorten the search time of coincidences.
     /// </summary>
     internal class SharedStringSetupCollection : ISetupCollection<SharedStringSetup>
     {
@@ -38,7 +38,10 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
         public TContainer BuildContainer<TContainer>() where TContainer : OpenXmlElement, new()
         {
             var container = new TContainer();
-            var builtItems = _items.Select(i => i.Value.Build());
+            var builtItems = _items
+                .OrderBy(i => i.Value.Index)
+                .Select(i => i.Value.Build())
+                .ToList();
             container.Append(builtItems);
             return container;
         }

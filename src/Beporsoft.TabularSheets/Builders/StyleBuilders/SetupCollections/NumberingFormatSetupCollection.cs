@@ -12,11 +12,26 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
     /// </summary>
     internal class NumberingFormatSetupCollection : ISetupCollection<NumberingFormatSetup>
     {
-        private readonly List<NumberingFormatSetup> _items = new();
+        private readonly HashSet<NumberingFormatSetup> _items = new();
 
-        public int Count => _items.Where(i => i.Index >= NumberingFormatSetup.StartIndexNotBuiltin).Count();
+        public int Count => _items.Count;
 
-        public NumberingFormatSetup? this[int index] => index < Count? this[index] : null;
+        public NumberingFormatSetup? this[int index]
+        {
+            get
+            {
+                if (PredefinedFormats.ContainsKey(index)) {
+                    var setup = new NumberingFormatSetup(PredefinedFormats[index]);
+                    setup.SetIndex(index);
+                    return setup;
+                }
+                else
+                {
+                    return _items.FirstOrDefault(x => x.Index == index);
+                }
+
+            }
+        }
 
         public int Register(NumberingFormatSetup setup)
         {
@@ -24,9 +39,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
             {
                 if (PredefinedFormats.ContainsValue(setup.Pattern))
                 {
-                    var pair = PredefinedFormats.Single(p => p.Value == setup.Pattern);
+                    var pair = PredefinedFormats.First(p => p.Value == setup.Pattern);
                     setup.SetIndex(pair.Key);
-                    _items.Add(setup);
                     return pair.Key;
                 }
                 else
@@ -59,7 +73,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
         public IEnumerable<NumberingFormatSetup> GetRegisteredItems() => _items;
 
 
-        internal static readonly Dictionary<int, string> PredefinedFormats = new Dictionary<int, string>()
+        internal static Dictionary<int, string> PredefinedFormats { get; } = new Dictionary<int, string>()
         {
             { 0 , "General"},
             { 1 , "0"},
@@ -96,9 +110,9 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
             { 49 , "@"},
             { 27 , "[$-404]e/m/d"},
             { 30 , "m/d/yy"},
-            { 36 , "[$-404]e/m/d"},
-            { 50 , "[$-404]e/m/d"},
-            { 57 , "[$-404]e/m/d"},
+            //{ 36 , "[$-404]e/m/d"},
+            //{ 50 , "[$-404]e/m/d"},
+            //{ 57 , "[$-404]e/m/d"},
             { 59 , "t0"},
             { 60 , "t0.00"},
             { 61 , "t#,##0"},

@@ -4,6 +4,7 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Options.ColumnWidth;
 using Beporsoft.TabularSheets.Test.Helpers;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 
@@ -13,14 +14,22 @@ namespace Beporsoft.TabularSheets.Test
     public class TestTabularSheet
     {
         private readonly bool _clearFolderOnEnd = false;
+        private readonly int _amountRows = 1000;
         private readonly TestFilesHandler _filesHandler = new();
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+
+        [SetUp]
+        public void Setup()
+        {
+            _stopwatch.Reset();
+        }
 
         [Test]
         public void DebugFile()
         {
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Product.GenerateTestSheet();
+                TabularSheet<Product> table = Product.GenerateTestSheet(_amountRows);
                 table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
                 table.BodyStyle.Font.Color = Color.Red;
                 table.HeaderStyle.Font.Color = Color.White;
@@ -52,7 +61,9 @@ namespace Beporsoft.TabularSheets.Test
             Assert.That(() =>
             {
                 table = Product.GenerateTestSheet();
+                _stopwatch.Start();
                 using MemoryStream ms = table.Create();
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(ms);
             }, Throws.Nothing);
             AssertTabularSheetData(table, sheet);
@@ -72,14 +83,15 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(); 
+                table = Product.GenerateTestSheet(_amountRows); 
                 table.HeaderStyle.Fill.BackgroundColor = bgColor;
                 table.HeaderStyle.Font.Size = fontSize;
                 table.HeaderStyle.Font.Bold = bold;
                 table.HeaderStyle.Font.Italic = italic;
                 table.HeaderStyle.Border.SetBorderType(borderType);
-
+                _stopwatch.Start();
                 table.Create(path);
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
 
@@ -141,12 +153,14 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateTestSheet(_amountRows);
                 table.BodyStyle.Fill.BackgroundColor = bgColor;
                 table.BodyStyle.Font.FontName = font;
                 table.BodyStyle.Font.Size = fontSize;
                 table.BodyStyle.Border.SetBorderType(borderType);
+                _stopwatch.Start();
                 table.Create(path);
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
 
@@ -201,7 +215,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateTestSheet(_amountRows);
                 table.BodyStyle.Fill.BackgroundColor = bgColorBody;
                 table.BodyStyle.Font.FontName = fontBody;
                 table.BodyStyle.Font.Size = fontSizeBody;
@@ -213,7 +227,9 @@ namespace Beporsoft.TabularSheets.Test
                 table.HeaderStyle.Border.Color = borderColorHead;
 
                 table.Options.InheritHeaderStyleFromBody = inheritHeaderFromBody;
+                _stopwatch.Start();
                 table.Create(path);
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
 
@@ -271,7 +287,7 @@ namespace Beporsoft.TabularSheets.Test
             {
                 Style style = new();
                 style.Fill.BackgroundColor = Color.Red;
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateTestSheet(_amountRows);
                 var colExtra1 = table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
                 var colExtra2 = table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
                 {
@@ -292,7 +308,9 @@ namespace Beporsoft.TabularSheets.Test
                 indexColExtra4 = colExtra4.Index;
 
                 string path = _filesHandler.BuildPath($"Test{nameof(TryColumnStyle)}.xlsx");
+                _stopwatch.Start();
                 table.Create(path);
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
 
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
@@ -346,7 +364,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateTestSheet(_amountRows);
                 var col0 = table.Columns.Single(c => c.Index == 0);
                 col0.SetStyle(s =>
                 {
@@ -354,7 +372,9 @@ namespace Beporsoft.TabularSheets.Test
                     s.Alignment.Vertical = verticalCol0;
                     s.Alignment.TextWrap = textWrapCol0;
                 });
+                _stopwatch.Start();
                 table.Create(path);
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
 
@@ -387,14 +407,16 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateTestSheet(_amountRows);
                 table.BodyStyle.Font.FontName = fontName;
                 table.BodyStyle.Font.Size = fontSize;
                 table.Options.InheritHeaderStyleFromBody = true;
                 table.Options.ColumnOptions.Width = tableWidth;
                 table.HeaderStyle.Fill.BackgroundColor = Color.Azure;
                 table.Columns.Single(c => c.Index == 4).Style.NumberingPattern = "0.0000000000000";
+                _stopwatch.Start();
                 table.Create(path);
+                Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
         }

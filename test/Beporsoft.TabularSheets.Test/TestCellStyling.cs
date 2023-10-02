@@ -3,6 +3,8 @@ using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
 using Beporsoft.TabularSheets.CellStyling;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -11,6 +13,8 @@ namespace Beporsoft.TabularSheets.Test
     [Category("Stylesheet")]
     internal class TestCellStyling
     {
+        private const int _amountIndexedSetupItems = 10000;
+        private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [Test, Category("StyleEquality")]
         public void BorderStyle_IEquatableCompliant()
@@ -132,17 +136,18 @@ namespace Beporsoft.TabularSheets.Test
             style2.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
             styleR.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
             yield return new object[] { style1, style2, styleR };
-        }
+        }        
 
-
-        [Test, Category("StyleEquality")]
+        [Test, Category("StyleEquality"), Category("ISetupCollection")]
         [TestCaseSource(nameof(Data_SharedStringSetupCollection))]
+        [TestCaseSource(nameof(Data_IndexedSetupCollection_Strings))]
         [TestCaseSource(nameof(Data_IndexedSetupCollection_BorderSetup))]
         [TestCaseSource(nameof(Data_IndexedSetupCollection_FillSetup))]
-        public void SetupCollection_Register_MatchEquivalentWhenItIs<TSetup>(List<TSetup> randomSetups, ISetupCollection<TSetup> collection)
+        [TestCaseSource(nameof(Data_IndexedSetupCollection_FontSetup))]
+        [TestCaseSource(nameof(Data_IndexedSetupCollection_FormatSetup))]
+        public void SetupCollection_Register_MatchEquivalent<TSetup>(List<TSetup> randomSetups, ISetupCollection<TSetup> collection)
             where TSetup : Setup, IEquatable<TSetup>, IIndexedSetup
         {
-            Stopwatch sw  = new Stopwatch();
             List<TSetup> externalPlainCollection = new List<TSetup>();
             foreach (var setup in randomSetups)
             {
@@ -150,21 +155,153 @@ namespace Beporsoft.TabularSheets.Test
                     externalPlainCollection.Add(setup);
                 int indexExpected = externalPlainCollection.IndexOf(setup);
 
-                sw.Start();
+                _stopwatch.Start();
                 int resultIndex = collection.Register(setup);
-                sw.Stop();
+                _stopwatch.Stop();
 
                 Assert.Multiple(() =>
                 {
+                    // Assert indexing on the right position
                     Assert.That(resultIndex, Is.EqualTo(indexExpected));
                     Assert.That(setup.Index, Is.EqualTo(indexExpected));
+                    Assert.That(setup.Build(), Is.Not.Null);
+                    // Assert access by index
+                    Assert.That(setup, Is.EqualTo(collection[indexExpected]));
                 });
             }
+            Console.WriteLine($"Elapsed time registering: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
+            // Assert collections are equivalent
             Assert.That(externalPlainCollection, Has.Count.EqualTo(collection.Count));
             Assert.That(externalPlainCollection, Is.EquivalentTo(collection.GetRegisteredItems().ToList()));
-            Console.WriteLine($"Elapsed time registering: {sw.Elapsed.TotalMilliseconds:F3}ms");
         }
 
+        [Test, Category("StyleEquality"), Category("ISetupCollection")]
+        [TestCaseSource(nameof(Data_IndexedSetupCollection_NumFormat))]
+        public void SetupCollectionNumFormat_Register_MatchEquivalent(Dictionary<int, string> builtIn, List<string> nonBuiltIn)
+        {
+            ISetupCollection<NumberingFormatSetup> collection = new NumberingFormatSetupCollection();
+            foreach (var format in builtIn)
+            {
+                var setup = new NumberingFormatSetup(format.Value);
+
+                _stopwatch.Start();
+                int resultIndex = collection.Register(setup);
+                _stopwatch.Stop();
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(resultIndex, Is.EqualTo(format.Key));
+                    Assert.That(setup.Index, Is.EqualTo(format.Key));
+                    Assert.That(setup.Build(), Is.Not.Null);
+                    Assert.That(setup, Is.EqualTo(collection[resultIndex]));
+                });
+                // Ensure that GetRegisteredItems does not return builtin
+                var items = collection.GetRegisteredItems();
+                Assert.That(items, Does.Not.Contain(setup));
+            }
+            List<NumberingFormatSetup> externalPlainCollection = new List<NumberingFormatSetup>();
+            foreach (var format in nonBuiltIn)
+            {
+                var setup = new NumberingFormatSetup(format);
+                if (!externalPlainCollection.Contains(setup))
+                    externalPlainCollection.Add(setup);
+                int indexExpected = externalPlainCollection.IndexOf(setup);
+
+                _stopwatch.Start();
+                int resultIndex = collection.Register(setup);
+                _stopwatch.Stop();
+
+                Assert.Multiple(() =>
+                {
+                    // Assert indexing on the right position
+                    Assert.That(resultIndex, Is.EqualTo(indexExpected + NumberingFormatSetup.StartIndexNotBuiltin));
+                    Assert.That(setup.Index, Is.EqualTo(indexExpected + NumberingFormatSetup.StartIndexNotBuiltin));
+                    Assert.That(setup.Build(), Is.Not.Null);
+                    // Assert access by index
+                    Assert.That(setup, Is.EqualTo(collection[indexExpected + NumberingFormatSetup.StartIndexNotBuiltin]));
+                });
+            }
+            Console.WriteLine($"Elapsed time registering: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
+            // Assert collections are equivalent
+            Assert.That(externalPlainCollection, Has.Count.EqualTo(collection.Count));
+            Assert.That(externalPlainCollection, Is.EquivalentTo(collection.GetRegisteredItems().ToList()));
+        }
+
+        [Test, Category("StyleEquality"), Category("ISetupCollection")]
+        public void SetupCollection_BuildContainer_AsExpected()
+        {
+            // Create Each collection
+            ISetupCollection<FillSetup> fillCollection = new IndexedSetupCollection<FillSetup>();
+            ISetupCollection<FontSetup> fontCollection = new IndexedSetupCollection<FontSetup>();
+            ISetupCollection<BorderSetup> borderCollection = new IndexedSetupCollection<BorderSetup>();
+            ISetupCollection<FormatSetup> formatCollection = new IndexedSetupCollection<FormatSetup>();
+            ISetupCollection<SharedStringSetup> stringCollection = new SharedStringSetupCollection();
+            ISetupCollection<NumberingFormatSetup> numFormatCollection = new NumberingFormatSetupCollection();
+
+            // Retrieve testData
+            List<FormatSetup> formatSetups = (List<FormatSetup>)Data_IndexedSetupCollection_FormatSetup.ToList().First()[0];
+            List<SharedStringSetup> sharedStrings = (List<SharedStringSetup>)Data_SharedStringSetupCollection.ToList().First()[0];
+            Dictionary<int, string> numberingFormatsBuiltIn = (Dictionary<int, string>)Data_IndexedSetupCollection_NumFormat.ToList().First()[0];
+            List<string> numberingFormatsCustom = (List<string>)Data_IndexedSetupCollection_NumFormat.ToList().First()[1];
+            List<NumberingFormatSetup> numberingSetups = new List<NumberingFormatSetup>();
+            numberingSetups.AddRange(numberingFormatsBuiltIn.Values.Select(n => new NumberingFormatSetup(n)));
+            numberingSetups.AddRange(numberingFormatsCustom.Select(n => new NumberingFormatSetup(n)));
+
+            // Fill Each collection
+            formatSetups.Select(f => f.Border).Where(s => s != null).ToList().ForEach(f => borderCollection.Register(f!));
+            formatSetups.Select(f => f.Fill).Where(s => s != null).ToList().ForEach(f => fillCollection.Register(f!));
+            formatSetups.Select(f => f.Font).Where(s => s != null).ToList().ForEach(f => fontCollection.Register(f!));
+            numberingSetups.ForEach(n => numFormatCollection.Register(n));
+            formatSetups.ForEach(f => formatCollection.Register(f!));
+            sharedStrings.ForEach(s => stringCollection.Register(s!));
+
+            // Build each container for each collection
+            OpenXmlElement borderContainer = borderCollection.BuildContainer<DocumentFormat.OpenXml.Spreadsheet.Borders>();
+            OpenXmlElement fillContainer = fillCollection.BuildContainer<DocumentFormat.OpenXml.Spreadsheet.Fills>();
+            OpenXmlElement fontContainer = fontCollection.BuildContainer<DocumentFormat.OpenXml.Spreadsheet.Fonts>();
+            OpenXmlElement formatContainer = formatCollection.BuildContainer<DocumentFormat.OpenXml.Spreadsheet.Formats>();
+            OpenXmlElement stringContainer = stringCollection.BuildContainer<DocumentFormat.OpenXml.Spreadsheet.SharedStringTable>();
+            OpenXmlElement numFormatContainer = numFormatCollection.BuildContainer<DocumentFormat.OpenXml.Spreadsheet.NumberingFormats>();
+
+            // Assert that container has the structure expected for each collection
+            AssertSetupCollectionBuildContainer(borderContainer, borderCollection);
+            AssertSetupCollectionBuildContainer(fillContainer, fillCollection);
+            AssertSetupCollectionBuildContainer(fontContainer, fontCollection);
+            AssertSetupCollectionBuildContainer(formatContainer, formatCollection);
+            AssertSetupCollectionBuildContainer(stringContainer, stringCollection);
+            AssertNumFormatCollectionBuildContainer(numFormatContainer, numFormatCollection);
+        }
+
+        private static void AssertSetupCollectionBuildContainer<TSetup>(OpenXmlElement container, ISetupCollection<TSetup> collection)
+            where TSetup : Setup, IEquatable<TSetup>, IIndexedSetup
+        {
+            Assert.That(container.ChildElements.Count, Is.EqualTo(collection.Count));
+            for(int i = 0; i < container.ChildElements.Count; i++)
+            {
+                OpenXmlElement child = container.ChildElements[i];
+                TSetup? collectionSetup = collection[i];
+                Assert.That(collectionSetup, Is.Not.Null);
+                OpenXmlElement setupBuilt = collectionSetup.Build();
+                // Compare it is the same using string comparator, not by reference because OpenXmlElement does not override IEquatable
+                Assert.That(child.InnerXml, Is.EqualTo(setupBuilt.InnerXml));
+            }
+        }
+
+        private static void AssertNumFormatCollectionBuildContainer(OpenXmlElement container, ISetupCollection<NumberingFormatSetup> collection)
+        {
+            Assert.That(container.ChildElements.Count, Is.EqualTo(collection.Count));
+            for (int i = 0; i < container.ChildElements.Count; i++)
+            {
+                OpenXmlElement child = container.ChildElements[i];
+                NumberingFormatSetup? collectionSetup = collection[i + NumberingFormatSetup.StartIndexNotBuiltin];
+                Assert.That(collectionSetup, Is.Not.Null);
+                OpenXmlElement setupBuilt = collectionSetup.Build();
+                // Compare it is the same using string comparator, not by reference because OpenXmlElement does not override IEquatable
+                Assert.That(child.InnerXml, Is.EqualTo(setupBuilt.InnerXml));
+            }
+        }
+
+        #region TestCaseSource SetupCollection
         private static IEnumerable<object[]> Data_SharedStringSetupCollection
         {
             get
@@ -173,7 +310,24 @@ namespace Beporsoft.TabularSheets.Test
                 const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
                 Random rnd = new Random();
                 List<SharedStringSetup> generated = new List<SharedStringSetup>();
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < _amountIndexedSetupItems; i++)
+                {
+                    var str = letters.Substring(rnd.Next(letters.Length), 1);
+                    generated.Add(new SharedStringSetup(str));
+                }
+                yield return new object[] { generated, collection };
+            }
+        }
+
+        private static IEnumerable<object[]> Data_IndexedSetupCollection_Strings
+        {
+            get
+            {
+                ISetupCollection<SharedStringSetup> collection = new IndexedSetupCollection<SharedStringSetup>();
+                const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+                Random rnd = new Random();
+                List<SharedStringSetup> generated = new List<SharedStringSetup>();
+                for (int i = 0; i < _amountIndexedSetupItems; i++)
                 {
                     var str = letters.Substring(rnd.Next(letters.Length), 1);
                     generated.Add(new SharedStringSetup(str));
@@ -190,7 +344,7 @@ namespace Beporsoft.TabularSheets.Test
                 Random rnd = new Random();
                 List<BorderSetup> generated = new List<BorderSetup>();
                 int maxBorderTypeIntValue = (int)Enum.GetValues(typeof(BorderStyle.BorderType)).Cast<BorderStyle.BorderType>().Max();
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < _amountIndexedSetupItems; i++)
                 {
                     Color randomColor = Color.FromArgb(rnd.Next(256), 0, 0);
                     BorderStyle.BorderType randomBorderType = (BorderStyle.BorderType)rnd.Next(maxBorderTypeIntValue);
@@ -214,7 +368,7 @@ namespace Beporsoft.TabularSheets.Test
                 ISetupCollection<FillSetup> collection = new IndexedSetupCollection<FillSetup>();
                 Random rnd = new Random();
                 List<FillSetup> generated = new List<FillSetup>();
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < _amountIndexedSetupItems; i++)
                 {
                     Color randomColor = Color.FromArgb(rnd.Next(256), 0, 0);
 
@@ -229,5 +383,65 @@ namespace Beporsoft.TabularSheets.Test
             }
         }
 
+        private static IEnumerable<object[]> Data_IndexedSetupCollection_FontSetup
+        {
+            get
+            {
+                List<string> fonts = new List<string>() { "Calibri", "Times New Roman", "Courier New" };
+                ISetupCollection<FontSetup> collection = new IndexedSetupCollection<FontSetup>();
+                Random rnd = new Random();
+                List<FontSetup> generated = new List<FontSetup>();
+                for (int i = 0; i < _amountIndexedSetupItems; i++)
+                {
+                    Color randomColor = Color.FromArgb(rnd.Next(256), 0, 0);
+
+                    var style = new FontStyle();
+                    style.Color = randomColor;
+                    style.FontName = fonts[rnd.Next(fonts.Count)];
+                    var setup = new FontSetup(style);
+
+                    generated.Add(setup);
+
+                }
+                yield return new object[] { generated, collection };
+            }
+        }
+
+        private static IEnumerable<object[]> Data_IndexedSetupCollection_FormatSetup
+        {
+            get
+            {
+                List<FormatSetup> generated = new List<FormatSetup>();
+                ISetupCollection<FormatSetup> collection = new IndexedSetupCollection<FormatSetup>();
+                // Retrieve the first elements (the only ones) and test with it.
+                List<FontSetup> fonts = (List<FontSetup>)Data_IndexedSetupCollection_FontSetup.ToList().First()[0];
+                List<FillSetup> fills = (List<FillSetup>)Data_IndexedSetupCollection_FillSetup.ToList().First()[0];
+                List<BorderSetup> borders = (List<BorderSetup>)Data_IndexedSetupCollection_BorderSetup.ToList().First()[0];
+                for (int i = 0; i < Math.Round(_amountIndexedSetupItems/2.0); i++) // A half to reduce the test time
+                {
+                    var setup = new FormatSetup(fills[i], fonts[i], borders[i], null, null);
+                    generated.Add(setup);
+                }
+                yield return new object[] { generated, collection };
+            }
+        }
+
+        private static IEnumerable<object[]> Data_IndexedSetupCollection_NumFormat
+        {
+            get
+            {
+                List<string> generated = new List<string>();
+                Dictionary<int, string> builtIn = NumberingFormatSetupCollection.PredefinedFormats;
+                const string letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+                Random rnd = new Random();
+                for (int i = 0; i < _amountIndexedSetupItems; i++)
+                {
+                    var str = letters.Substring(rnd.Next(letters.Length), 1);
+                    generated.Add(str);
+                }
+                yield return new object[] { builtIn, generated };
+            }
+        }
+        #endregion
     }
 }
