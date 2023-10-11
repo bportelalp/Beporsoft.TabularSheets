@@ -1,5 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+using Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders

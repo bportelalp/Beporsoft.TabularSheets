@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
+namespace Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters
 {
     /// <summary>
     /// Base class to implement <see cref="ISetupCollection{TSetup}"/>

@@ -1,7 +1,8 @@
 ﻿using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using Beporsoft.TabularSheets.CellStyling;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing;
@@ -14,7 +15,13 @@ namespace Beporsoft.TabularSheets.Test
     internal class TestCellStyling
     {
         private const int _amountIndexedSetupItems = 10000;
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly Stopwatch _stopwatch = new();
+
+        [SetUp]
+        public void Setup()
+        {
+            _stopwatch.Reset();
+        }
 
         [Test, Category("StyleEquality")]
         public void BorderStyle_IEquatableCompliant()
@@ -96,47 +103,13 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StyleCombination")]
-        [TestCaseSource(nameof(CombineStylesCases))]
+        [TestCaseSource(nameof(Data_CombineStylesCases))]
         public void StyleCombiner_Combine_IEquatableCompliant(Style style1, Style style2, Style styleExpected)
         {
             Style styleResult = StyleCombiner.Combine(style1, style2);
             Assert.That(styleResult, Is.EqualTo(styleExpected));
         }
 
-        private static IEnumerable<object[]> CombineStylesCases()
-        {
-            var style1 = new Style();
-            var style2 = new Style();
-            var styleR = new Style();
-            style1.Font = new();
-            style2.Font = new();
-            styleR.Font = new();
-
-            style1.Font.Size = 0;
-            style2.Font.Size = 14;
-            styleR.Font.Size = 0;
-            yield return new object[] { style1, style2, styleR };
-            style1.Font.Size = null;
-            style2.Font.Size = 14;
-            styleR.Font.Size = 14;
-            yield return new object[] { style1, style2, styleR };
-            style1.Font.Color = null;
-            style2.Font.Color = System.Drawing.Color.AliceBlue;
-            styleR.Font.Color = System.Drawing.Color.AliceBlue;
-            yield return new object[] { style1, style2, styleR };
-
-            style1 = new Style();
-            style2 = new Style();
-            styleR = new Style();
-            style1.Fill = new();
-            styleR.Fill = new();
-            yield return new object[] { style1, style2, styleR };
-
-            style2.Fill = new();
-            style2.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
-            styleR.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
-            yield return new object[] { style1, style2, styleR };
-        }        
 
         [Test, Category("StyleEquality"), Category("ISetupCollection")]
         [TestCaseSource(nameof(Data_SharedStringSetupCollection))]
@@ -272,11 +245,12 @@ namespace Beporsoft.TabularSheets.Test
             AssertNumFormatCollectionBuildContainer(numFormatContainer, numFormatCollection);
         }
 
+        #region Assert BuildContainer
         private static void AssertSetupCollectionBuildContainer<TSetup>(OpenXmlElement container, ISetupCollection<TSetup> collection)
             where TSetup : Setup, IEquatable<TSetup>, IIndexedSetup
         {
             Assert.That(container.ChildElements.Count, Is.EqualTo(collection.Count));
-            for(int i = 0; i < container.ChildElements.Count; i++)
+            for (int i = 0; i < container.ChildElements.Count; i++)
             {
                 OpenXmlElement child = container.ChildElements[i];
                 TSetup? collectionSetup = collection[i];
@@ -300,6 +274,48 @@ namespace Beporsoft.TabularSheets.Test
                 Assert.That(child.InnerXml, Is.EqualTo(setupBuilt.InnerXml));
             }
         }
+        #endregion
+
+        #region TestCaseSource CombineStyles
+        private static IEnumerable<object[]> Data_CombineStylesCases
+        {
+            get
+            {
+                var style1 = new Style();
+                var style2 = new Style();
+                var styleR = new Style();
+                style1.Font = new();
+                style2.Font = new();
+                styleR.Font = new();
+
+                style1.Font.Size = 0;
+                style2.Font.Size = 14;
+                styleR.Font.Size = 0;
+                yield return new object[] { style1, style2, styleR };
+                style1.Font.Size = null;
+                style2.Font.Size = 14;
+                styleR.Font.Size = 14;
+                yield return new object[] { style1, style2, styleR };
+                style1.Font.Color = null;
+                style2.Font.Color = System.Drawing.Color.AliceBlue;
+                styleR.Font.Color = System.Drawing.Color.AliceBlue;
+                yield return new object[] { style1, style2, styleR };
+
+                style1 = new Style();
+                style2 = new Style();
+                styleR = new Style();
+                style1.Fill = new();
+                styleR.Fill = new();
+                yield return new object[] { style1, style2, styleR };
+
+                style2.Fill = new();
+                style2.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
+                styleR.Fill.BackgroundColor = System.Drawing.Color.AliceBlue;
+                yield return new object[] { style1, style2, styleR };
+            }
+
+        }
+        #endregion
 
         #region TestCaseSource SetupCollection
         private static IEnumerable<object[]> Data_SharedStringSetupCollection
@@ -417,7 +433,7 @@ namespace Beporsoft.TabularSheets.Test
                 List<FontSetup> fonts = (List<FontSetup>)Data_IndexedSetupCollection_FontSetup.ToList().First()[0];
                 List<FillSetup> fills = (List<FillSetup>)Data_IndexedSetupCollection_FillSetup.ToList().First()[0];
                 List<BorderSetup> borders = (List<BorderSetup>)Data_IndexedSetupCollection_BorderSetup.ToList().First()[0];
-                for (int i = 0; i < Math.Round(_amountIndexedSetupItems/2.0); i++) // A half to reduce the test time
+                for (int i = 0; i < Math.Round(_amountIndexedSetupItems / 2.0); i++) // A half to reduce the test time
                 {
                     var setup = new FormatSetup(fills[i], fonts[i], borders[i], null, null);
                     generated.Add(setup);

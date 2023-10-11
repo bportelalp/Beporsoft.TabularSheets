@@ -4,7 +4,7 @@ using DocumentFormat.OpenXml;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
+namespace Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters
 {
     /// <summary>
     /// A specific implementation of <see cref="ISetupCollection{TSetup}"/> for <see cref="NumberingFormatSetup"/> because there are indexes
@@ -20,7 +20,8 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
         {
             get
             {
-                if (PredefinedFormats.ContainsKey(index)) {
+                if (PredefinedFormats.ContainsKey(index))
+                {
                     var setup = new NumberingFormatSetup(PredefinedFormats[index]);
                     setup.SetIndex(index);
                     return setup;
