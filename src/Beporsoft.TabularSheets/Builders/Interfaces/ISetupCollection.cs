@@ -24,6 +24,11 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         /// </summary>
         internal int Count { get; }
 
+        /// <summary>
+        /// Gets the <typeparamref name="TSetup"/> on the specified index or null if it isn't registered.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         internal TSetup? this[int index] { get; }
 
         /// <summary>

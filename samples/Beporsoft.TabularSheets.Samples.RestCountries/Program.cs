@@ -11,6 +11,7 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
         static async Task Main(string[] args)
         {
             string region = SelectRegion();
+            string fileFormat = SelectFileFormat();
             Console.WriteLine($"Retrieving information about {region}");
             Uri uri = CreateUri(region);
             HttpClient client = new HttpClient();
@@ -52,9 +53,19 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
 
                 // Export
                 Console.WriteLine($"Creating file");
-                string path = PrepareDirectory($"{region}-countries.xlsx");
-                sheet.Create(path);
-                Console.WriteLine($"Done! Exported on: {path}");
+                string path = PrepareDirectory($"{region}-countries{fileFormat}");
+                bool fileFormatNotOk = false;
+                if (fileFormat == ".xlsx")
+                    sheet.Create(path);
+                else if (fileFormat == ".csv")
+                    sheet.ToCsv(path);
+                else
+                    fileFormatNotOk = true;
+
+                if (!fileFormatNotOk)
+                    Console.WriteLine($"Done! Exported on: {path}");
+                else
+                    Console.WriteLine($"File format {fileFormat} is unsupported");
             }
             else
             {
@@ -82,6 +93,29 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                     region = _regions[result - 1];
             }
             return region;
+        }
+
+        private static string SelectFileFormat()
+        {
+            string[] formats = new string[] { ".xlsx", ".csv" };
+            string? fileFormat = null;
+            while (fileFormat is null)
+            {
+                int index = 1;
+                Console.WriteLine("Select file format");
+                foreach (var format in formats)
+                {
+                    Console.WriteLine($"{index}. {format}");
+                    index++;
+                }
+                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine("Type a number and press enter");
+                var input = Console.ReadLine();
+                bool converted = int.TryParse(input, out int result);
+                if (converted && result > 0 && result <= _regions.Count)
+                    fileFormat = formats[result - 1];
+            }
+            return fileFormat;
         }
 
         private static Uri CreateUri(string region)

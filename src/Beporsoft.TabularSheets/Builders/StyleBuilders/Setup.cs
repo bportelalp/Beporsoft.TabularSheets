@@ -1,4 +1,4 @@
-﻿using Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections;
+﻿using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using DocumentFormat.OpenXml;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
