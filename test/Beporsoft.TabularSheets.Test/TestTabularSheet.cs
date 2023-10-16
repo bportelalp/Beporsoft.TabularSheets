@@ -430,7 +430,7 @@ namespace Beporsoft.TabularSheets.Test
             
         }
 
-        #region TestHelpers
+        #region Assert Data
         /// <summary>
         /// Verify the data on every column is OK as expected
         /// </summary>

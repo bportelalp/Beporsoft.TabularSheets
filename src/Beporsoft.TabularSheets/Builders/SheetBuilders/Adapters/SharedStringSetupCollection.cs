@@ -4,7 +4,7 @@ using DocumentFormat.OpenXml;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Beporsoft.TabularSheets.Builders.StyleBuilders.SetupCollections
+namespace Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters
 {
     /// <summary>
     /// Specific class to implement ISetupCollection for sharedStrings. Improve the preformance using a internal dictionary being the

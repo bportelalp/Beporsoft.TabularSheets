@@ -17,7 +17,7 @@ namespace Beporsoft.TabularSheets.Test
         private readonly TestFilesHandler _filesHandler = new("Csv");
 
         [Test]
-        [TestCaseSource(nameof(Data_ToCsv_GenerationOk))]
+        [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]
         public void ToCsv_GenerationOk(CultureInfo culture, string separator, Encoding encoding)
         {
             CultureInfo.CurrentCulture = culture;
@@ -47,6 +47,7 @@ namespace Beporsoft.TabularSheets.Test
             });
         }
 
+        #region Private assert
         private static void AssertCsv(TabularSheet<Product> table, CsvFixture csvFixture)
         {
             foreach (var col in table.Columns)
@@ -68,8 +69,10 @@ namespace Beporsoft.TabularSheets.Test
                 }
             }
         }
+        #endregion
 
-        private static IEnumerable<object[]> Data_ToCsv_GenerationOk
+        #region Data
+        private static IEnumerable<object[]> DataOptions_ToCsv_GenerationOk
         {
             get
             {
@@ -83,6 +86,7 @@ namespace Beporsoft.TabularSheets.Test
                 yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.UTF32 };
             }
         }
+        #endregion
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
