@@ -10,9 +10,9 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
     internal static class CellRefBuilder
     {
         internal const string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        internal static readonly Regex RegexReference = new(@"^\D{1,}\d{1,}$");
-        internal static readonly Regex RegexReferenceRow = new(@"\d{1,}$");
-        internal static readonly Regex RegexReferenceColumn = new(@"^\D{1,}");
+        private static readonly Regex _regexReference = new(@"^\D{1,}\d{1,}$");
+        private static readonly Regex _regexReferenceRow = new(@"\d{1,}$");
+        private static readonly Regex _regexReferenceColumn = new(@"^\D{1,}");
 
         /// <summary>
         /// Build the reference of a cell based on row and col index
@@ -66,6 +66,20 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         }
 
         /// <summary>
+        /// Build a quadrangular range of cells, composed from a left-upper cell to right-lower cell.
+        /// </summary>
+        /// <param name="fromRef"></param>
+        /// <param name="toRef"></param>
+        /// <returns></returns>
+        public static string BuildRefRange(string fromRef, string toRef)
+        {
+            CheckFormat(fromRef);
+            CheckFormat(toRef);
+            return $"{fromRef}:{toRef}";
+        }
+
+
+        /// <summary>
         /// Get the col index from reference
         /// </summary>
         /// <param name="cellReference">The alphanumeric reference of the cell</param>
@@ -108,7 +122,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
         private static void CheckFormat(string reference)
         {
-            Match match = RegexReference.Match(reference);
+            Match match = _regexReference.Match(reference);
             if (!match.Success)
                 throw new ArgumentException($"The cell reference isn't in the correct format. Value={reference}");
         }
@@ -116,14 +130,14 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private static string GetColPart(string reference)
         {
             CheckFormat(reference);
-            Match match = RegexReferenceColumn.Match(reference);
+            Match match = _regexReferenceColumn.Match(reference);
             return match.Value;
         }
 
         private static string GetRowPart(string reference)
         {
             CheckFormat(reference);
-            Match match = RegexReferenceRow.Match(reference);
+            Match match = _regexReferenceRow.Match(reference);
             return match.Value;
         }
     }

@@ -90,10 +90,10 @@ namespace Beporsoft.TabularSheets
         #region ISheet
         Type ISheet.ItemType => typeof(T);
 
-        WorksheetBundle ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
+        Worksheet ISheet.BuildWorksheet(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
-            WorksheetBundle bundle = builder.BuildSheetContext();
+            Worksheet bundle = builder.BuildWorksheet();
 
             return bundle;
         }

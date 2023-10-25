@@ -23,14 +23,14 @@ namespace Beporsoft.TabularSheets.Builders.Interfaces
         internal Type ItemType { get; }
 
         /// <summary>
-        /// Build the object <see cref="WorksheetBundle"/> which contains all the elements to build a <see cref="Worksheet"/>
+        /// Build the object <see cref="Worksheet"/> used on the spreadsheet document
         /// and fill <paramref name="stylesheetBuilder"/> and <paramref name="sharedStringBuilder"/> with the styles and 
         /// shared strings discovered during the creation, respectively
         /// </summary>
         /// <param name="stylesheetBuilder">A reference to the object which handles the compilation of stylesheet</param>
         /// <param name="sharedStringBuilder">A reference to the object which handles the compilation of shared strings</param>
         /// <returns></returns>
-        internal WorksheetBundle BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder);
+        internal Worksheet BuildWorksheet(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder);
 
 
     }

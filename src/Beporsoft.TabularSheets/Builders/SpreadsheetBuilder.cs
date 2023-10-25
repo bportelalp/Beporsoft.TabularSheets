@@ -89,7 +89,7 @@ namespace Beporsoft.TabularSheets.Builders
         public void AppendWorksheetPart(ref WorkbookPart workbookPart, ISheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            worksheetPart.Worksheet = new Worksheet();
+            //worksheetPart.Worksheet = new Worksheet();
             //Add Sheets to the Workbook if there aren't
             Sheets sheets;
             if (workbookPart.Workbook.Sheets is null)
@@ -109,13 +109,9 @@ namespace Beporsoft.TabularSheets.Builders
             };
             sheets.Append(sheet);
 
-            WorksheetBundle bundle = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
-            if (bundle.FormatProperties is not null)
-                worksheetPart.Worksheet.AppendChild(bundle.FormatProperties);
-            if (bundle.Columns is not null)
-                worksheetPart.Worksheet.AppendChild(bundle.Columns);
+            Worksheet ws = table.BuildWorksheet(StyleBuilder, SharedStringBuilder);
+            worksheetPart.Worksheet = ws;
 
-            worksheetPart.Worksheet.AppendChild(bundle.Data);
         }
 
 

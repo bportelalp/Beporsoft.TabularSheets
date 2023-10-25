@@ -24,7 +24,7 @@ namespace Beporsoft.TabularSheets.Test
             _stopwatch.Reset();
         }
 
-        [Test]
+        [Test, Category("DEBUG")]
         public void DebugFile()
         {
             Assert.That(() =>
@@ -55,7 +55,7 @@ namespace Beporsoft.TabularSheets.Test
                 table.Create(path);
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
-            AssertTabularSheetData(table, sheet);
+            AssertWorksheet(table, sheet);
 
             // Generate as memory stream
             Assert.That(() =>
@@ -66,7 +66,7 @@ namespace Beporsoft.TabularSheets.Test
                 Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(ms);
             }, Throws.Nothing);
-            AssertTabularSheetData(table, sheet);
+            AssertWorksheet(table, sheet);
         }
 
         [Test, Category("Stylesheet"), Category("Worksheet")]
@@ -437,7 +437,7 @@ namespace Beporsoft.TabularSheets.Test
         /// <param name="table"></param>
         /// <param name="column"></param>
         /// <param name="sheet"></param>
-        private static void AssertTabularSheetData(TabularSheet<Product> table, SheetFixture sheet)
+        private static void AssertWorksheet(TabularSheet<Product> table, SheetFixture sheet)
         {
             Assert.That(sheet.Title, Is.EqualTo(table.Title));
             foreach (var col in table.Columns)
@@ -445,6 +445,7 @@ namespace Beporsoft.TabularSheets.Test
                 AssertColumnHeaderData(col, sheet);
                 AssertColumnBodyData(table, col, sheet);
             }
+            AssertDimensions(table, sheet);
         }
 
         private static void AssertColumnHeaderData(TabularDataColumn<Product> column, SheetFixture sheet)
@@ -499,6 +500,18 @@ namespace Beporsoft.TabularSheets.Test
                     }
                 });
             }
+        }
+
+        private static void AssertDimensions(TabularSheet<Product> table, SheetFixture sheet)
+        {
+            int rows = table.Count;
+            int cols = table.ColumnCount;
+
+            string from = CellRefBuilder.BuildRef(0, 0);
+            string to = CellRefBuilder.BuildRef(rows, cols);
+            string dimensions = CellRefBuilder.BuildRefRange(from, to);
+
+            Assert.That(sheet.GetDimensionReference(), Is.EqualTo(dimensions));
         }
         #endregion
 

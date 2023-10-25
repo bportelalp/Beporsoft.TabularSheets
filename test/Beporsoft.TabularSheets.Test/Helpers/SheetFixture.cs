@@ -1,6 +1,7 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using Beporsoft.TabularSheets.Tools;
+using DocumentFormat.OpenXml.Office.CoverPageProps;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
@@ -31,8 +32,13 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         public SheetData Data { get; private set; } = null!;
         public Stylesheet Stylesheet { get; private set; } = null!;
         public SharedStringTable SharedStrings { get; private set; } = null!;
+        public SheetDimension Dimensions { get; private set; } = null!;
         public string Title { get; private set; } = null!;
 
+        public string GetDimensionReference()
+        {
+            return Dimensions?.Reference?.Value ?? string.Empty;
+        }
         public Cell GetHeaderCellByColumn(int col)
         {
             string headerCellRef = CellRefBuilder.BuildRef(0, col);
@@ -97,7 +103,7 @@ namespace Beporsoft.TabularSheets.Test.Helpers
                     style.Border = GetBorder(Convert.ToInt32(cellFormat.BorderId.Value));
                 if (cellFormat.NumberFormatId is not null)
                     style.NumberingFormat = GetNumberingFormat(Convert.ToInt32(cellFormat.NumberFormatId.Value));
-                if(cellFormat.Alignment is not null)
+                if (cellFormat.Alignment is not null)
                     style.Alignment = cellFormat.Alignment;
                 return style.ToStyle();
             }
@@ -154,6 +160,7 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             Data = worksheet.Descendants<SheetData>()!.Single();
             Stylesheet = workbookPart.WorkbookStylesPart!.Stylesheet;
             SharedStrings = workbookPart.SharedStringTablePart!.SharedStringTable;
+            Dimensions = worksheet.Descendants<SheetDimension>()!.Single();
 
             var sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().Single();
             Title = sheet.Name!.Value!;
