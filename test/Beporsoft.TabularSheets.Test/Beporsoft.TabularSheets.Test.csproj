@@ -28,4 +28,8 @@
     <ProjectReference Include="..\..\src\Beporsoft.TabularSheets\Beporsoft.TabularSheets.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Results\AutoFilter\" />
+  </ItemGroup>
+
 </Project>

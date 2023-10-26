@@ -257,11 +257,14 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         #region AutoFilter
         private AutoFilter? BuildAutoFilter()
         {
-            //TODO - conditionally create autofilter
-            AutoFilter? autoFilter = new AutoFilter();
-            string from = CellRefBuilder.BuildRef(0, 0);
-            string to = _cellRefIterator.Current;
-            autoFilter.Reference = CellRefBuilder.BuildRefRange(from, to);
+            AutoFilter? autoFilter = null;
+            if (Table.Options.UseAutofilter)
+            {
+                autoFilter = new();
+                string from = CellRefBuilder.BuildRef(0, 0);
+                string to = _cellRefIterator.Current;
+                autoFilter.Reference = CellRefBuilder.BuildRefRange(from, to);
+            }
             return autoFilter;
         }
         #endregion

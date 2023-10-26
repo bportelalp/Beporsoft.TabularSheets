@@ -33,6 +33,7 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         public Stylesheet Stylesheet { get; private set; } = null!;
         public SharedStringTable SharedStrings { get; private set; } = null!;
         public SheetDimension Dimensions { get; private set; } = null!;
+        public AutoFilter? AutoFilter { get; private set; }
         public string Title { get; private set; } = null!;
 
         public string GetDimensionReference()
@@ -160,7 +161,8 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             Data = worksheet.Descendants<SheetData>()!.Single();
             Stylesheet = workbookPart.WorkbookStylesPart!.Stylesheet;
             SharedStrings = workbookPart.SharedStringTablePart!.SharedStringTable;
-            Dimensions = worksheet.Descendants<SheetDimension>()!.Single();
+            Dimensions = worksheet.Descendants<SheetDimension>().Single();
+            AutoFilter = worksheet.Descendants<AutoFilter>().SingleOrDefault();
 
             var sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().Single();
             Title = sheet.Name!.Value!;
