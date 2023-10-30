@@ -42,6 +42,8 @@ namespace Beporsoft.TabularSheets.Options
         /// </summary>
         public bool InheritHeaderStyleFromBody { get; set; } = false;
 
+        public bool UseAutofilter { get; set; } = false;
+
         /// <summary>
         /// The default column options for those which haven't configured their own options
         /// </summary>

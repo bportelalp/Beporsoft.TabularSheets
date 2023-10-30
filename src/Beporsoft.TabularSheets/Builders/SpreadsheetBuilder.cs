@@ -89,7 +89,7 @@ namespace Beporsoft.TabularSheets.Builders
         public void AppendWorksheetPart(ref WorkbookPart workbookPart, ISheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            worksheetPart.Worksheet = new Worksheet();
+            //worksheetPart.Worksheet = new Worksheet();
             //Add Sheets to the Workbook if there aren't
             Sheets sheets;
             if (workbookPart.Workbook.Sheets is null)
@@ -109,13 +109,9 @@ namespace Beporsoft.TabularSheets.Builders
             };
             sheets.Append(sheet);
 
-            WorksheetBundle bundle = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
-            if (bundle.FormatProperties is not null)
-                worksheetPart.Worksheet.AppendChild(bundle.FormatProperties);
-            if (bundle.Columns is not null)
-                worksheetPart.Worksheet.AppendChild(bundle.Columns);
+            Worksheet ws = table.BuildWorksheet(StyleBuilder, SharedStringBuilder);
+            worksheetPart.Worksheet = ws;
 
-            worksheetPart.Worksheet.AppendChild(bundle.Data);
         }
 
 
@@ -201,16 +197,6 @@ namespace Beporsoft.TabularSheets.Builders
                     nameSheet += "1";
             }
             return nameSheet;
-        }
-        #endregion
-
-        #region OpenXml Validation
-        private static void ValidateSpreadSheet(SpreadsheetDocument spreadsheet)
-        {
-            OpenXmlValidator validator = new OpenXmlValidator();
-            IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
-            if (errors.Any())
-                throw new OpenXmlException(errors);
         }
         #endregion
     }
