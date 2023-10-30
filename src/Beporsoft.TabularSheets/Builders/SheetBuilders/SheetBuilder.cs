@@ -63,7 +63,6 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             SheetFormatProperties formatProps = BuildFormatProperties();
             SheetDimension dimension = BuildSheetDimension();
             AutoFilter? autoFilter = BuildAutoFilter();
-
             var worksheet = new Worksheet();
 
             worksheet.AppendChild(dimension);

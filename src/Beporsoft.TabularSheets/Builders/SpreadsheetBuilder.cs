@@ -199,15 +199,5 @@ namespace Beporsoft.TabularSheets.Builders
             return nameSheet;
         }
         #endregion
-
-        #region OpenXml Validation
-        private static void ValidateSpreadSheet(SpreadsheetDocument spreadsheet)
-        {
-            OpenXmlValidator validator = new OpenXmlValidator();
-            IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
-            if (errors.Any())
-                throw new OpenXmlException(errors);
-        }
-        #endregion
     }
 }
