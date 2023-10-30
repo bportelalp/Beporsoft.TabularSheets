@@ -68,12 +68,12 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
             worksheet.AppendChild(dimension);
             worksheet.AppendChild(formatProps);
-            if (autoFilter is not null)
-                worksheet.AppendChild(autoFilter);
             if (cols is not null)
                 worksheet.AppendChild(cols);
 
             worksheet.AppendChild(data);
+            if (autoFilter is not null)
+                worksheet.AppendChild(autoFilter);
             return worksheet;
         }
         #endregion
@@ -262,7 +262,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             {
                 autoFilter = new();
                 string from = CellRefBuilder.BuildRef(0, 0);
-                string to = _cellRefIterator.Current;
+                string to = CellRefBuilder.BuildRef(Table.Count, Table.ColumnCount, false); //non zero-based-index because is count of rows/cols, not index
                 autoFilter.Reference = CellRefBuilder.BuildRefRange(from, to);
             }
             return autoFilter;
@@ -276,7 +276,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             // Gets the end value of the iterator after executing the process
             var sheetDimension = new SheetDimension();
             string from = CellRefBuilder.BuildRef(0, 0);
-            string to = _cellRefIterator.Current;
+            string to = CellRefBuilder.BuildRef(Table.Count, Table.ColumnCount, false); //non zero-based-index because is count of rows/cols, not index
             sheetDimension.Reference = CellRefBuilder.BuildRefRange(from, to);
             return sheetDimension;
         }

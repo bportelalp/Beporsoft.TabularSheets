@@ -504,11 +504,11 @@ namespace Beporsoft.TabularSheets.Test
 
         private static void AssertDimensions(TabularSheet<Product> table, SheetFixture sheet)
         {
-            int rows = table.Count;
-            int cols = table.ColumnCount;
+            int rowCount = table.Count;
+            int colCount = table.ColumnCount;
 
             string from = CellRefBuilder.BuildRef(0, 0);
-            string to = CellRefBuilder.BuildRef(rows, cols);
+            string to = CellRefBuilder.BuildRef(rowCount, colCount, false); //Non zero based index because is count
             string dimensions = CellRefBuilder.BuildRefRange(from, to);
 
             Assert.That(sheet.GetDimensionReference(), Is.EqualTo(dimensions));

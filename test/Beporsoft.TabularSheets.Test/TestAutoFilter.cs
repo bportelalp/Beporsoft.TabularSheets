@@ -60,7 +60,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetDimension dimension = sheet.Dimensions;
             Assert.That(autoFilter, Is.Not.Null);
 
-            string rangeDimensions = CellRefBuilder.BuildRefRange(CellRefBuilder.BuildRef(0, 0), CellRefBuilder.BuildRef(table.Count, table.ColumnCount));
+            string rangeDimensions = CellRefBuilder.BuildRefRange(CellRefBuilder.BuildRef(0, 0), CellRefBuilder.BuildRef(table.Count, table.ColumnCount, false));
             Assert.Multiple(() =>
             {
                 Assert.That(autoFilter.Reference, Is.Not.Null);
