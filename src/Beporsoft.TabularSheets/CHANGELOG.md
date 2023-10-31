@@ -1,5 +1,10 @@
 # Beporsoft.TabularSheets Changelog
 
+## 1.2.2 - 2023-10-31
+
+* FIX: `TabularSheet<T>.Options` is now `public`.
+
+
 ## 1.2.1 - 2023-10-16
 
 ### Performance improvements on style collections (Internal notes)

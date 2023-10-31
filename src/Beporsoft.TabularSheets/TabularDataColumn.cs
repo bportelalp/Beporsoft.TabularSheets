@@ -51,7 +51,11 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         public Style Style { get; private set; } = new();
 
-        internal ColumnOptions Options { get; private set; } = new();
+        /// <summary>
+        /// Configure some column parameters for this column. <see cref="Nullable"/> properties
+        /// can be overrided by parent table configuration.
+        /// </summary>
+        public ColumnOptions Options { get; private set; } = new();
 
         /// <summary>
         /// Gets the <see cref="TabularData{T}"/> to which belongs this <see cref="TabularDataColumn{T}"/>
