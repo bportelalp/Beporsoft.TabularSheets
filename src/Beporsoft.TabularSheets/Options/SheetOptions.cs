@@ -42,6 +42,9 @@ namespace Beporsoft.TabularSheets.Options
         /// </summary>
         public bool InheritHeaderStyleFromBody { get; set; } = false;
 
+        /// <summary>
+        /// Gets or sets if spreadsheet should include a autofilter
+        /// </summary>
         public bool UseAutofilter { get; set; } = false;
 
         /// <summary>
