@@ -36,7 +36,7 @@ namespace Beporsoft.TabularSheets.Test
         public void Create_NotActivatedAutoFilter_NotIncludedOnSheet()
         {
             string path = _filesHandler.BuildPath($"Test{nameof(Create_NotActivatedAutoFilter_NotIncludedOnSheet)}.xlsx");
-            TabularSheet<Product> table = Product.GenerateTestSheet();
+            TabularSheet<Product> table = Product.GenerateTestSheet(_amountRows);
             table.Options.UseAutofilter = false;
             table.Create(path);
             SheetFixture sheet = new SheetFixture(path);
