@@ -16,15 +16,15 @@ namespace Beporsoft.TabularSheets.Test.Helpers
     internal class SheetFixture
     {
 
-        public SheetFixture(Stream stream)
+        public SheetFixture(Stream stream, string? sheetName = null)
         {
-            Load(stream);
+            Load(stream, sheetName);
         }
 
-        public SheetFixture(string path)
+        public SheetFixture(string path, string? sheetName = null)
         {
             using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            Load(fs);
+            Load(fs, sheetName);
         }
 
 
@@ -153,7 +153,7 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             return numberingPattern!;
         }
 
-        private void Load(Stream stream)
+        private void Load(Stream stream, string? sheetName = null)
         {
             using var spreadsheet = SpreadsheetDocument.Open(stream, false);
             WorkbookPart workbookPart = spreadsheet.WorkbookPart!;
@@ -164,7 +164,12 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             Dimensions = worksheet.Descendants<SheetDimension>().Single();
             AutoFilter = worksheet.Descendants<AutoFilter>().SingleOrDefault();
 
-            var sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().Single();
+            Sheet sheet;
+            if(sheetName is null)
+                sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().First();
+            else
+                sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().First(s => s.Name == sheetName);
+
             Title = sheet.Name!.Value!;
         }
     }
