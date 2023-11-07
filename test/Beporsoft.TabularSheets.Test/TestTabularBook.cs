@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Test.Helpers;
+using Beporsoft.TabularSheets.Test.TestModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +14,8 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new();
+        private readonly int _amountReviewsByProduct = 100;
+        private readonly TestFilesHandler _filesHandler = new(nameof(TestTabularBook));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]
@@ -61,6 +63,10 @@ namespace Beporsoft.TabularSheets.Test
         [Test, Ignore("Not implemented yet")]
         public void CreateMultiple_ShouldIncludeEach_AsExpected()
         {
+            var tableProducts = Product.GenerateProductSheet(_amountRows);
+            var tableReviews = ProductReview.GenerateReviewSheet(tableProducts.Items, _amountReviewsByProduct);
+            string path = _filesHandler.BuildPath(nameof(CreateMultiple_ShouldIncludeEach_AsExpected));
+            tableReviews.Create(path);
 
         }
 

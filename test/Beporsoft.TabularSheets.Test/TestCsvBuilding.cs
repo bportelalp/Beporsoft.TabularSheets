@@ -1,5 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Test.Helpers;
+using Beporsoft.TabularSheets.Test.TestModels;
 using DocumentFormat.OpenXml.Drawing;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace Beporsoft.TabularSheets.Test
                 Encoding = encoding
             };
             string file = _filesHandler.BuildPath($"{nameof(ToCsv_GenerationOk)}.csv");
-            var table = Product.GenerateTestSheet();
+            var table = Product.GenerateProductSheet();
             Assert.Multiple(() =>
             {
                 // Test file

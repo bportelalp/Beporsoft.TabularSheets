@@ -1,5 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Test.Helpers;
+using Beporsoft.TabularSheets.Test.TestModels;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace Beporsoft.TabularSheets.Test
         public void Create_NotActivatedAutoFilter_NotIncludedOnSheet()
         {
             string path = _filesHandler.BuildPath($"Test{nameof(Create_NotActivatedAutoFilter_NotIncludedOnSheet)}.xlsx");
-            TabularSheet<Product> table = Product.GenerateTestSheet(_amountRows);
+            TabularSheet<Product> table = Product.GenerateProductSheet(_amountRows);
             table.Options.UseAutofilter = false;
             table.Create(path);
             SheetFixture sheet = new SheetFixture(path);
@@ -50,7 +51,7 @@ namespace Beporsoft.TabularSheets.Test
         {
             string path = _filesHandler.BuildPath($"Test{nameof(Create_ActivatedAutoFilter_IncludedAndRangeOk)}.xlsx");
 
-            TabularSheet<Product> table = Product.GenerateTestSheet();
+            TabularSheet<Product> table = Product.GenerateProductSheet();
             table.Options.UseAutofilter = true;
             table.Create(path);
 
