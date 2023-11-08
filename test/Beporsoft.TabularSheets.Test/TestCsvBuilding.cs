@@ -15,7 +15,7 @@ namespace Beporsoft.TabularSheets.Test
     internal class TestCsvBuilding
     {
         private readonly bool _clearFolderOnEnd = false;
-        private readonly TestFilesHandler _filesHandler = new("Csv");
+        private readonly TestFilesHandler _filesHandler = new(nameof(TestCsvBuilding));
 
         [Test]
         [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]

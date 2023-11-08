@@ -33,17 +33,39 @@ namespace Beporsoft.TabularSheets.Test
         }
 
 
-        [Test, Ignore("Not implemented yet")]
+        [Test]
         public void BookAddSheet_ShouldAppendSheetAtEnd()
         {
+            const int amountTables = 5;
 
+            TabularBook book = new();
+            List<TabularSheet<Product>> tables = new List<TabularSheet<Product>>();
+            for (int i = 0; i <= amountTables; i++)
+                tables.Add(Product.GenerateProductSheet(_amountRows));
+
+            for (int i = 0; i <= amountTables; i++)
+            {
+                TabularSheet<Product> sheet = tables[i];
+                book.Add(sheet);
+                Assert.That(book[i], Is.EqualTo(sheet));
+                int index = book.IndexOf(sheet);
+                Assert.That(index, Is.EqualTo(i));
+            }
         }
 
 
-        [Test, Ignore("Not implemented yet")]
+        [Test]
         public void BookRemoveSheet_ShouldReturnFalse_IfNotIncluded()
         {
+            const int amountTables = 5;
 
+            TabularBook book = new();
+            for (int i = 0; i <= amountTables; i++)
+                book.Add(Product.GenerateProductSheet(_amountRows));
+
+            TabularSheet<Product> additionalTable = Product.GenerateProductSheet(_amountRows);
+            bool removedNotOk = book.Remove(additionalTable);
+            Assert.That(removedNotOk, Is.False);
         }
 
 
@@ -63,10 +85,16 @@ namespace Beporsoft.TabularSheets.Test
         [Test, Ignore("Not implemented yet")]
         public void CreateMultiple_ShouldIncludeEach_AsExpected()
         {
+            TabularBook book = new TabularBook();
+
             var tableProducts = Product.GenerateProductSheet(_amountRows);
             var tableReviews = ProductReview.GenerateReviewSheet(tableProducts.Items, _amountReviewsByProduct);
             string path = _filesHandler.BuildPath(nameof(CreateMultiple_ShouldIncludeEach_AsExpected));
-            tableReviews.Create(path);
+
+            book.Add(tableProducts);
+            book.Add(tableReviews);
+
+            book.Create(path);
 
         }
 

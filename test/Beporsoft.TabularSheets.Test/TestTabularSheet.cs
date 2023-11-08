@@ -16,7 +16,7 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new();
+        private readonly TestFilesHandler _filesHandler = new(nameof(TestTabularSheet));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]

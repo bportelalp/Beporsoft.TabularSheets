@@ -16,7 +16,7 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new("AutoFilter");
+        private readonly TestFilesHandler _filesHandler = new(nameof(TestAutoFilter));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]

@@ -4,7 +4,7 @@ using Beporsoft.TabularSheets.Test.TestModels;
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("SheetStructure")]
-    internal class TestTabularData
+    public class TestTabularData
     {
 
         /// <summary>
