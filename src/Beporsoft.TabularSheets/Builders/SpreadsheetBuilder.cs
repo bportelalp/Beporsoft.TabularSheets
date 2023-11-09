@@ -1,5 +1,4 @@
-﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Exceptions;
 using Beporsoft.TabularSheets.Tools;
@@ -46,7 +45,7 @@ namespace Beporsoft.TabularSheets.Builders
         public SharedStringBuilder SharedStringBuilder { get; }
 
         #region Create Spreadsheet
-        public void Create(string path, params ISheet[] tables)
+        public void Create(string path, params ITabularSheet[] tables)
         {
             string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetFileExtension.AllowedExtensions);
             using var fs = new FileStream(pathCorrected, FileMode.Create);
@@ -54,7 +53,7 @@ namespace Beporsoft.TabularSheets.Builders
             ms.Seek(0, SeekOrigin.Begin);
             ms.CopyTo(fs);
         }
-        public MemoryStream Create(params ISheet[] tables)
+        public MemoryStream Create(params ITabularSheet[] tables)
         {
             MemoryStream stream = new();
             using var spreadsheet = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
@@ -77,16 +76,16 @@ namespace Beporsoft.TabularSheets.Builders
 
         /// <summary>
         /// Append a <see cref="WorksheetPart"/> to <paramref name="workbookPart"/> based on the
-        /// content of the provided <see cref="ISheet"/>.<br/><br/>
+        /// content of the provided <see cref="ITabularSheet"/>.<br/><br/>
         /// The <see cref="SharedStringItem"/>s located and the <see cref="CellFormat"/> of each cell when it is required will be 
         /// registered on <see cref="SharedStringBuilder"/> and <see cref="StyleBuilder"/> to include them subsequently inside a 
         /// common <see cref="SharedStringTable"/> and <see cref="Stylesheet"/>, respectively.<br/><br/>
-        /// This architecture allows to include more than one <see cref="ISheet"/> on the same <see cref="SpreadsheetDocument"/> 
+        /// This architecture allows to include more than one <see cref="ITabularSheet"/> on the same <see cref="SpreadsheetDocument"/> 
         /// using shared resources.
         /// </summary>
         /// <param name="workbookPart">A reference to the <see cref="WorkbookPart"/> where to append the <see cref="WorkbookStylesPart"/></param>
         /// <param name="table">The <see cref="TabularSheet{T}"/> which will populate the <see cref="SheetData"/></param>
-        public void AppendWorksheetPart(ref WorkbookPart workbookPart, ISheet table)
+        public void AppendWorksheetPart(ref WorkbookPart workbookPart, ITabularSheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
             //worksheetPart.Worksheet = new Worksheet();

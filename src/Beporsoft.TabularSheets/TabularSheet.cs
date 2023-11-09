@@ -1,5 +1,4 @@
 ﻿using Beporsoft.TabularSheets.Builders;
-using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.CellStyling;
@@ -16,7 +15,7 @@ namespace Beporsoft.TabularSheets
     /// Represent a spreadsheet that can be handled by the OpenXml Specification
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class TabularSheet<T> : TabularData<T>, ISheet
+    public sealed class TabularSheet<T> : TabularData<T>, ITabularSheet
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TabularSheet{T}"/> class that is empty
@@ -88,9 +87,9 @@ namespace Beporsoft.TabularSheets
         #endregion
 
         #region ISheet
-        Type ISheet.ItemType => typeof(T);
+        Type ITabularSheet.ItemType => typeof(T);
 
-        Worksheet ISheet.BuildWorksheet(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
+        Worksheet ITabularSheet.BuildWorksheet(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
             Worksheet bundle = builder.BuildWorksheet();

@@ -11,7 +11,6 @@ namespace Beporsoft.TabularSheets
     /// <typeparam name="T">The type which represent every row</typeparam>
     public abstract class TabularData<T> : IList<T>
     {
-        internal readonly List<TabularDataColumn<T>> ColumnsCollection = new();
         private List<T> _items = new();
 
         #region Properties
@@ -38,6 +37,10 @@ namespace Beporsoft.TabularSheets
         /// <inheritdoc cref="ICollection{T}.IsReadOnly"/>
         bool ICollection<T>.IsReadOnly => false;
 
+        /// <summary>
+        /// Collection to be used from the children. Internal to the assembly
+        /// </summary>
+        internal List<TabularDataColumn<T>> ColumnsCollection { get; } = new();
 
         /// <summary>
         /// Get or sets the element at the specified index.
@@ -125,7 +128,14 @@ namespace Beporsoft.TabularSheets
         }
         #endregion
 
-        internal object Evaluate(int row, int col)
+        /// <summary>
+        /// Evaluate the value of a cell inside the body table, that is, excluding the header
+        /// </summary>
+        /// <param name="row">zero based index of the cell</param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        protected object EvaluateCell(int row, int col)
         {
             if (Count >= row)
                 throw new ArgumentOutOfRangeException(nameof(row), row, $"The value of row is outside the bounds of the collection length");
