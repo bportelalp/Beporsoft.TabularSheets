@@ -69,33 +69,51 @@ namespace Beporsoft.TabularSheets.Test
         }
 
 
-        [Test, Ignore("Not implemented yet")]
-        public void BookRemoveSheet_ShouldReturnTrueAndReallocateOthers()
-        {
-
-        }
-
-
-        [Test, Ignore("Not implemented yet")]
+        [Test]
         public void CreateMultiple_ShouldIterateSheetName_IfSameTableName()
         {
+            const int amountProducts = 4;
+            string path = _filesHandler.BuildPath($"Test{nameof(CreateMultiple_ShouldIterateSheetName_IfSameTableName)}.xlsx");
+            List<string> expectedNames = new List<string>();
+
+            TabularBook book = new();
+            for (int i = 0; i < amountProducts; i++)
+            {
+                var productSheet = Product.GenerateProductSheet(_amountRows);
+                var productReview = ProductReview.GenerateReviewSheet(productSheet, _amountReviewsByProduct);
+                book.Add(productSheet);
+                book.Add(productReview);
+
+                expectedNames.Add(i is 0 ? $"{nameof(Product)}" : $"{nameof(Product)}{i}");
+                expectedNames.Add(i is 0 ? $"{nameof(ProductReview)}" : $"{nameof(ProductReview)}{i}");
+            }
+
+            book.Create(path);
+            WorkbookFixture workbook = new(path);
+            IEnumerable<string> names = workbook.Sheets.Keys;
+            Assert.That(names, Is.EquivalentTo(expectedNames));
 
         }
 
-        [Test, Ignore("Not implemented yet")]
+        [Test]
         public void CreateMultiple_ShouldIncludeEach_AsExpected()
         {
             TabularBook book = new TabularBook();
 
             var tableProducts = Product.GenerateProductSheet(_amountRows);
             var tableReviews = ProductReview.GenerateReviewSheet(tableProducts.Items, _amountReviewsByProduct);
-            string path = _filesHandler.BuildPath(nameof(CreateMultiple_ShouldIncludeEach_AsExpected));
+            string path = _filesHandler.BuildPath($"Test{nameof(CreateMultiple_ShouldIncludeEach_AsExpected)}.xlsx");
 
             book.Add(tableProducts);
             book.Add(tableReviews);
 
             book.Create(path);
+            WorkbookFixture workbook = new(path);
 
+            var productFixture = workbook.Sheets[nameof(Product)];
+            var reviewFixture = workbook.Sheets[nameof(ProductReview)];
+            TabularSheetAsserter.AssertTabularSheet(tableProducts, productFixture);
+            TabularSheetAsserter.AssertTabularSheet(tableReviews, reviewFixture);
         }
 
         [Test, Ignore("Not implemented yet")]

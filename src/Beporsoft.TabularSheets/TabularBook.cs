@@ -27,7 +27,7 @@ namespace Beporsoft.TabularSheets
         /// <inheritdoc cref="ICollection{T}.IsReadOnly"/>
         public bool IsReadOnly => false;
 
-        #region IList<ISheet>
+        #region IList<ItabularSheet>
         public ITabularSheet this[int index] { get => _sheets[index]; set => _sheets[index] = value; }
 
 
@@ -68,11 +68,15 @@ namespace Beporsoft.TabularSheets
         #region Create
         public void Create(string path)
         {
+            SpreadsheetBuilder builder = new();
+            builder.Create(path, Sheets.ToArray());
         }
 
         public MemoryStream Create()
         {
-            throw new NotImplementedException();
+            SpreadsheetBuilder builder = new();
+            MemoryStream ms = builder.Create(Sheets.ToArray());
+            return ms;
         }
         #endregion
     }

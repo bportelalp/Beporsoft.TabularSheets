@@ -1,13 +1,4 @@
-﻿
-/* Unmerged change from project 'Beporsoft.TabularSheets (net7.0)'
-Before:
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
-After:
-using Beporsoft;
-using Beporsoft.TabularSheets;
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
-*/
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;

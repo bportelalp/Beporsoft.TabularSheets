@@ -38,7 +38,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets or sets the title of the current sheet
         /// </summary>
-        public string Title { get; set; } = "Sheet";
+        public string Title { get; set; } = typeof(T).Name;
 
         /// <summary>
         /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.

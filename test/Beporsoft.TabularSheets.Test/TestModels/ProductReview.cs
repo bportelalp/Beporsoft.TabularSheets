@@ -67,6 +67,7 @@ namespace Beporsoft.TabularSheets.Test.TestModels
             table.AddColumn(t => t.Count()).SetTitle("Total Reviews");
             table.AddColumn(t => t.OrderByDescending(r => r.ReviewLikes).FirstOrDefault()?.ReviewText ?? string.Empty).SetTitle("Most liked review");
             table.AddColumn(t => t.OrderByDescending(r => r.ReviewDislikes).FirstOrDefault()?.ReviewText ?? string.Empty).SetTitle("Worse review");
+            table.Title = nameof(ProductReview);
             return table;
         }
     }
