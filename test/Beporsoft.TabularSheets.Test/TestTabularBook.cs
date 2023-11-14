@@ -115,17 +115,5 @@ namespace Beporsoft.TabularSheets.Test
             TabularSheetAsserter.AssertTabularSheet(tableProducts, productFixture);
             TabularSheetAsserter.AssertTabularSheet(tableReviews, reviewFixture);
         }
-
-        [Test, Ignore("Not implemented yet")]
-        public void CreateMultiple_ShouldShareStrings()
-        {
-
-        }
-
-        [Test, Ignore("Not implemented yet")]
-        public void CreateMultiple_ShouldShareStyles_IfEqual()
-        {
-        }
-
     }
 }

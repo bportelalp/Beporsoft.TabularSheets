@@ -157,18 +157,24 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         {
             using var spreadsheet = SpreadsheetDocument.Open(stream, false);
             WorkbookPart workbookPart = spreadsheet.WorkbookPart!;
-            Worksheet worksheet = workbookPart.WorksheetParts.First().Worksheet;
+
+            Sheet sheet;
+            if (sheetName is null)
+                sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().First();
+            else
+                sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().First(s => s.Name == sheetName);
+
+            
+            WorksheetPart? worksheetPart = workbookPart.GetPartById(sheet.Id?.Value!) as WorksheetPart;
+
+            Worksheet worksheet = worksheetPart?.Worksheet!;
+
             Data = worksheet.Descendants<SheetData>()!.Single();
             Stylesheet = workbookPart.WorkbookStylesPart!.Stylesheet;
             SharedStrings = workbookPart.SharedStringTablePart!.SharedStringTable;
             Dimensions = worksheet.Descendants<SheetDimension>().Single();
             AutoFilter = worksheet.Descendants<AutoFilter>().SingleOrDefault();
 
-            Sheet sheet;
-            if(sheetName is null)
-                sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().First();
-            else
-                sheet = workbookPart.Workbook.Sheets!.Descendants<Sheet>().First(s => s.Name == sheetName);
 
             Title = sheet.Name!.Value!;
         }
