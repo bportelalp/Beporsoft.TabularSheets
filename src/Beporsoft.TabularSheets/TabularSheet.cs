@@ -12,7 +12,7 @@ using System.Linq;
 namespace Beporsoft.TabularSheets
 {
     /// <summary>
-    /// Represent a spreadsheet that can be handled by the OpenXml Specification
+    /// Represent a spreadsheet with a single sheet that can be handled by the OpenXml Specification
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class TabularSheet<T> : TabularData<T>, ITabularSheet
@@ -66,7 +66,7 @@ namespace Beporsoft.TabularSheets
 
         #region Create
         /// <summary>
-        /// Create a spreadsheet document
+        /// Creates a spreadsheet document
         /// </summary>
         /// <param name="path">Path to store the document</param>
         public void Create(string path)
@@ -76,8 +76,9 @@ namespace Beporsoft.TabularSheets
         }
 
         /// <summary>
-        /// Create a spreadsheet document
+        /// Creates a spreadsheet document
         /// </summary>
+        /// <returns></returns>
         public MemoryStream Create()
         {
             SpreadsheetBuilder builder = new();

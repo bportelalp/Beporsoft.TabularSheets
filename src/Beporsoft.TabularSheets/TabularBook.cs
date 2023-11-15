@@ -9,14 +9,32 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets
 {
-    internal sealed class TabularBook : IList<ITabularSheet>
+    /// <summary>
+    /// Represent a spreadsheet with multiple sheets that can be handled by the OpenXml Specification.
+    /// </summary>
+    public sealed class TabularBook : IList<ITabularSheet>
     {
         private List<ITabularSheet> _sheets = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabularBook"/> class empty.
+        /// </summary>
         public TabularBook()
         {
-            
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabularBook"/> class which contains the provided items.
+        /// </summary>
+        /// <param name="sheets"></param>
+        public TabularBook(IEnumerable<ITabularSheet> sheets)
+        {
+            _sheets = sheets.ToList();
+        }
+
+        /// <summary>
+        /// Gets the collection of sheets handled by this workbook.
+        /// </summary>
         public IList<ITabularSheet> Sheets { get => _sheets; set => _sheets = value.ToList(); }
 
         /// <summary>
@@ -28,6 +46,12 @@ namespace Beporsoft.TabularSheets
         public bool IsReadOnly => false;
 
         #region IList<ItabularSheet>
+
+        /// <summary>
+        /// Gets or sets the element at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns></returns>
         public ITabularSheet this[int index] { get => _sheets[index]; set => _sheets[index] = value; }
 
 
@@ -55,6 +79,7 @@ namespace Beporsoft.TabularSheets
         /// <inheritdoc cref="ICollection{T}.Remove(T)"/>
         public bool Remove(ITabularSheet item) => _sheets.Remove(item);
 
+        /// <inheritdoc cref="IList{T}.RemoveAt(int)"/>
         public void RemoveAt(int index) => _sheets.RemoveAt(index);
 
         /// <inheritdoc cref="IEnumerable.GetEnumerator"/>
@@ -66,12 +91,20 @@ namespace Beporsoft.TabularSheets
         #endregion
 
         #region Create
+        /// <summary>
+        /// Creates a spreadsheet document.
+        /// </summary>
+        /// <param name="path">Path of the document</param>
         public void Create(string path)
         {
             SpreadsheetBuilder builder = new();
             builder.Create(path, Sheets.ToArray());
         }
 
+        /// <summary>
+        /// Creates a spreadsheet document.
+        /// </summary>
+        /// <returns></returns>
         public MemoryStream Create()
         {
             SpreadsheetBuilder builder = new();
