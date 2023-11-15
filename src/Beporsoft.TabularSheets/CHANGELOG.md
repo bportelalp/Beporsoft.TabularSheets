@@ -4,6 +4,8 @@
 
 * NEW: New element `TabularBook` which allows to export multiple sheets inside a single spreadsheet.
 
+* NEW: New method for create on existent stream.
+
 ## 1.2.2 - 2023-10-31
 
 * FIX: `TabularSheet<T>.Options` is now `public`.

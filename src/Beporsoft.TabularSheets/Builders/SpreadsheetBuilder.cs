@@ -53,9 +53,16 @@ namespace Beporsoft.TabularSheets.Builders
             ms.Seek(0, SeekOrigin.Begin);
             ms.CopyTo(fs);
         }
+
         public MemoryStream Create(params ITabularSheet[] tables)
         {
             MemoryStream stream = new();
+            Create(stream, tables);
+            return stream;
+        }
+
+        public void Create(Stream stream, params ITabularSheet[] tables)
+        {
             using var spreadsheet = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
             WorkbookPart workbookPart = spreadsheet.AddWorkbookPart();
             workbookPart.Workbook = new Workbook();
@@ -66,8 +73,6 @@ namespace Beporsoft.TabularSheets.Builders
             AppendWorkbookStylePart(ref workbookPart);
             AppendSharedStringTablePart(ref workbookPart);
             workbookPart.Workbook.Save();
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
         }
         #endregion
 

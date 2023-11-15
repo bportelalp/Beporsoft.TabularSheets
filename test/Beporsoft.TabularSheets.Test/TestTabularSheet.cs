@@ -56,7 +56,7 @@ namespace Beporsoft.TabularSheets.Test
                 table.Create(path);
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
-            AssertWorksheet(table, sheet);
+            TabularSheetAsserter.AssertTabularSheet(table, sheet);
 
             // Generate as memory stream
             Assert.That(() =>
@@ -67,7 +67,7 @@ namespace Beporsoft.TabularSheets.Test
                 Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(ms);
             }, Throws.Nothing);
-            AssertWorksheet(table, sheet);
+            TabularSheetAsserter.AssertTabularSheet(table, sheet);
         }
 
         [Test, Category("Stylesheet"), Category("Worksheet")]
@@ -430,92 +430,6 @@ namespace Beporsoft.TabularSheets.Test
                 _filesHandler.ClearFiles();
             
         }
-
-        #region Assert Data
-        /// <summary>
-        /// Verify the data on every column is OK as expected
-        /// </summary>
-        /// <param name="table"></param>
-        /// <param name="column"></param>
-        /// <param name="sheet"></param>
-        private static void AssertWorksheet(TabularSheet<Product> table, SheetFixture sheet)
-        {
-            Assert.That(sheet.Title, Is.EqualTo(table.Title));
-            foreach (var col in table.Columns)
-            {
-                AssertColumnHeaderData(col, sheet);
-                AssertColumnBodyData(table, col, sheet);
-            }
-            AssertDimensions(table, sheet);
-        }
-
-        private static void AssertColumnHeaderData(TabularDataColumn<Product> column, SheetFixture sheet)
-        {
-            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.Index);
-            Assert.Multiple(() =>
-            {
-                Assert.That(headerCell.InnerText, Is.Not.Null);
-                Assert.That(headerCell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString));
-                var indexSharedString = Convert.ToInt32(headerCell.InnerText);
-                string? headerTitle = sheet.GetSharedString(indexSharedString);
-                Assert.That(headerTitle, Is.EqualTo(column.Title));
-            });
-        }
-
-        private static void AssertColumnBodyData(TabularSheet<Product> table, TabularDataColumn<Product> column, SheetFixture sheet)
-        {
-            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.Index);
-            foreach (var cell in bodyCells)
-            {
-                Assert.Multiple(() =>
-                {
-                    int row = CellRefBuilder.GetRowIndex(cell.CellReference!);
-                    Product item = table[row - 1];
-                    object value = column.Apply(item);
-                    if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString)
-                    {
-                        var indexSharedString = Convert.ToInt32(cell.InnerText);
-                        string? content = sheet.GetSharedString(indexSharedString);
-                        Assert.That(value.ToString(), Is.EqualTo(content));
-                    }
-                    else if (BuildHelpers.DateTimeTypes.Contains(value.GetType()))
-                    {
-                        var date = ((DateTime)value).ToOADate();
-                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
-                        Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
-                        Assert.That(date, Is.EqualTo(content));
-                    }
-                    else if (BuildHelpers.TimeSpanTypes.Contains(value.GetType()))
-                    {
-                        var totalDays = ((TimeSpan)value).TotalDays;
-                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
-                        Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
-                        Assert.That(totalDays, Is.EqualTo(content));
-                    }
-                    else if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.Number)
-                    {
-                        // Treat all as double
-                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
-                        double valueDouble = Convert.ToDouble(value);
-                        Assert.That(valueDouble, Is.EqualTo(content));
-                    }
-                });
-            }
-        }
-
-        private static void AssertDimensions(TabularSheet<Product> table, SheetFixture sheet)
-        {
-            int rowCount = table.Count;
-            int colCount = table.ColumnCount;
-
-            string from = CellRefBuilder.BuildRef(0, 0);
-            string to = CellRefBuilder.BuildRef(rowCount, colCount, false); //Non zero based index because is count
-            string dimensions = CellRefBuilder.BuildRefRange(from, to);
-
-            Assert.That(sheet.GetDimensionReference(), Is.EqualTo(dimensions));
-        }
-        #endregion
-
 
     }
 }

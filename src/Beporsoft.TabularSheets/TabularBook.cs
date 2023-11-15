@@ -105,6 +105,16 @@ namespace Beporsoft.TabularSheets
         /// Creates a spreadsheet document.
         /// </summary>
         /// <returns></returns>
+        public void Create(Stream stream)
+        {
+            SpreadsheetBuilder builder = new();
+            builder.Create(stream, Sheets.ToArray());
+        }
+
+        /// <summary>
+        /// Creates a spreadsheet document.
+        /// </summary>
+        /// <returns></returns>
         public MemoryStream Create()
         {
             SpreadsheetBuilder builder = new();
