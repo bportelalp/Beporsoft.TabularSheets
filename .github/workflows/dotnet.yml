@@ -15,7 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        host: ['windows-latest', 'ubuntu-latest']
+        host: ['windows-latest', 'ubuntu-latest', 'macos-latest']
         
     runs-on: ${{matrix.host}}
     name: Build on ${{matrix.host}}
