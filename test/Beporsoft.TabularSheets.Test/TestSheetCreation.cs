@@ -1,4 +1,5 @@
 ﻿using Beporsoft.TabularSheets.Test.Helpers;
+using Beporsoft.TabularSheets.Test.TestModels;
 using Beporsoft.TabularSheets.Tools;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Test
 {
-    
+
     public class TestSheetCreation
     {
         private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SheetCreation");
@@ -34,7 +35,7 @@ namespace Beporsoft.TabularSheets.Test
         [Test, Category("StreamCreation")]
         public void Create_CheckFileName()
         {
-            TabularSheet<Product> table = Product.GenerateTestSheet();
+            TabularSheet<Product> table = Product.GenerateProductSheet();
             string pathOk = _filesHandler.BuildPath($"{nameof(Create_CheckFileName)}.xlsx");
             string pathNotOk = _filesHandler.BuildPath($"{nameof(Create_CheckFileName)}.xls");
             string pathWrongExtension = _filesHandler.BuildPath($"{nameof(Create_CheckFileName)}.csv");

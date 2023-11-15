@@ -4,6 +4,7 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Options.ColumnWidth;
 using Beporsoft.TabularSheets.Test.Helpers;
+using Beporsoft.TabularSheets.Test.TestModels;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -15,7 +16,7 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new();
+        private readonly TestFilesHandler _filesHandler = new(nameof(TestTabularSheet));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]
@@ -29,7 +30,7 @@ namespace Beporsoft.TabularSheets.Test
         {
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Product.GenerateTestSheet(_amountRows);
+                TabularSheet<Product> table = Product.GenerateProductSheet(_amountRows);
                 table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
                 table.BodyStyle.Font.Color = Color.Red;
                 table.HeaderStyle.Font.Color = Color.White;
@@ -51,7 +52,7 @@ namespace Beporsoft.TabularSheets.Test
             // Generate as file
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateProductSheet();
                 table.Create(path);
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
@@ -60,7 +61,7 @@ namespace Beporsoft.TabularSheets.Test
             // Generate as memory stream
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateProductSheet();
                 _stopwatch.Start();
                 using MemoryStream ms = table.Create();
                 Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
@@ -83,7 +84,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows); 
+                table = Product.GenerateProductSheet(_amountRows); 
                 table.HeaderStyle.Fill.BackgroundColor = bgColor;
                 table.HeaderStyle.Font.Size = fontSize;
                 table.HeaderStyle.Font.Bold = bold;
@@ -153,7 +154,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 table.BodyStyle.Fill.BackgroundColor = bgColor;
                 table.BodyStyle.Font.FontName = font;
                 table.BodyStyle.Font.Size = fontSize;
@@ -215,7 +216,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 table.BodyStyle.Fill.BackgroundColor = bgColorBody;
                 table.BodyStyle.Font.FontName = fontBody;
                 table.BodyStyle.Font.Size = fontSizeBody;
@@ -287,7 +288,7 @@ namespace Beporsoft.TabularSheets.Test
             {
                 Style style = new();
                 style.Fill.BackgroundColor = Color.Red;
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 var colExtra1 = table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
                 var colExtra2 = table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
                 {
@@ -364,7 +365,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 var col0 = table.Columns.Single(c => c.Index == 0);
                 col0.SetStyle(s =>
                 {
@@ -407,7 +408,7 @@ namespace Beporsoft.TabularSheets.Test
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 table.BodyStyle.Font.FontName = fontName;
                 table.BodyStyle.Font.Size = fontSize;
                 table.Options.InheritHeaderStyleFromBody = true;

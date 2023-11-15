@@ -2,25 +2,25 @@
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
+using System.Collections.Generic;
 
-namespace Beporsoft.TabularSheets.Builders.Interfaces
+namespace Beporsoft.TabularSheets
 {
     /// <summary>
-    /// Provides an abstraction for making the adequate OpenXml<see cref="SheetData"/> which represent the current instance. <br/>
-    /// The <see cref="SheetData"/> node represent all the data contained in one sheet of the spreadsheets. This abstraction will allow in 
-    /// future implementations that one spreadsheet will contain more than one <see cref="ISheet"/>, even with different type.
+    /// Represent a simple, non generic <see cref="TabularSheet{T}"/>.
     /// </summary>
-    internal interface ISheet
+    public interface ITabularSheet
     {
         /// <summary>
-        /// Title of the sheet
+        /// Gets the title of the <see cref="ITabularSheet"/>
         /// </summary>
-        internal string Title { get; }
+        public string Title { get; }
 
         /// <summary>
-        /// The system type which contains this <see cref="ISheet"/>
+        /// Gets the type of data which will populate the <see cref="ITabularSheet"/> rows.
         /// </summary>
-        internal Type ItemType { get; }
+        public Type ItemType { get; }
+
 
         /// <summary>
         /// Build the object <see cref="Worksheet"/> used on the spreadsheet document

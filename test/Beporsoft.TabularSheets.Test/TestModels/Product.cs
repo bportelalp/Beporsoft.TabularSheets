@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets.Test
+namespace Beporsoft.TabularSheets.Test.TestModels
 {
     /// <summary>
-    /// Example of class to fill tests
+    /// A class which represent a product on a marketstore as test data
     /// </summary>
-    internal class Product
+    public class Product
     {
         public Product()
         {
@@ -52,18 +52,18 @@ namespace Beporsoft.TabularSheets.Test
             return products;
         }
 
-        internal static TabularSheet<Product> GenerateTestSheet(int amount = 1000)
+        internal static TabularSheet<Product> GenerateProductSheet(int amount = 1000)
         {
             TabularSheet<Product> table = new();
-            table.AddRange(Product.GenerateProducts(amount));
+            table.AddRange(GenerateProducts(amount));
 
-            table.AddColumn(t => t.Id).SetTitle(nameof(Product.Id));
-            table.AddColumn(t => t.Name).SetTitle(nameof(Product.Name));
-            table.AddColumn(t => t.Vendor).SetTitle(nameof(Product.Vendor));
-            table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(Product.CountryOrigin));
-            table.AddColumn(t => t.Cost).SetTitle(nameof(Product.Cost));
-            table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(Product.LastPriceUpdate));
-            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(Product.DeliveryTime));
+            table.AddColumn(t => t.Id).SetTitle(nameof(Id));
+            table.AddColumn(t => t.Name).SetTitle(nameof(Name));
+            table.AddColumn(t => t.Vendor).SetTitle(nameof(Vendor));
+            table.AddColumn(t => t.CountryOrigin).SetTitle(nameof(CountryOrigin));
+            table.AddColumn(t => t.Cost).SetTitle(nameof(Cost));
+            table.AddColumn(t => t.LastPriceUpdate).SetTitle(nameof(LastPriceUpdate));
+            table.AddColumn(t => t.DeliveryTime).SetTitle(nameof(DeliveryTime));
             return table;
         }
     }
