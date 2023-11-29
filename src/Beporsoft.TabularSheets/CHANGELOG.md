@@ -2,9 +2,12 @@
 
 ## 1.3.0 -
 
+* Target `net8.0`.
+
 * NEW: New element `TabularBook` which allows to export multiple sheets inside a single spreadsheet.
 
 * NEW: New method for create on existent stream.
+
 
 ## 1.2.2 - 2023-10-31
 
