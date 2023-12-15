@@ -35,6 +35,12 @@ namespace Beporsoft.TabularSheets.Builders
         public MemoryStream Create()
         {
             MemoryStream stream = new MemoryStream();
+            Create(stream);
+            return stream;
+        }
+
+        public void Create(Stream stream)
+        {
             StreamWriter writer = new StreamWriter(stream, Options.Encoding);
             foreach (var line in CreateLines())
             {
@@ -42,7 +48,6 @@ namespace Beporsoft.TabularSheets.Builders
             }
             writer.Flush();
             stream.Seek(0, SeekOrigin.Begin);
-            return stream;
         }
 
         #region Create Lines
