@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,5 +26,15 @@ namespace Beporsoft.TabularSheets.Options.ColumnWidth
         /// Width as the number of numeric digits which fit on cell, for Calibri 11.
         /// </summary>
         public double Width { get; set; }
+
+        ContentMeasure IColumnWidth.InitializeContentMeasure()
+        {
+            ContentMeasure measure = new()
+            {
+                MaxContentWidth = Width,
+                AutoWidth = false
+            };
+            return measure;
+        }
     }
 }

@@ -38,6 +38,27 @@ namespace Beporsoft.TabularSheets
         }
 
         /// <summary>
+        /// Creates a CSV file writting it on the given stream.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tabularData"></param>
+        /// <param name="stream"></param>
+        public static void ToCsv<T>(this TabularData<T> tabularData, Stream stream) => tabularData.ToCsv(stream, new CsvOptions());
+
+        /// <summary>
+        /// <inheritdoc cref="ToCsv{T}(TabularData{T}, Stream)"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tabularData"></param>
+        /// <param name="stream"></param>
+        /// <param name="options">Configurations for the generation</param>
+        public static void ToCsv<T>(this TabularData<T> tabularData, Stream stream, CsvOptions options)
+        {
+            CsvBuilder<T> builder = new CsvBuilder<T>(tabularData, options);
+            builder.Create(stream);
+        }
+
+        /// <summary>
         /// Creates a CSV file on the given path.
         /// </summary>
         /// <typeparam name="T"></typeparam>

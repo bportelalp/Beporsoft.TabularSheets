@@ -1,16 +1,17 @@
 ﻿using System.Text.RegularExpressions;
+using Beporsoft.TabularSheets.Test.TestModels;
 
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("SheetStructure")]
-    internal class TestTabularData
+    public class TestTabularData
     {
 
         /// <summary>
         /// Create a table and verify correct ordering.
         /// </summary>
         [Test, Category("Columns")]
-        public void CreateTableAndColumnsCoherent()
+        public void CreateTable_ColumnsAndTitles_AsExpected()
         {
             TabularData<Product> table = Generate();
             // Check the ordering sequence
@@ -36,7 +37,7 @@ namespace Beporsoft.TabularSheets.Test
         /// Reorder a column and verify the names and the reordering of the rest of columns
         /// </summary>
         [Test, Category("Columns")]
-        public void ReorderColumns()
+        public void TabularData_ReorderColumns_AllReorganized()
         {
             TabularData<Product> table = Generate();
             var originCol2 = table.Columns.Skip(2).First();
@@ -75,7 +76,7 @@ namespace Beporsoft.TabularSheets.Test
         /// Ensure that when title of column is empty, the title is the default and when not, is the established
         /// </summary>
         [Test, Category("Columns")]
-        public void RenamingColumns()
+        public void RenameColumns_Restore_PreserveDefault()
         {
             const string customTitle = "CustomTitle";
             Regex regexDefaultColumnName = new(@"ProductCol\d{0,}");
@@ -116,7 +117,7 @@ namespace Beporsoft.TabularSheets.Test
         /// </summary>
         [Test, Category("Columns")]
         [TestCase(0), TestCase(2), TestCase(5), TestCase(6)]
-        public void RemoveColumn(int positionRemove)
+        public void RemoveColumns_RestoreIndexTheFollowing(int positionRemove)
         {
             int x = positionRemove;
             int x1 = x + 1;
@@ -138,7 +139,7 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Rows")]
-        public void AddItemsKeepInvariantOriginalLists()
+        public void Table_AddItems_KeepInvariantOriginalLists()
         {
             IEnumerable<Product> initial = Product.GenerateProducts(10);
             int countInitial = initial.Count();

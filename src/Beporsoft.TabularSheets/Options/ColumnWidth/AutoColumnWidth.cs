@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,5 +35,15 @@ namespace Beporsoft.TabularSheets.Options.ColumnWidth
         /// Scale factor applied to the result of the calculation
         /// </summary>
         public double ScaleFactor { get; set; } = 1.0;
+
+        ContentMeasure IColumnWidth.InitializeContentMeasure()
+        {
+            ContentMeasure measure = new()
+            {
+                AutoWidth = true,
+                FontFactor = ScaleFactor
+            };
+            return measure;
+        }
     }
 }

@@ -11,6 +11,6 @@ namespace Beporsoft.TabularSheets.Options.ColumnWidth
     /// </summary>
     public interface IColumnWidth
     {
-
+        internal Builders.SheetBuilders.ContentMeasure InitializeContentMeasure();
     }
 }

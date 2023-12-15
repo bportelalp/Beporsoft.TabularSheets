@@ -1,5 +1,4 @@
 ﻿using Beporsoft.TabularSheets.Builders;
-using Beporsoft.TabularSheets.Builders.Interfaces;
 using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.CellStyling;
@@ -13,10 +12,10 @@ using System.Linq;
 namespace Beporsoft.TabularSheets
 {
     /// <summary>
-    /// Represent a spreadsheet that can be handled by the OpenXml Specification
+    /// Represent a spreadsheet with a single sheet that can be handled by the OpenXml Specification
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class TabularSheet<T> : TabularData<T>, ISheet
+    public sealed class TabularSheet<T> : TabularData<T>, ITabularSheet
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TabularSheet{T}"/> class that is empty
@@ -39,7 +38,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets or sets the title of the current sheet
         /// </summary>
-        public string Title { get; set; } = "Sheet";
+        public string Title { get; set; } = typeof(T).Name;
 
         /// <summary>
         /// Gets the style of heading cells of <see cref="TabularSheet{T}"/>.
@@ -67,7 +66,7 @@ namespace Beporsoft.TabularSheets
 
         #region Create
         /// <summary>
-        /// Create a spreadsheet document
+        /// Creates a spreadsheet document
         /// </summary>
         /// <param name="path">Path to store the document</param>
         public void Create(string path)
@@ -77,8 +76,19 @@ namespace Beporsoft.TabularSheets
         }
 
         /// <summary>
-        /// Create a spreadsheet document
+        /// Creates a spreadsheet document on the given stream.
         /// </summary>
+        /// <param name="stream"></param>
+        public void Create(Stream stream)
+        {
+            SpreadsheetBuilder builder = new();
+            builder.Create(stream, this);
+        }
+
+        /// <summary>
+        /// Creates a spreadsheet document
+        /// </summary>
+        /// <returns></returns>
         public MemoryStream Create()
         {
             SpreadsheetBuilder builder = new();
@@ -88,12 +98,12 @@ namespace Beporsoft.TabularSheets
         #endregion
 
         #region ISheet
-        Type ISheet.ItemType => typeof(T);
+        Type ITabularSheet.RowType => typeof(T);
 
-        WorksheetBundle ISheet.BuildSheetContext(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
+        Worksheet ITabularSheet.BuildWorksheet(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
             SheetBuilder<T> builder = new(this, stylesheetBuilder, sharedStringBuilder);
-            WorksheetBundle bundle = builder.BuildSheetContext();
+            Worksheet bundle = builder.BuildWorksheet();
 
             return bundle;
         }

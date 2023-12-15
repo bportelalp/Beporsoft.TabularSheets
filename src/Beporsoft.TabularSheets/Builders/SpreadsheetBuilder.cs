@@ -1,5 +1,4 @@
-﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Builders.SheetBuilders;
+﻿using Beporsoft.TabularSheets.Builders.SheetBuilders;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
 using Beporsoft.TabularSheets.Exceptions;
 using Beporsoft.TabularSheets.Tools;
@@ -46,7 +45,7 @@ namespace Beporsoft.TabularSheets.Builders
         public SharedStringBuilder SharedStringBuilder { get; }
 
         #region Create Spreadsheet
-        public void Create(string path, params ISheet[] tables)
+        public void Create(string path, params ITabularSheet[] tables)
         {
             string pathCorrected = FileHelpers.VerifyPath(path, SpreadsheetFileExtension.AllowedExtensions);
             using var fs = new FileStream(pathCorrected, FileMode.Create);
@@ -54,9 +53,16 @@ namespace Beporsoft.TabularSheets.Builders
             ms.Seek(0, SeekOrigin.Begin);
             ms.CopyTo(fs);
         }
-        public MemoryStream Create(params ISheet[] tables)
+
+        public MemoryStream Create(params ITabularSheet[] tables)
         {
             MemoryStream stream = new();
+            Create(stream, tables);
+            return stream;
+        }
+
+        public void Create(Stream stream, params ITabularSheet[] tables)
+        {
             using var spreadsheet = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
             WorkbookPart workbookPart = spreadsheet.AddWorkbookPart();
             workbookPart.Workbook = new Workbook();
@@ -67,9 +73,6 @@ namespace Beporsoft.TabularSheets.Builders
             AppendWorkbookStylePart(ref workbookPart);
             AppendSharedStringTablePart(ref workbookPart);
             workbookPart.Workbook.Save();
-            //ValidateSpreadSheet(spreadsheet);
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
         }
         #endregion
 
@@ -77,20 +80,19 @@ namespace Beporsoft.TabularSheets.Builders
 
         /// <summary>
         /// Append a <see cref="WorksheetPart"/> to <paramref name="workbookPart"/> based on the
-        /// content of the provided <see cref="ISheet"/>.<br/><br/>
+        /// content of the provided <see cref="ITabularSheet"/>.<br/><br/>
         /// The <see cref="SharedStringItem"/>s located and the <see cref="CellFormat"/> of each cell when it is required will be 
         /// registered on <see cref="SharedStringBuilder"/> and <see cref="StyleBuilder"/> to include them subsequently inside a 
         /// common <see cref="SharedStringTable"/> and <see cref="Stylesheet"/>, respectively.<br/><br/>
-        /// This architecture allows to include more than one <see cref="ISheet"/> on the same <see cref="SpreadsheetDocument"/> 
+        /// This architecture allows to include more than one <see cref="ITabularSheet"/> on the same <see cref="SpreadsheetDocument"/> 
         /// using shared resources.
         /// </summary>
         /// <param name="workbookPart">A reference to the <see cref="WorkbookPart"/> where to append the <see cref="WorkbookStylesPart"/></param>
         /// <param name="table">The <see cref="TabularSheet{T}"/> which will populate the <see cref="SheetData"/></param>
-        public void AppendWorksheetPart(ref WorkbookPart workbookPart, ISheet table)
+        public void AppendWorksheetPart(ref WorkbookPart workbookPart, ITabularSheet table)
         {
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            worksheetPart.Worksheet = new Worksheet();
-            //Add Sheets to the Workbook if there aren't
+
             Sheets sheets;
             if (workbookPart.Workbook.Sheets is null)
                 sheets = workbookPart!.Workbook.AppendChild(new Sheets());
@@ -98,8 +100,8 @@ namespace Beporsoft.TabularSheets.Builders
                 sheets = workbookPart.Workbook.Sheets;
 
             UInt32Value sheetIdValue = FindSuitableSheetId(sheets);
-            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.ItemType.Name : table.Title;
-            nameSheet = SpreadsheetBuilder.BuildSuitableSheetName(sheets, nameSheet);
+            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.RowType.Name : table.Title;
+            nameSheet = BuildSuitableSheetName(sheets, nameSheet);
 
             var sheet = new Sheet()
             {
@@ -109,13 +111,9 @@ namespace Beporsoft.TabularSheets.Builders
             };
             sheets.Append(sheet);
 
-            WorksheetBundle bundle = table.BuildSheetContext(StyleBuilder, SharedStringBuilder);
-            if (bundle.FormatProperties is not null)
-                worksheetPart.Worksheet.AppendChild(bundle.FormatProperties);
-            if (bundle.Columns is not null)
-                worksheetPart.Worksheet.AppendChild(bundle.Columns);
+            Worksheet ws = table.BuildWorksheet(StyleBuilder, SharedStringBuilder);
+            worksheetPart.Worksheet = ws;
 
-            worksheetPart.Worksheet.AppendChild(bundle.Data);
         }
 
 
@@ -201,16 +199,6 @@ namespace Beporsoft.TabularSheets.Builders
                     nameSheet += "1";
             }
             return nameSheet;
-        }
-        #endregion
-
-        #region OpenXml Validation
-        private static void ValidateSpreadSheet(SpreadsheetDocument spreadsheet)
-        {
-            OpenXmlValidator validator = new OpenXmlValidator();
-            IEnumerable<ValidationErrorInfo> errors = validator.Validate(spreadsheet);
-            if (errors.Any())
-                throw new OpenXmlException(errors);
         }
         #endregion
     }

@@ -1,12 +1,9 @@
 ﻿using Beporsoft.TabularSheets.Builders.SheetBuilders.Adapters;
 using Beporsoft.TabularSheets.Builders.StyleBuilders;
-using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using Beporsoft.TabularSheets.CellStyling;
-using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
-using System.Collections.Generic;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
@@ -46,7 +43,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         public SharedStringBuilder SharedStrings { get; }
 
         /// <summary>
-        /// The cell builder, which helps on building <see cref="Cell"/> instances
+        /// The cell builder, which helps on building <see cref="Cell"/> instances.
         /// </summary>
         public CellBuilder CellBuilder { get; }
 
@@ -55,22 +52,28 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         #region Public
 
         /// <summary>
-        /// Build all the Open Xml elements which represent the sheet
+        /// Build <see cref="Worksheet"/> which contains the sheet information.
         /// </summary>
         /// <returns></returns>
-        public WorksheetBundle BuildSheetContext()
+        public Worksheet BuildWorksheet()
         {
             _colMeasurer.Initialize(Table);
             SheetData data = BuildSheetData();
             Columns? cols = BuildColumns();
             SheetFormatProperties formatProps = BuildFormatProperties();
+            SheetDimension dimension = BuildSheetDimension();
+            AutoFilter? autoFilter = BuildAutoFilter();
+            var worksheet = new Worksheet();
 
-            return new WorksheetBundle()
-            {
-                Data = data,
-                Columns = cols,
-                FormatProperties = formatProps,
-            };
+            worksheet.AppendChild(dimension);
+            worksheet.AppendChild(formatProps);
+            if (cols is not null)
+                worksheet.AppendChild(cols);
+
+            worksheet.AppendChild(data);
+            if (autoFilter is not null)
+                worksheet.AppendChild(autoFilter);
+            return worksheet;
         }
         #endregion
 
@@ -247,6 +250,34 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
         private SheetFormatProperties BuildFormatProperties()
         {
             return ExcelPredefinedFormatProperties.Create();
+        }
+        #endregion
+
+        #region AutoFilter
+        private AutoFilter? BuildAutoFilter()
+        {
+            AutoFilter? autoFilter = null;
+            if (Table.Options.UseAutofilter)
+            {
+                autoFilter = new();
+                string from = CellRefBuilder.BuildRef(0, 0);
+                string to = CellRefBuilder.BuildRef(Table.Count, Table.ColumnCount, false); //non zero-based-index because is count of rows/cols, not index
+                autoFilter.Reference = CellRefBuilder.BuildRefRange(from, to);
+            }
+            return autoFilter;
+        }
+        #endregion
+
+
+        #region Metadata
+        private SheetDimension BuildSheetDimension()
+        {
+            // Gets the end value of the iterator after executing the process
+            var sheetDimension = new SheetDimension();
+            string from = CellRefBuilder.BuildRef(0, 0);
+            string to = CellRefBuilder.BuildRef(Table.Count, Table.ColumnCount, false); //non zero-based-index because is count of rows/cols, not index
+            sheetDimension.Reference = CellRefBuilder.BuildRefRange(from, to);
+            return sheetDimension;
         }
         #endregion
     }

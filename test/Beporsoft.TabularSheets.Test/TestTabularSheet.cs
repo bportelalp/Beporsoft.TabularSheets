@@ -4,6 +4,7 @@ using Beporsoft.TabularSheets.CellStyling;
 using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Options.ColumnWidth;
 using Beporsoft.TabularSheets.Test.Helpers;
+using Beporsoft.TabularSheets.Test.TestModels;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -15,7 +16,7 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new();
+        private readonly TestFilesHandler _filesHandler = new(nameof(TestTabularSheet));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]
@@ -24,12 +25,12 @@ namespace Beporsoft.TabularSheets.Test
             _stopwatch.Reset();
         }
 
-        [Test]
+        [Test, Category("DEBUG")]
         public void DebugFile()
         {
             Assert.That(() =>
             {
-                TabularSheet<Product> table = Product.GenerateTestSheet(_amountRows);
+                TabularSheet<Product> table = Product.GenerateProductSheet(_amountRows);
                 table.HeaderStyle.Fill.BackgroundColor = Color.Purple;
                 table.BodyStyle.Font.Color = Color.Red;
                 table.HeaderStyle.Font.Color = Color.White;
@@ -43,34 +44,34 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Cells"), Category("Worksheet")]
-        public void TryDataIntegrity()
+        public void Create_Data_AsExpected()
         {
-            string path = _filesHandler.BuildPath($"Test{nameof(TryDataIntegrity)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_Data_AsExpected)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             // Generate as file
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateProductSheet();
                 table.Create(path);
                 sheet = new SheetFixture(path);
             }, Throws.Nothing);
-            AssertTabularSheetData(table, sheet);
+            TabularSheetAsserter.AssertTabularSheet(table, sheet);
 
             // Generate as memory stream
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet();
+                table = Product.GenerateProductSheet();
                 _stopwatch.Start();
                 using MemoryStream ms = table.Create();
                 Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
                 sheet = new SheetFixture(ms);
             }, Throws.Nothing);
-            AssertTabularSheetData(table, sheet);
+            TabularSheetAsserter.AssertTabularSheet(table, sheet);
         }
 
         [Test, Category("Stylesheet"), Category("Worksheet")]
-        public void TryHeaderStyles()
+        public void Create_HeaderStyles_AsExpected()
         {
             Color bgColor = Color.Azure;
             double fontSize = 11.25;
@@ -78,12 +79,12 @@ namespace Beporsoft.TabularSheets.Test
             bool bold = true;
             bool italic = true;
 
-            string path = _filesHandler.BuildPath($"Test{nameof(TryHeaderStyles)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_HeaderStyles_AsExpected)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows); 
+                table = Product.GenerateProductSheet(_amountRows); 
                 table.HeaderStyle.Fill.BackgroundColor = bgColor;
                 table.HeaderStyle.Font.Size = fontSize;
                 table.HeaderStyle.Font.Bold = bold;
@@ -141,19 +142,19 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Stylesheet"), Category("Worksheet")]
-        public void TryBodyStyle()
+        public void Create_BodyStyles_AsExpected()
         {
             Color bgColor = Color.Azure;
             string font = "Arial";
             double fontSize = 8;
             BorderStyle.BorderType borderType = BorderStyle.BorderType.Thin;
 
-            string path = _filesHandler.BuildPath($"Test{nameof(TryBodyStyle)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_BodyStyles_AsExpected)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 table.BodyStyle.Fill.BackgroundColor = bgColor;
                 table.BodyStyle.Font.FontName = font;
                 table.BodyStyle.Font.Size = fontSize;
@@ -198,7 +199,7 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Stylesheet"), Category("StyleCombination"), Category("Worksheet")]
-        public void TryOverrideStyle()
+        public void Create_OverrideStyles_DoneAsPreferences()
         {
             Color bgColorHead = Color.DarkBlue;
             Color bgColorBody = Color.Azure;
@@ -210,12 +211,12 @@ namespace Beporsoft.TabularSheets.Test
             Color borderColorHead = Color.Coral;
             bool inheritHeaderFromBody = true;
 
-            string path = _filesHandler.BuildPath($"Test{nameof(TryOverrideStyle)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_OverrideStyles_DoneAsPreferences)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 table.BodyStyle.Fill.BackgroundColor = bgColorBody;
                 table.BodyStyle.Font.FontName = fontBody;
                 table.BodyStyle.Font.Size = fontSizeBody;
@@ -274,9 +275,9 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Stylesheet"), Category("StyleCombination"), Category("Worksheet")]
-        public void TryColumnStyle()
+        public void Create_ColumnStyles_AsExpected()
         {
-            string path = _filesHandler.BuildPath($"Test{nameof(TryColumnStyle)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_ColumnStyles_AsExpected)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             int indexColExtra1 = 0;
@@ -287,7 +288,7 @@ namespace Beporsoft.TabularSheets.Test
             {
                 Style style = new();
                 style.Fill.BackgroundColor = Color.Red;
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 var colExtra1 = table.AddColumn(t => t.Name).SetTitle("Name with new style").SetStyle(style);
                 var colExtra2 = table.AddColumn(t => t.Cost).SetTitle("Cost 2 decimals").SetStyle(s =>
                 {
@@ -307,7 +308,7 @@ namespace Beporsoft.TabularSheets.Test
                 indexColExtra3 = colExtra3.Index;
                 indexColExtra4 = colExtra4.Index;
 
-                string path = _filesHandler.BuildPath($"Test{nameof(TryColumnStyle)}.xlsx");
+                string path = _filesHandler.BuildPath($"Test{nameof(Create_ColumnStyles_AsExpected)}.xlsx");
                 _stopwatch.Start();
                 table.Create(path);
                 Console.WriteLine($"Created on: {_stopwatch.Elapsed.TotalMilliseconds:F3}ms");
@@ -353,18 +354,18 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Stylesheet"), Category("Worksheet")]
-        public void TryAlignmentStyle()
+        public void Create_AligmentStyles_AsExpected()
         {
             AlignmentStyle.HorizontalAlignment horizontalCol0 = AlignmentStyle.HorizontalAlignment.Center;
             AlignmentStyle.VerticalAlignment verticalCol0 = AlignmentStyle.VerticalAlignment.Center;
             bool textWrapCol0 = true;
 
-            string path = _filesHandler.BuildPath($"Test{nameof(TryAlignmentStyle)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_AligmentStyles_AsExpected)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 var col0 = table.Columns.Single(c => c.Index == 0);
                 col0.SetStyle(s =>
                 {
@@ -395,19 +396,19 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("Stylesheet"), Category("Worksheet"), Category("Columns")]
-        public void TryColumnWidth()
+        public void Create_ColumnWidth_AsExpected()
         {
             IColumnWidth? tableWidth = new AutoColumnWidth(1.1);
             string fontName = "Arial";
             double fontSize = 15;
 
 
-            string path = _filesHandler.BuildPath($"Test{nameof(TryColumnWidth)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_ColumnWidth_AsExpected)}.xlsx");
             TabularSheet<Product> table = null!;
             SheetFixture sheet = null!;
             Assert.That(() =>
             {
-                table = Product.GenerateTestSheet(_amountRows);
+                table = Product.GenerateProductSheet(_amountRows);
                 table.BodyStyle.Font.FontName = fontName;
                 table.BodyStyle.Font.Size = fontSize;
                 table.Options.InheritHeaderStyleFromBody = true;
@@ -429,79 +430,6 @@ namespace Beporsoft.TabularSheets.Test
                 _filesHandler.ClearFiles();
             
         }
-
-        #region Assert Data
-        /// <summary>
-        /// Verify the data on every column is OK as expected
-        /// </summary>
-        /// <param name="table"></param>
-        /// <param name="column"></param>
-        /// <param name="sheet"></param>
-        private static void AssertTabularSheetData(TabularSheet<Product> table, SheetFixture sheet)
-        {
-            Assert.That(sheet.Title, Is.EqualTo(table.Title));
-            foreach (var col in table.Columns)
-            {
-                AssertColumnHeaderData(col, sheet);
-                AssertColumnBodyData(table, col, sheet);
-            }
-        }
-
-        private static void AssertColumnHeaderData(TabularDataColumn<Product> column, SheetFixture sheet)
-        {
-            DocumentFormat.OpenXml.Spreadsheet.Cell headerCell = sheet.GetHeaderCellByColumn(column.Index);
-            Assert.Multiple(() =>
-            {
-                Assert.That(headerCell.InnerText, Is.Not.Null);
-                Assert.That(headerCell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString));
-                var indexSharedString = Convert.ToInt32(headerCell.InnerText);
-                string? headerTitle = sheet.GetSharedString(indexSharedString);
-                Assert.That(headerTitle, Is.EqualTo(column.Title));
-            });
-        }
-
-        private static void AssertColumnBodyData(TabularSheet<Product> table, TabularDataColumn<Product> column, SheetFixture sheet)
-        {
-            List<DocumentFormat.OpenXml.Spreadsheet.Cell> bodyCells = sheet.GetBodyCellsByColumn(column.Index);
-            foreach (var cell in bodyCells)
-            {
-                Assert.Multiple(() =>
-                {
-                    int row = CellRefBuilder.GetRowIndex(cell.CellReference!);
-                    Product item = table[row - 1];
-                    object value = column.Apply(item);
-                    if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.SharedString)
-                    {
-                        var indexSharedString = Convert.ToInt32(cell.InnerText);
-                        string? content = sheet.GetSharedString(indexSharedString);
-                        Assert.That(value.ToString(), Is.EqualTo(content));
-                    }
-                    else if (BuildHelpers.DateTimeTypes.Contains(value.GetType()))
-                    {
-                        var date = ((DateTime)value).ToOADate();
-                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
-                        Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
-                        Assert.That(date, Is.EqualTo(content));
-                    }
-                    else if (BuildHelpers.TimeSpanTypes.Contains(value.GetType()))
-                    {
-                        var totalDays = ((TimeSpan)value).TotalDays;
-                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
-                        Assert.That(cell.DataType!.Value, Is.EqualTo(DocumentFormat.OpenXml.Spreadsheet.CellValues.Number));
-                        Assert.That(totalDays, Is.EqualTo(content));
-                    }
-                    else if (cell.DataType!.Value == DocumentFormat.OpenXml.Spreadsheet.CellValues.Number)
-                    {
-                        // Treat all as double
-                        double content = Convert.ToDouble(cell.CellValue!.Text, CultureInfo.InvariantCulture);
-                        double valueDouble = Convert.ToDouble(value);
-                        Assert.That(valueDouble, Is.EqualTo(content));
-                    }
-                });
-            }
-        }
-        #endregion
-
 
     }
 }
