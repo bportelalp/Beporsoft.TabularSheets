@@ -45,7 +45,7 @@ namespace Beporsoft.TabularSheets.Options
         /// <summary>
         /// Gets or sets if spreadsheet should include a autofilter
         /// </summary>
-        public bool UseAutofilter { get; set; } = false;
+        internal bool UseAutofilter { get; set; } = false;
 
         /// <summary>
         /// The default column options for those which haven't configured their own options

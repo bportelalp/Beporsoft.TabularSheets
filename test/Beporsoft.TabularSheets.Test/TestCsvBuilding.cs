@@ -19,7 +19,7 @@ namespace Beporsoft.TabularSheets.Test
 
         [Test]
         [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]
-        public void ToCsv_GenerationOk(CultureInfo culture, string separator, Encoding encoding)
+        public void ToCsv_GenerationOk_AsFile(CultureInfo culture, string separator, Encoding encoding)
         {
             CultureInfo.CurrentCulture = culture;
             var options = new CsvOptions()
@@ -27,25 +27,72 @@ namespace Beporsoft.TabularSheets.Test
                 Separator = separator,
                 Encoding = encoding
             };
-            string file = _filesHandler.BuildPath($"{nameof(ToCsv_GenerationOk)}.csv");
+            string file = _filesHandler.BuildPath($"{nameof(ToCsv_GenerationOk_AsFile)}.csv");
             var table = Product.GenerateProductSheet();
-            Assert.Multiple(() =>
+
+            table.ToCsv(file, options);
+            var csvFixture = new CsvFixture(file, options);
+            AssertCsv(table, csvFixture);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]
+        public void ToCsv_GenerationOk_AsMemoryStream(CultureInfo culture, string separator, Encoding encoding)
+        {
+            CultureInfo.CurrentCulture = culture;
+            var options = new CsvOptions()
             {
-                // Test file
-                Assert.That(() =>
-                {
-                    table.ToCsv(file, options);
-                    var csvFixture = new CsvFixture(file, options);
-                    AssertCsv(table, csvFixture);
-                }, Throws.Nothing);
-                // Test stream
-                Assert.That(() =>
-                {
-                    using MemoryStream ms = table.ToCsv(options);
-                    var csvFixture = new CsvFixture(ms, options);
-                    AssertCsv(table, csvFixture);
-                }, Throws.Nothing);
-            });
+                Separator = separator,
+                Encoding = encoding
+            };
+            var table = Product.GenerateProductSheet();
+
+            using (MemoryStream ms = table.ToCsv(options))
+            {
+                var csvFixture = new CsvFixture(ms, options);
+                AssertCsv(table, csvFixture);
+            }
+        }
+
+        [Test]
+        [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]
+        public void ToCsv_GenerationOk_OnStreamWhichIsMemoryStream(CultureInfo culture, string separator, Encoding encoding)
+        {
+            CultureInfo.CurrentCulture = culture;
+            var options = new CsvOptions()
+            {
+                Separator = separator,
+                Encoding = encoding
+            };
+
+            var table = Product.GenerateProductSheet();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                table.ToCsv(ms, options);
+                var csvFixture = new CsvFixture(ms, options);
+                AssertCsv(table, csvFixture);
+            }
+        }
+
+        [Test]
+        [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]
+        public void ToCsv_GenerationOk_OnStreamWhichIsFileStream(CultureInfo culture, string separator, Encoding encoding)
+        {
+            CultureInfo.CurrentCulture = culture;
+            var options = new CsvOptions()
+            {
+                Separator = separator,
+                Encoding = encoding
+            };
+
+            var table = Product.GenerateProductSheet();
+            string path = _filesHandler.BuildPath($"Test{nameof(ToCsv_GenerationOk_OnStreamWhichIsFileStream)}.xlsx");
+            using (FileStream ms = new FileStream(path, FileMode.Create, FileAccess.Write))
+            {
+                table.ToCsv(ms, options);
+            }
+            var csvFixture = new CsvFixture(path, options);
+            AssertCsv(table, csvFixture);
         }
 
         #region Private assert

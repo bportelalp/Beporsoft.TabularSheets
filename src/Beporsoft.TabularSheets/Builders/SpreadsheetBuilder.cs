@@ -100,7 +100,7 @@ namespace Beporsoft.TabularSheets.Builders
                 sheets = workbookPart.Workbook.Sheets;
 
             UInt32Value sheetIdValue = FindSuitableSheetId(sheets);
-            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.ItemType.Name : table.Title;
+            string nameSheet = string.IsNullOrWhiteSpace(table.Title) ? table.RowType.Name : table.Title;
             nameSheet = BuildSuitableSheetName(sheets, nameSheet);
 
             var sheet = new Sheet()

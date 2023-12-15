@@ -1,12 +1,12 @@
 # Beporsoft.TabularSheets Changelog
 
-## 1.3.0 -
+## 1.3.0 - 2023-12-15
 
 * Target `net8.0`.
 
 * NEW: New element `TabularBook` which allows to export multiple sheets inside a single spreadsheet.
 
-* NEW: New method for create on existent stream.
+* NEW: New method for create on existent stream with `TabularSheet`, and for the extension method `ToCsv`.
 
 
 ## 1.2.2 - 2023-10-31

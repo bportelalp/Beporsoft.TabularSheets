@@ -24,7 +24,7 @@ namespace Beporsoft.TabularSheets
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TabularBook"/> class which contains the provided items.
+        /// Initializes a new instance of the <see cref="TabularBook"/> class which contains the provided sheets.
         /// </summary>
         /// <param name="sheets"></param>
         public TabularBook(IEnumerable<ITabularSheet> sheets)

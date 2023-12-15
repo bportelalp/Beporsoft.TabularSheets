@@ -48,7 +48,7 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StreamCreation")]
-        public void CreateMemoryStream_Ok()
+        public void Create_Ok_AsMemoryStream()
         {
             TabularSheet<Product> table = Product.GenerateProductSheet();
 
@@ -60,7 +60,7 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StreamCreation")]
-        public void CreateOnStream_WhichIsMemoryStream_Ok()
+        public void Create_Ok_OnStreamWhichIsMemoryStream()
         {
             TabularSheet<Product> table = Product.GenerateProductSheet();
 
@@ -73,10 +73,10 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StreamCreation")]
-        public void CreateOnStream_WhichIsFileStream_OkIfReadWrite()
+        public void Create_Ok_OnStreamWhichIsFileStream()
         {
             TabularSheet<Product> table = Product.GenerateProductSheet();
-            string path = _filesHandler.BuildPath($"Test{nameof(CreateOnStream_WhichIsFileStream_OkIfReadWrite)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(Create_Ok_OnStreamWhichIsFileStream)}.xlsx");
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
             {
@@ -88,7 +88,7 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StreamCreation")]
-        public void CreateWorkbookMemoryStream_Ok()
+        public void CreateWorkbook_Ok_AsMemoryStream()
         {
             TabularBook book = new TabularBook();
 
@@ -108,7 +108,7 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StreamCreation")]
-        public void CreateWorkbookOnStream_WhichIsMemoryStream_Ok()
+        public void CreateWorkbook_Ok_OnStreamWhichIsMemoryStream()
         {
             TabularBook book = new TabularBook();
 
@@ -130,9 +130,9 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test, Category("StreamCreation")]
-        public void CreateWorkbookOnStream_WhichIsFileStream_OkIfReadWrite()
+        public void CreateWorkbook_Ok_OnStreamWhichIsFileStream()
         {
-            string path = _filesHandler.BuildPath($"Test{nameof(CreateWorkbookOnStream_WhichIsFileStream_OkIfReadWrite)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(CreateWorkbook_Ok_OnStreamWhichIsFileStream)}.xlsx");
 
             TabularBook book = new TabularBook();
 

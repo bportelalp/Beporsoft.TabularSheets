@@ -19,7 +19,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the type of data which will populate the <see cref="ITabularSheet"/> rows.
         /// </summary>
-        public Type ItemType { get; }
+        public Type RowType { get; }
 
 
         /// <summary>

@@ -35,14 +35,9 @@
 
 		<!--Release notes-->
 		<PackageReleaseNotes>
-			# [1.2.2] - 2023-10-31
-			- FIX: ColumnOptions are now visible on TabularDataColumn
-
-			# [1.2.1] - 2023-10-16
-			- Improved performance handling styles.
-
-			# [1.2.0] - 2023-09-28
-			- Support for export as CSV.
+			# [1.3.0] - 2023-12-15
+			- NEW: TabularBook to compose a single spreadsheet with multiple TabularSheets
+			- NEW: Export TabularSheets over Stream.
 
 			See all release notes on https://github.com/bportelalp/Beporsoft.TabularSheets/releases
 		</PackageReleaseNotes>
