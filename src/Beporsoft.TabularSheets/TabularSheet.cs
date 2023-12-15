@@ -98,7 +98,7 @@ namespace Beporsoft.TabularSheets
         #endregion
 
         #region ISheet
-        Type ITabularSheet.ItemType => typeof(T);
+        Type ITabularSheet.RowType => typeof(T);
 
         Worksheet ITabularSheet.BuildWorksheet(StylesheetBuilder stylesheetBuilder, SharedStringBuilder sharedStringBuilder)
         {
