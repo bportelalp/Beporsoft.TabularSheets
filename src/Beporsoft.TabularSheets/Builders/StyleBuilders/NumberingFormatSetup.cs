@@ -33,12 +33,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return numberingFormat;
         }
 
-        public static NumberingFormatSetup FromOpenXmlNumberingFormat(NumberingFormat numFormatXml)
-        {
-            string pattern = numFormatXml.FormatCode!;
-            return new NumberingFormatSetup(pattern);
-        }
-
+        #region IEquatable
         public override bool Equals(object? obj)
         {
             return Equals(obj as NumberingFormatSetup);
@@ -53,6 +48,13 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         public override int GetHashCode()
         {
             return HashCode.Combine(Pattern);
+        }
+        #endregion
+
+        internal static NumberingFormatSetup FromOpenXml(NumberingFormat numFormatXml)
+        {
+            string pattern = numFormatXml.FormatCode!;
+            return new NumberingFormatSetup(pattern);
         }
     }
 }

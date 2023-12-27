@@ -36,10 +36,29 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return border;
         }
 
-        public static BorderSetup FromOpenXmlBorder(Border borderXml)
+        #region IEquatable
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as BorderSetup);
+        }
+
+        public bool Equals(BorderSetup? other)
+        {
+            return other is not null &&
+                EqualityComparer<BorderStyle>.Default.Equals(BorderStyle, other.BorderStyle);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(BorderStyle);
+        }
+        #endregion
+
+
+        internal static BorderSetup FromOpenXml(Border borderXml)
         {
             BorderStyle border = new();
-            List<System.Drawing.Color> colorsBorders = new List<System.Drawing.Color>();
+            List<System.Drawing.Color> colorsBorders = [];
             BorderStyle.BorderType parsedBorder;
             bool parsedOk = false;
 
@@ -77,24 +96,6 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             border.Color = colorGrouped.FirstOrDefault()?.FirstOrDefault();
             return new BorderSetup(border);
         }
-
-        #region IEquatable
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as BorderSetup);
-        }
-
-        public bool Equals(BorderSetup? other)
-        {
-            return other is not null &&
-                EqualityComparer<BorderStyle>.Default.Equals(BorderStyle, other.BorderStyle);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(BorderStyle);
-        }
-        #endregion
 
         #region Build Child Elements
         private T? BuildBorder<T>(BorderStyle.BorderType? borderType) where T : BorderPropertiesType, new()

@@ -38,7 +38,26 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return font;
         }
 
-        public static FontSetup FromOpenXmlFont(Font fontXml)
+        #region IEquatable
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as FontSetup);
+        }
+
+        public bool Equals(FontSetup? other)
+        {
+            return other is not null &&
+                   EqualityComparer<FontStyle>.Default.Equals(FontStyle, other.FontStyle);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(FontStyle);
+        }
+
+        #endregion
+
+        internal static FontSetup FromOpenXml(Font fontXml)
         {
             FontStyle font = new FontStyle()
             {
@@ -48,6 +67,7 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
                 Bold = fontXml?.Bold?.Val?.Value,
                 Italic = fontXml?.Italic?.Val?.Value,
             };
+
             if (fontXml?.Underline?.Val?.Value is not null)
             {
                 bool underlineOk = Enum.TryParse(fontXml.Underline.Val.Value.ToString(), out FontStyle.UnderlineType underline);
@@ -130,25 +150,6 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             }
             return underline;
         }
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as FontSetup);
-        }
-
-        public bool Equals(FontSetup? other)
-        {
-            return other is not null &&
-                   EqualityComparer<FontStyle>.Default.Equals(FontStyle, other.FontStyle);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(FontStyle);
-        }
-
-
-
         #endregion
     }
 }

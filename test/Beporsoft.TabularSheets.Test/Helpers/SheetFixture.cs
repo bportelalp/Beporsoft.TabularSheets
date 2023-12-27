@@ -194,19 +194,19 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         {
             CellStyling.Style style = new();
             if (Border is not null)
-                style.Border = Builders.StyleBuilders.BorderSetup.FromOpenXmlBorder(Border).BorderStyle;
+                style.Border = Builders.StyleBuilders.BorderSetup.FromOpenXml(Border).BorderStyle;
 
             if (Fill is not null)
-                style.Fill = Builders.StyleBuilders.FillSetup.FromOpenXmlFill(Fill).Fill;
+                style.Fill = Builders.StyleBuilders.FillSetup.FromOpenXml(Fill).Fill;
 
             if (Font is not null)
-                style.Font = Builders.StyleBuilders.FontSetup.FromOpenXmlFont(Font).FontStyle;
+                style.Font = Builders.StyleBuilders.FontSetup.FromOpenXml(Font).FontStyle;
 
             if (NumberingFormat is not null)
-                style.NumberingPattern = Builders.StyleBuilders.NumberingFormatSetup.FromOpenXmlNumberingFormat(NumberingFormat).Pattern;
+                style.NumberingPattern = Builders.StyleBuilders.NumberingFormatSetup.FromOpenXml(NumberingFormat).Pattern;
 
             if (Alignment is not null)
-                style.Alignment = Builders.StyleBuilders.FormatSetup.FromOpenXmlElement(Alignment);
+                style.Alignment = Builders.StyleBuilders.FormatSetup.FromOpenXml(Alignment);
 
             return style;
         }

@@ -1,5 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Builders.StyleBuilders.Adapters;
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Beporsoft.TabularSheets.Builders.StyleBuilders
 {
@@ -14,5 +15,6 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
         /// </summary>
         /// <param name="index"></param>
         internal void SetIndex(int index) => Index = index;
+
     }
 }

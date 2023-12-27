@@ -33,16 +33,6 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return fill;
         }
 
-        public static FillSetup FromOpenXmlFill(Fill fillXml)
-        {
-            FillStyle fill = new()
-            {
-                BackgroundColor = fillXml.PatternFill?.ForegroundColor?.Rgb?.FromOpenXmlHexBinaryValue(),
-                PatternValue = fillXml.PatternFill!.PatternType!.Value
-            };
-            return new FillSetup(fill);
-        }
-
         #region IEquatable
         public override bool Equals(object? obj)
         {
@@ -60,6 +50,16 @@ namespace Beporsoft.TabularSheets.Builders.StyleBuilders
             return HashCode.Combine(Fill);
         }
         #endregion
+
+        internal static FillSetup FromOpenXml(Fill fillXml)
+        {
+            FillStyle fill = new()
+            {
+                BackgroundColor = fillXml.PatternFill?.ForegroundColor?.Rgb?.FromOpenXmlHexBinaryValue(),
+                PatternValue = fillXml.PatternFill!.PatternType!.Value
+            };
+            return new FillSetup(fill);
+        }
 
         #region Build child elements
         private PatternFill BuildPatternFill()
