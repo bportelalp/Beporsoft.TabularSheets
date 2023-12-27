@@ -7,8 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>    
+		<PackageReference Include="Beporsoft.TabularSheets" Version="1.3.0" />
+  </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Beporsoft.TabularSheets\Beporsoft.TabularSheets.csproj" />
+
   </ItemGroup>
 
 </Project>
