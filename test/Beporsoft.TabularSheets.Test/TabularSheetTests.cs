@@ -12,11 +12,11 @@ using System.Globalization;
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("SheetStructure")]
-    public class TestTabularSheet
+    public class TabularSheetTests
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new(nameof(TestTabularSheet));
+        private readonly TestFilesHandler _filesHandler = new(nameof(TabularSheetTests));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]

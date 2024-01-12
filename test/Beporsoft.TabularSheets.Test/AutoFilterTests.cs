@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("SheetStructure"), Category("AutoFilter")]
-    public class TestAutoFilter
+    public class AutoFilterTests
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
-        private readonly TestFilesHandler _filesHandler = new(nameof(TestAutoFilter));
+        private readonly TestFilesHandler _filesHandler = new(nameof(AutoFilterTests));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]

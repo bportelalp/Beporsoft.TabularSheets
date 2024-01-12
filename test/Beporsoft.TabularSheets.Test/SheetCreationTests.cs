@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Beporsoft.TabularSheets.Test
 {
 
-    public class TestSheetCreation
+    public class SheetCreationTests
     {
         private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SheetCreation");
 
