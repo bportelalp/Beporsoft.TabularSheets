@@ -7,7 +7,7 @@ namespace Beporsoft.TabularSheets.Test
     /// Test class to create cell references
     /// </summary>
     [Category("Cells")]
-    internal class TestCellRef
+    internal class CellRefTests
     {
 
         [Test]

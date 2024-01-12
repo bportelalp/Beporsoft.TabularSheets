@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("Workbook")]
-    public class TestTabularBook
+    public class TabularBookTests
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly int _amountRows = 1000;
         private readonly int _amountReviewsByProduct = 100;
-        private readonly TestFilesHandler _filesHandler = new(nameof(TestTabularBook));
+        private readonly TestFilesHandler _filesHandler = new(nameof(TabularBookTests));
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         [SetUp]

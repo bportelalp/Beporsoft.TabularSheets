@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("CSV")]
-    internal class TestCsvBuilding
+    internal class CsvBuildingTests
     {
         private readonly bool _clearFolderOnEnd = false;
-        private readonly TestFilesHandler _filesHandler = new(nameof(TestCsvBuilding));
+        private readonly TestFilesHandler _filesHandler = new(nameof(CsvBuildingTests));
 
         [Test]
         [TestCaseSource(nameof(DataOptions_ToCsv_GenerationOk))]

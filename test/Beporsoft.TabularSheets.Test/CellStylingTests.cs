@@ -12,7 +12,7 @@ using System.Drawing;
 namespace Beporsoft.TabularSheets.Test
 {
     [Category("Stylesheet")]
-    internal class TestCellStyling
+    internal class CellStylingTests
     {
         private const int _amountIndexedSetupItems = 10000;
         private readonly Stopwatch _stopwatch = new();
