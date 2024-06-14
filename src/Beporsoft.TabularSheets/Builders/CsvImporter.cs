@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders
 {
-    public class SpreadsheetImporter
+    public class CsvImporter
     {
         public List<T> FromCsv<T>(string path) where T : class, new()
         {

@@ -3,6 +3,7 @@ using Beporsoft.TabularSheets.Options;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Beporsoft.TabularSheets
 {
@@ -17,13 +18,13 @@ namespace Beporsoft.TabularSheets
         private string? _columnTitle;
 
         #region Constructors
-        internal TabularDataColumn(TabularData<T> parentTabularData, Func<T, object> columnData)
+        internal TabularDataColumn(TabularData<T> parentTabularData, Expression<Func<T, object>> columnData)
         {
             Owner = parentTabularData;
             CellContent = columnData;
         }
 
-        internal TabularDataColumn(string title, TabularData<T> parentTabularData, Func<T, object> columnData) : this(parentTabularData, columnData)
+        internal TabularDataColumn(string title, TabularData<T> parentTabularData, Expression<Func<T, object>> columnData) : this(parentTabularData, columnData)
         {
             _columnTitle = title;
         }
@@ -33,7 +34,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Gets the function which will be evaluated to fill the respective column for each item.
         /// </summary>
-        public Func<T, object> CellContent { get; private set; }
+        public Expression<Func<T, object>> CellContent { get; private set; }
 
         /// <summary>
         /// Gets title of the column. If no title are provided before, the default one is displayed.<br/>
@@ -116,7 +117,7 @@ namespace Beporsoft.TabularSheets
         /// <summary>
         /// Retrieve the current value of the cell for this column applied to <paramref name="value"/>
         /// </summary>
-        internal object Apply(T value) => CellContent.Invoke(value);
+        internal object Apply(T value) => CellContent.Compile().Invoke(value);
 
         /// <summary>
         /// Gets the defined title or build a default one if it is empry

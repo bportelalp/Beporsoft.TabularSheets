@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Beporsoft.TabularSheets
 {
@@ -95,7 +96,7 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         /// <param name="predicate">A expression which will be evaluated to populate the cell</param>
         /// <returns>The column created, so additional calls can be chained</returns>
-        public virtual TabularDataColumn<T> AddColumn(Func<T, object> predicate)
+        public virtual TabularDataColumn<T> AddColumn(Expression<Func<T, object>> predicate)
         {
             var column = new TabularDataColumn<T>(this, predicate);
             ColumnsCollection.Add(column);
@@ -103,12 +104,12 @@ namespace Beporsoft.TabularSheets
         }
 
         /// <summary>
-        /// <inheritdoc cref="AddColumn(Func{T, object})"/>
+        /// <inheritdoc cref="AddColumn(Expression{Func{T, object}})"/>
         /// </summary>
         /// <param name="title">The title of the column</param>
         /// <param name="predicate">A expression which will be evaluated to populate the cell</param>
         /// <returns>The column created, so additional calls can be chained</returns>
-        public virtual TabularDataColumn<T> AddColumn(string title, Func<T, object> predicate)
+        public virtual TabularDataColumn<T> AddColumn(string title, Expression<Func<T, object>> predicate)
         {
             var column = new TabularDataColumn<T>(title, this, predicate);
             ColumnsCollection.Add(column);
