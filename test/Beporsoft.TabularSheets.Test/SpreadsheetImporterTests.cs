@@ -14,18 +14,18 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SheetCreation");
 
-        //[Test]
-        //public void Foo()
-        //{
-        //   var table =  Product.GenerateProductSheet(100);
+        [Test]
+        public void Foo()
+        {
+            var table = Product.GenerateProductSheet(100);
 
-        //    string path = _filesHandler.BuildPath($"Test{nameof(Foo)}.csv");
+            string path = _filesHandler.BuildPath($"Test{nameof(Foo)}.xlsx");
+            table.Create(path);
 
-        //    table.ToCsv(path);
+            table.Clear();
+            SpreadsheetImporter<Product> importer = new(table);
+            importer.ImportContent(path);
 
-        //    CsvImporter importer = new();
-        //    var collection = importer.FromCsv<Product>(path);
-
-        //}
+        }
     }
 }

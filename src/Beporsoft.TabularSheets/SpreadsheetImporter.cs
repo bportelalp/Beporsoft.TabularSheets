@@ -22,6 +22,7 @@ namespace Beporsoft.TabularSheets
         public TabularSheet<T> Table { get; }
         public SheetData Data { get; private set; } = null!;
         private SharedStringTable SharedStrings { get; set; } = null!;
+        private CellParser CellParser { get; set; }
 
         public void ImportContent(string spreadsheetPath)
         {
@@ -38,6 +39,7 @@ namespace Beporsoft.TabularSheets
 
             Data = worksheet.Descendants<SheetData>()!.Single();
             SharedStrings = workbookPart.SharedStringTablePart!.SharedStringTable;
+            CellParser = new CellParser(SharedStrings);
 
             Dictionary<TabularDataColumn<T>, int> filledColumns = GetFillableColumns();
             IEnumerable<Row> bodyRows = GetBodyRows();
@@ -49,7 +51,7 @@ namespace Beporsoft.TabularSheets
                 {
                     
                     Cell cell = row.Descendants<Cell>().ElementAt(columnRelation.Value);
-
+                    PopulateWithCellValue(rowValue, columnRelation.Key, cell);
                     
                 }
             }
@@ -111,10 +113,21 @@ namespace Beporsoft.TabularSheets
             return value;
         }
 
-        private void FillCellValue(T instance, TabularDataColumn<T> column, object value)
+        private void PopulateWithCellValue(T instance, TabularDataColumn<T> column, Cell cell)
         {
-            var memberSelectorExpression = column.CellContent.Body as MemberExpression;
-            var property = memberSelectorExpression.Member as PropertyInfo;
+
+            Expression expr = column.CellContent.Body;
+            if(expr is UnaryExpression unaryExpresion && unaryExpresion.NodeType == ExpressionType.Convert)
+            {
+                expr = unaryExpresion.Operand;
+            }
+            else if(expr is MemberExpression memberExpression)
+            {
+                expr = memberExpression;
+            }
+            var memberSelector = expr as MemberExpression;
+            var property = memberSelector.Member as PropertyInfo;
+            object value = CellParser.GetValue(cell, property.PropertyType);
             property.SetValue(instance, value);
         }
     }
