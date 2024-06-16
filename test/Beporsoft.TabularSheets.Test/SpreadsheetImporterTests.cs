@@ -12,20 +12,34 @@ namespace Beporsoft.TabularSheets.Test
     [Category("SpreadsheetImporter")]
     public class SpreadsheetImporterTests
     {
-        private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SheetCreation");
+        private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SpreadsheetImport");
 
         [Test]
-        public void Foo()
+        public void ImportSheet_Ok()
         {
             var table = Product.GenerateProductSheet(100);
 
-            string path = _filesHandler.BuildPath($"Test{nameof(Foo)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(ImportSheet_Ok)}.xlsx");
             table.Create(path);
 
-            table.Clear();
-            SpreadsheetImporter<Product> importer = new(table);
+            TabularSheet<Product> import = new();
+            foreach (var col in table.Columns)
+            {
+                import.AddColumn(col.Title, col.CellContent);
+            }
+            SpreadsheetImporter<Product> importer = new(import);
             importer.ImportContent(path);
+            AssertImport(table, import);
+            
 
+        }
+
+        public void AssertImport(TabularSheet<Product> original, TabularSheet<Product> imported)
+        {
+            for(int i = 0; i <= original.Count; i++)
+            {
+                Assert.That(imported[i], Is.EqualTo(original[i]));
+            }
         }
     }
 }

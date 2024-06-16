@@ -35,7 +35,7 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
             if (CellTypeConverter.KnownConverters.TryGetValue(type, out CellTypeConverter? converter))
             {
                 cell.DataType = converter.Type;
-                cell.CellValue = converter.Converter.Invoke(value, SharedStrings);
+                cell.CellValue = converter.ForwardConverter.Invoke(value, SharedStrings);
             }
             else
             {

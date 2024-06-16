@@ -1,9 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 {
@@ -17,8 +14,11 @@ namespace Beporsoft.TabularSheets.Builders.SheetBuilders
 
         public SharedStringTable SharedStrings { get; }
 
-        public object GetValue(Cell cell, Type targetType)
+        public object? GetValue(Cell cell, Type targetType)
         {
+            if(cell.CellValue is null)
+                return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+            
             if(CellTypeConverter.KnownConverters.TryGetValue(targetType, out CellTypeConverter? converter))
             {
                 if(converter.Type == cell.DataType!.Value)

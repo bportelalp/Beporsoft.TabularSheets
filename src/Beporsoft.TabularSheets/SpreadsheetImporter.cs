@@ -49,15 +49,15 @@ namespace Beporsoft.TabularSheets
                 T rowValue = new();
                 foreach (var columnRelation in filledColumns)
                 {
-                    
                     Cell cell = row.Descendants<Cell>().ElementAt(columnRelation.Value);
                     PopulateWithCellValue(rowValue, columnRelation.Key, cell);
-                    
                 }
+                values.Add(rowValue);
             }
+            Table.AddRange(values);
         }
 
-        
+
 
         private Sheet GetSheetByTableName(WorkbookPart workbookPart)
         {
@@ -76,11 +76,7 @@ namespace Beporsoft.TabularSheets
             foreach (Cell cell in headerRow.Descendants<Cell>())
             {
                 (int Row, int Col) cellRef = CellRefBuilder.GetIndexes(cell.CellReference!);
-                string columnName;
-                if (cell.DataType!.Value == CellValues.SharedString)
-                    columnName = GetSharedString(int.Parse(cell.CellValue!.InnerText));
-                else
-                    columnName = cell.CellValue!.InnerText;
+                string? columnName = (string?)CellParser.GetValue(cell, typeof(string));
 
                 List<TabularDataColumn<T>> namedColumns = Table.Columns.Where(c => c.Title == columnName).ToList();
                 if (namedColumns.Count == 0)
@@ -115,20 +111,29 @@ namespace Beporsoft.TabularSheets
 
         private void PopulateWithCellValue(T instance, TabularDataColumn<T> column, Cell cell)
         {
-
             Expression expr = column.CellContent.Body;
-            if(expr is UnaryExpression unaryExpresion && unaryExpresion.NodeType == ExpressionType.Convert)
+            if (expr is UnaryExpression unaryExpresion && unaryExpresion.NodeType == ExpressionType.Convert)
             {
                 expr = unaryExpresion.Operand;
             }
-            else if(expr is MemberExpression memberExpression)
+            else if (expr is MemberExpression memberExpression)
             {
                 expr = memberExpression;
             }
             var memberSelector = expr as MemberExpression;
-            var property = memberSelector.Member as PropertyInfo;
-            object value = CellParser.GetValue(cell, property.PropertyType);
-            property.SetValue(instance, value);
+            if (memberSelector is not null)
+            {
+                PropertyInfo? property = memberSelector.Member as PropertyInfo;
+
+                if (property is not null)
+                {
+                    if (!property.CanWrite)
+                        throw new SheetImportException($"Property {property.Name} of {typeof(T).Name} is not writtable");
+                    object? value = CellParser.GetValue(cell, property.PropertyType);
+                    property.SetValue(instance, value);
+                }
+
+            }
         }
     }
 }
