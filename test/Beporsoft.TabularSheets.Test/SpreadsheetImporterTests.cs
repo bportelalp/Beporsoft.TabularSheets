@@ -15,31 +15,89 @@ namespace Beporsoft.TabularSheets.Test
         private readonly TestFilesHandler _filesHandler = new TestFilesHandler("SpreadsheetImport");
 
         [Test]
-        public void ImportSheet_Ok()
+        public void CreateSheet_ThenImport_SameData()
         {
             var table = Product.GenerateProductSheet(100);
 
-            string path = _filesHandler.BuildPath($"Test{nameof(ImportSheet_Ok)}.xlsx");
+            string path = _filesHandler.BuildPath($"Test{nameof(CreateSheet_ThenImport_SameData)}.xlsx");
             table.Create(path);
 
-            TabularSheet<Product> import = new();
-            foreach (var col in table.Columns)
+            TabularSheet<Product> import = CopyTableStructure(table);
+            SpreadsheetImporter<Product> importer = new(import);
+            importer.ImportContent(path);
+            AssertProductEqual(table, import);
+        }
+
+        [Test]
+        public void CreateSheet_ThrowsException_IfPropertyReadonly()
+        {
+            
+            var original = Product.GenerateProductSheet(10);
+
+            string path = _filesHandler.BuildPath($"Test{nameof(CreateSheet_ThrowsException_IfPropertyReadonly)}.xlsx");
+            original.Create(path);
+
+            TabularSheet<ProductReadonly> import = [];
+            import.Title = nameof(Product);
+            // These two properties are
+            import.AddColumn(nameof(Product.Id), p => p.Id);
+            import.AddColumn(nameof(Product.Name), p => p.Name);
+            SpreadsheetImporter<ProductReadonly> importer = new(import);
+
+            Assert.Throws<SheetImportException>(() => importer.ImportContent(path));
+        }
+
+        [Test]
+        public void CreateSheet_ThrowsException_IfPropertyComplexExpression()
+        {
+
+            var original = Product.GenerateProductSheet(10);
+
+            string path = _filesHandler.BuildPath($"Test{nameof(CreateSheet_ThrowsException_IfPropertyReadonly)}.xlsx");
+            original.Create(path);
+
+            TabularSheet<Product> import = [];
+            import.Title = nameof(Product);
+            // These two properties are
+            import.AddColumn(nameof(Product.Id), p => p.Id);
+            import.AddColumn(nameof(Product.Name), p => $"{p.Name}-Something");
+            import.AddColumn(nameof(Product.Cost), p => p.Cost * 2);
+            SpreadsheetImporter<Product> importer = new(import);
+
+            Assert.Throws<SheetImportException>(() => importer.ImportContent(path));
+        }
+
+
+        private void AssertProductEqual(TabularSheet<Product> originalTable, TabularSheet<Product> importedTable)
+        {
+            for(int i = 0; i < originalTable.Count; i++)
+            {
+                Product original = originalTable[i];
+                Product imported = importedTable[i];
+                Assert.That(imported.Id, Is.EqualTo(original.Id));
+                Assert.That(imported.Name, Is.EqualTo(original.Name));
+                Assert.That(imported.CountryOrigin, Is.EqualTo(original.CountryOrigin));
+                Assert.That(imported.Cost, Is.EqualTo(original.Cost));
+                Assert.That(imported.LastPriceUpdate, Is.EqualTo(original.LastPriceUpdate));
+                Assert.That(Math.Abs(imported.DeliveryTime.TotalMilliseconds - original.DeliveryTime.TotalMilliseconds), 
+                    Is.LessThan(TimeSpan.FromMilliseconds(1).TotalMilliseconds));
+            }
+        }
+
+        private TabularSheet<T> CopyTableStructure<T>(TabularSheet<T> original)
+        {
+            TabularSheet<T> import = new();
+            foreach (var col in original.Columns)
             {
                 import.AddColumn(col.Title, col.CellContent);
             }
-            SpreadsheetImporter<Product> importer = new(import);
-            importer.ImportContent(path);
-            AssertImport(table, import);
-            
-
+            return import;
         }
 
-        public void AssertImport(TabularSheet<Product> original, TabularSheet<Product> imported)
+        private class ProductReadonly
         {
-            for(int i = 0; i <= original.Count; i++)
-            {
-                Assert.That(imported[i], Is.EqualTo(original[i]));
-            }
+            public Guid Id { get; }
+            public string Name { get; } = string.Empty;
         }
     }
 }
