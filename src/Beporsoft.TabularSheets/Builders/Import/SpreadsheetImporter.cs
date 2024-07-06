@@ -3,14 +3,13 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Beporsoft.TabularSheets
+namespace Beporsoft.TabularSheets.Builders.Import
 {
     public class SpreadsheetImporter<T> where T : class, new()
     {
@@ -20,15 +19,13 @@ namespace Beporsoft.TabularSheets
         }
 
         public TabularSheet<T> Table { get; }
-        public SheetData Data { get; private set; } = null!;
+        private SheetData Data { get; set; } = null!;
         private SharedStringTable SharedStrings { get; set; } = null!;
-        private CellParser CellParser { get; set; }
+        private CellParser CellParser { get; set; } = default!;
 
-        public void ImportContent(string spreadsheetPath)
+        public void Import(string spreadsheetPath)
         {
-            using var fs = new FileStream(spreadsheetPath, FileMode.Open, FileAccess.Read);
-
-            using var spreadsheet = SpreadsheetDocument.Open(fs, false);
+            using var spreadsheet = SpreadsheetDocument.Open(spreadsheetPath, false);
             WorkbookPart workbookPart = spreadsheet.WorkbookPart!;
 
             Sheet sheet = GetSheetByTableName(workbookPart);
@@ -57,15 +54,12 @@ namespace Beporsoft.TabularSheets
             Table.AddRange(values);
         }
 
-
-
         private Sheet GetSheetByTableName(WorkbookPart workbookPart)
         {
             string sheetName = Table.Title;
             Sheet? sheet = (workbookPart.Workbook.Sheets?
                 .Descendants<Sheet>()
-                .FirstOrDefault(s => s.Name == Table.Title)) ?? throw new SheetImportException($"Document does not contains any sheet called {sheetName}");
-
+                .FirstOrDefault(s => s.Name == Table.Title)) ?? throw SheetImportException.FromSheetNotFound(sheetName);
             return sheet;
         }
 
@@ -128,11 +122,14 @@ namespace Beporsoft.TabularSheets
                 if (property is not null)
                 {
                     if (!property.CanWrite)
-                        throw new SheetImportException($"Property {property.Name} of {typeof(T).Name} is not writtable");
+                        throw SheetImportException.FromPropertyNotWrittable(typeof(T), property);
                     object? value = CellParser.GetValue(cell, property.PropertyType);
                     property.SetValue(instance, value);
                 }
-
+            }
+            else
+            {
+                throw SheetImportException.FromColumnExpressionInvalid(column);
             }
         }
     }

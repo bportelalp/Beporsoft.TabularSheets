@@ -23,8 +23,8 @@ namespace Beporsoft.TabularSheets.Test
             table.Create(path);
 
             TabularSheet<Product> import = CopyTableStructure(table);
-            SpreadsheetImporter<Product> importer = new(import);
-            importer.ImportContent(path);
+            SheetReader<Product> importer = new(import);
+            importer.FromSpreadsheet(path);
             AssertProductEqual(table, import);
         }
 
@@ -42,9 +42,9 @@ namespace Beporsoft.TabularSheets.Test
             // These two properties are
             import.AddColumn(nameof(Product.Id), p => p.Id);
             import.AddColumn(nameof(Product.Name), p => p.Name);
-            SpreadsheetImporter<ProductReadonly> importer = new(import);
+            SheetReader<ProductReadonly> importer = new(import);
 
-            Assert.Throws<SheetImportException>(() => importer.ImportContent(path));
+            Assert.Throws<SheetImportException>(() => importer.FromSpreadsheet(path));
         }
 
         [Test]
@@ -62,9 +62,9 @@ namespace Beporsoft.TabularSheets.Test
             import.AddColumn(nameof(Product.Id), p => p.Id);
             import.AddColumn(nameof(Product.Name), p => $"{p.Name}-Something");
             import.AddColumn(nameof(Product.Cost), p => p.Cost * 2);
-            SpreadsheetImporter<Product> importer = new(import);
+            SheetReader<Product> importer = new(import);
 
-            Assert.Throws<SheetImportException>(() => importer.ImportContent(path));
+            Assert.Throws<SheetImportException>(() => importer.FromSpreadsheet(path));
         }
 
 
