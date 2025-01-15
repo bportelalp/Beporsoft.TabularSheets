@@ -14,7 +14,7 @@ namespace Beporsoft.TabularSheets
     /// </summary>
     public static class TabularDataExtensions
     {
-
+        #region ToCsv
         /// <summary>
         /// Creates a CSV file as stream.
         /// </summary>
@@ -78,5 +78,15 @@ namespace Beporsoft.TabularSheets
             CsvBuilder<T> builder = new CsvBuilder<T>(tabularData, options);
             builder.Create(path);
         }
+        #endregion
+
+        #region ToMarkdown
+        public static List<string> ToMarkdownTable<T>(this TabularData<T> tabularData)
+        {
+            MarkdownTableBuilder<T> builder = new(tabularData, new());
+
+            return builder.Create();
+        }
+        #endregion
     }
 }
