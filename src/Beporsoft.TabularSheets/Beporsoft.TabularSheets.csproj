@@ -6,7 +6,7 @@
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>12.0</LangVersion>
-		<NoWarn>1701;1702;IDE0090</NoWarn>
+		<NoWarn>1701;1702;IDE0090;CS1591</NoWarn>
 
 		<!--Package metadata-->
 		<Title>Tabular Sheets</Title>

@@ -9,14 +9,14 @@ namespace Beporsoft.TabularSheets.Builders
         private const string _separator = "|";
         private const string _whiteSpace = " ";
         private const string _headerLineContent = "--";
-        public MarkdownTableBuilder(TabularData<T> tabularData, MarkdownParsingOptions options)
+        public MarkdownTableBuilder(TabularData<T> tabularData, MarkdownTableOptions? options)
         {
             TabularData = tabularData;
-            Options = options;
+            Options = options?? MarkdownTableOptions.Default;
         }
 
         public TabularData<T> TabularData { get; }
-        public MarkdownParsingOptions Options { get; }
+        public MarkdownTableOptions Options { get; }
 
         public IEnumerable<string> Create()
         {
@@ -52,7 +52,10 @@ namespace Beporsoft.TabularSheets.Builders
             string headerBodySeparator = _separator;
             foreach (var column in TabularData.Columns)
             {
-                header += _whiteSpace + column.Title + _whiteSpace;
+                header += _whiteSpace;
+                if (!Options.SupressHeaderTitles)
+                    header += column.Title;
+                header += _whiteSpace;
                 header += _separator;
                 headerBodySeparator += _whiteSpace + _headerLineContent + _whiteSpace + _separator;
             }

@@ -82,22 +82,28 @@ namespace Beporsoft.TabularSheets
 
         #region ToMarkdown
         /// <summary>
-        /// Creates a Markdown formatted table and write it on the given stream.
+        /// Creates a Markdown formatted table on the given path.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tabularData"></param>
         /// <param name="path"></param>
-        public static void ToMarkdownTable<T>(this TabularData<T> tabularData, string path)
+        public static void ToMarkdownTable<T>(this TabularData<T> tabularData, string path, MarkdownTableOptions? mdOptions = null)
         {
 
-            MarkdownTableBuilder<T> builder = new(tabularData, new());
+            MarkdownTableBuilder<T> builder = new(tabularData, mdOptions);
             builder.Create(path);
         }
-        public static List<string> ToMarkdownTable<T>(this TabularData<T> tabularData)
-        {
-            MarkdownTableBuilder<T> builder = new(tabularData, new());
 
+        public static IEnumerable<string> ToMarkdownTable<T>(this TabularData<T> tabularData, MarkdownTableOptions? mdOptions = null)
+        {
+            MarkdownTableBuilder<T> builder = new(tabularData, mdOptions);
             return builder.Create();
+        }
+
+        public static void ToMarkdownTable<T>(this TabularData<T> tabularData, Stream stream, MarkdownTableOptions? mdOptions = null)
+        {
+            MarkdownTableBuilder<T> builder = new(tabularData, mdOptions);
+            builder.WriteStream(stream);
         }
         #endregion
     }

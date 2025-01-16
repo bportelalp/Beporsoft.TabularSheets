@@ -8,31 +8,38 @@ using Beporsoft.TabularSheets.Options;
 
 namespace Beporsoft.TabularSheets.Test.Helpers
 {
-    internal class CsvFixture
+    internal class MarkdownFixture
     {
-        private readonly CsvOptions _options;
 
-        public CsvFixture(string path, CsvOptions options)
+        public MarkdownFixture(string path, MarkdownTableOptions? options)
         {
-            _options = options;
+            Options = options ?? MarkdownTableOptions.Default;
             using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            Load(fs, options);
+            Load(fs);
         }
 
-        public CsvFixture(Stream stream, CsvOptions options)
+        public MarkdownFixture(Stream stream, MarkdownTableOptions? options)
         {
-            _options = options;
-            Load(stream, options);
+            Options = options ?? MarkdownTableOptions.Default;
+            Load(stream);
+        }
 
+        public MarkdownFixture(IEnumerable<string> lines, MarkdownTableOptions? options)
+        {
+            Options = options ?? MarkdownTableOptions.Default;
+            Header = lines.First();
+            Lines = lines.Skip(2).ToList();
         }
 
         public string Header { get; private set; } = null!;
         public List<string> Lines { get; } = new();
+        public MarkdownTableOptions Options { get; }
 
-        private void Load(Stream stream, CsvOptions options) {
-            using var sr = new StreamReader(stream, options.Encoding);
+        private void Load(Stream stream) {
+            using var sr = new StreamReader(stream);
             Header = sr.ReadLine()!;
             string? line = null;
+            sr.ReadLine(); // supress header/body separator line.
             do
             {
                 line = sr.ReadLine();
@@ -43,13 +50,14 @@ namespace Beporsoft.TabularSheets.Test.Helpers
 
         public string GetHeaderColumn(int colIndex)
         {
-            return Header.Split(_options.Separator)[colIndex];
+            var split = Header.Trim('|').Split(MarkdownTableOptions.Separator);
+            return split[colIndex].Trim();
         }
 
         public string GetCell(int row, int col)
         {
             string line = Lines[row];
-            string cell = line.Split(_options.Separator)[col];
+            string cell = line.Trim('|').Split(MarkdownTableOptions.Separator)[col].Trim();
             return cell;
         }
     }
