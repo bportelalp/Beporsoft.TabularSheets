@@ -11,6 +11,10 @@ namespace Beporsoft.TabularSheets.Test
     {
         private readonly bool _clearFolderOnEnd = false;
         private readonly TestFilesHandler _filesHandler = new(nameof(MarkdownTableTests));
+        private readonly MarkdownTableOptions _basicOpt = new MarkdownTableOptions()
+        {
+            CompactMode = true
+        };
 
         [Test]
         public void ToMarkdownLines_GenerationOk_Defaults()
@@ -18,9 +22,9 @@ namespace Beporsoft.TabularSheets.Test
             string file = _filesHandler.BuildPath($"{nameof(ToMarkdownLines_GenerationOk_Defaults)}.md");
             var table = Product.GenerateProductSheet(10);
 
-            var mdLines = table.ToMarkdownTable();
-            var mdFixture = new MarkdownFixture(mdLines, null);
-            AssertMarkdownTable(table, mdFixture);
+            var mdLines = table.ToMarkdownTable(_basicOpt);
+            var mdFixture = new MarkdownFixture(mdLines, _basicOpt);
+            AssertMarkdownTable(table, mdFixture, false);
         }
 
         [Test]
@@ -29,8 +33,8 @@ namespace Beporsoft.TabularSheets.Test
             string file = _filesHandler.BuildPath($"{nameof(ToMarkdownFile_GenerationOk_Defaults)}.md");
             var table = Product.GenerateProductSheet(10);
 
-            table.ToMarkdownTable(file);
-            var mdFixture = new MarkdownFixture(file, null);
+            table.ToMarkdownTable(file, _basicOpt);
+            var mdFixture = new MarkdownFixture(file, _basicOpt);
             AssertMarkdownTable(table, mdFixture);
         }
 
@@ -42,9 +46,9 @@ namespace Beporsoft.TabularSheets.Test
 
             using (var fs = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
-                table.ToMarkdownTable(fs);
+                table.ToMarkdownTable(fs, _basicOpt);
             }
-            var mdFixture = new MarkdownFixture(file, null);
+            var mdFixture = new MarkdownFixture(file, _basicOpt);
             AssertMarkdownTable(table, mdFixture);
         }
 
@@ -53,7 +57,8 @@ namespace Beporsoft.TabularSheets.Test
         {
             var options = new MarkdownTableOptions()
             {
-                SupressHeaderTitles = true
+                SupressHeaderTitles = true,
+                CompactMode = true
             };
             string file = _filesHandler.BuildPath($"{nameof(ToMarkdownLines_SkipTitles_GeneratesHeadersWithoutTitles)}.md");
             var table = Product.GenerateProductSheet(10);
@@ -64,13 +69,13 @@ namespace Beporsoft.TabularSheets.Test
         }
 
         [Test]
-        public void ToMarkdownLines_ExpandedView_PadSpacesAlignColumns()
+        public void ToMarkdownLines_ExtendedMode_PadSpacesAlignColumns()
         {
             var options = new MarkdownTableOptions()
             {
                 CompactMode = false
             };
-            string file = _filesHandler.BuildPath($"{nameof(ToMarkdownLines_ExpandedView_PadSpacesAlignColumns)}.md");
+            string file = _filesHandler.BuildPath($"{nameof(ToMarkdownLines_ExtendedMode_PadSpacesAlignColumns)}.md");
             var table = Product.GenerateProductSheet(10);
 
             table.ToMarkdownTable(file, options);

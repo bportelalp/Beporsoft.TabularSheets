@@ -1,11 +1,7 @@
 ﻿using Beporsoft.TabularSheets.Builders;
 using Beporsoft.TabularSheets.Options;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets
 {
@@ -86,7 +82,8 @@ namespace Beporsoft.TabularSheets
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tabularData"></param>
-        /// <param name="path"></param>
+        /// <param name="path">Path to save the created file. It will be overrided.</param>
+        /// <param name="mdOptions">Configurations for Markdown generation.</param>
         public static void ToMarkdownTable<T>(this TabularData<T> tabularData, string path, MarkdownTableOptions? mdOptions = null)
         {
 
@@ -94,12 +91,26 @@ namespace Beporsoft.TabularSheets
             builder.Create(path);
         }
 
+        /// <summary>
+        /// Creates a Markdown formatted table.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tabularData"></param>
+        /// <param name="mdOptions">Configurations for Markdown generation</param>
+        /// <returns>a enumeration of each markdown table row.</returns>
         public static IEnumerable<string> ToMarkdownTable<T>(this TabularData<T> tabularData, MarkdownTableOptions? mdOptions = null)
         {
             MarkdownTableBuilder<T> builder = new(tabularData, mdOptions);
             return builder.Create();
         }
 
+        /// <summary>
+        /// Creates a Markdown formatted table and writes it on the given <paramref name="stream"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tabularData"></param>
+        /// <param name="stream">Where to write the table continuous to the current content</param>
+        /// <param name="mdOptions">Configurations for Markdown generation.</param>
         public static void ToMarkdownTable<T>(this TabularData<T> tabularData, Stream stream, MarkdownTableOptions? mdOptions = null)
         {
             MarkdownTableBuilder<T> builder = new(tabularData, mdOptions);
