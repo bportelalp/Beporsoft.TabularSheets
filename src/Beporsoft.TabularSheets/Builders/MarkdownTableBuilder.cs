@@ -1,5 +1,6 @@
 ﻿using Beporsoft.TabularSheets.Options;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Beporsoft.TabularSheets.Builders
 {
@@ -17,18 +18,35 @@ namespace Beporsoft.TabularSheets.Builders
         public TabularData<T> TabularData { get; }
         public MarkdownParsingOptions Options { get; }
 
-        public List<string> Create()
+        public IEnumerable<string> Create()
         {
-            List<string> result = [..CreateHeader()];
+            foreach (var row in CreateHeader())
+            {
+                yield return row;
+            }
             foreach (var row in TabularData)
             {
                 string mdRow = CreateLine(row);
-                result.Add(mdRow);
+                yield return mdRow;
             }
-            return result;
         }
 
-        private List<string> CreateHeader()
+        public void Create(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            WriteStream(fs);
+        }
+
+        public void WriteStream(Stream stream)
+        {
+            using var sw = new StreamWriter(stream);
+            foreach (var mdRow in Create())
+            {
+                sw.WriteLine(mdRow);
+            }
+        }
+
+        private IEnumerable<string> CreateHeader()
         {
             string header = _separator;
             string headerBodySeparator = _separator;

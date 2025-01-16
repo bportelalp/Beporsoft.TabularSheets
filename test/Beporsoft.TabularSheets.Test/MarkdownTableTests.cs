@@ -10,7 +10,7 @@ namespace Beporsoft.TabularSheets.Test
     internal class MarkdownTableTests
     {
         private readonly bool _clearFolderOnEnd = false;
-        private readonly TestFilesHandler _filesHandler = new(nameof(CsvBuildingTests));
+        private readonly TestFilesHandler _filesHandler = new(nameof(MarkdownTableTests));
 
         [Test]
         public void ToMarkdown_GenerationOk_Defaults()
@@ -21,10 +21,12 @@ namespace Beporsoft.TabularSheets.Test
             string file = _filesHandler.BuildPath($"{nameof(ToMarkdown_GenerationOk_Defaults)}.md");
             var table = Product.GenerateProductSheet(10);
 
+            table.ToMarkdownTable(file);
+
             var lines = table.ToMarkdownTable();
         }
         #region Private assert
-        private static void AssertCsv(TabularSheet<Product> table, CsvFixture csvFixture)
+        private static void AssertMarkdownTable(TabularSheet<Product> table, CsvFixture csvFixture)
         {
             foreach (var col in table.Columns)
             {
