@@ -63,17 +63,33 @@ namespace Beporsoft.TabularSheets.Test
             AssertMarkdownTable(table, mdFixture);
         }
 
+        [Test]
+        public void ToMarkdownLines_ExpandedView_PadSpacesAlignColumns()
+        {
+            var options = new MarkdownTableOptions()
+            {
+                CompactMode = false
+            };
+            string file = _filesHandler.BuildPath($"{nameof(ToMarkdownLines_ExpandedView_PadSpacesAlignColumns)}.md");
+            var table = Product.GenerateProductSheet(10);
+
+            table.ToMarkdownTable(file, options);
+            var mdFixture = new MarkdownFixture(file, options);
+            AssertMarkdownTable(table, mdFixture, true);
+        }
+
         #region Private assert
-        private static void AssertMarkdownTable(TabularSheet<Product> table, MarkdownFixture mdFixture)
+        private static void AssertMarkdownTable(TabularSheet<Product> table, MarkdownFixture mdFixture, bool assertColumnLength = false)
         {
             foreach (var col in table.Columns)
             {
+                int colLength = mdFixture.GetHeaderLenght(col.Index);
                 string? name = mdFixture.GetHeaderColumn(col.Index);
                 Assert.Multiple(() =>
                 {
                     Assert.That(name, Is.Not.Null);
                     string expectedTitle = mdFixture.Options.SupressHeaderTitles ? string.Empty : col.Title;
-                        Assert.That(name, Is.EqualTo(expectedTitle));
+                    Assert.That(name, Is.EqualTo(expectedTitle));
                 });
 
                 for (int i = 0; i < table.Items.Count; i++)
@@ -83,24 +99,9 @@ namespace Beporsoft.TabularSheets.Test
                     Assert.That(cell, Is.Not.Null);
                     object value = col.Apply(item);
                     Assert.That(cell, Is.EqualTo(value.ToString()));
+                    if(assertColumnLength)
+                        Assert.That(mdFixture.GetCellLength(i, col.Index), Is.EqualTo(colLength));
                 }
-            }
-        }
-        #endregion
-
-        #region Data
-        private static IEnumerable<object[]> DataOptions_ToCsv_GenerationOk
-        {
-            get
-            {
-                // English, comma separator usually ., so csv must use semicolon or comma
-                yield return new object[] { CultureInfo.GetCultureInfo("en-US"), CsvOptions.SemicolonSeparator, Encoding.UTF8 };
-                yield return new object[] { CultureInfo.GetCultureInfo("en-US"), CsvOptions.CommaSeparator, Encoding.UTF8 };
-                yield return new object[] { CultureInfo.GetCultureInfo("en-US"), CsvOptions.CommaSeparator, Encoding.GetEncoding("latin1") };
-                // Spanish, comma separator usually , so csv must use only semicolon
-                yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.UTF8 };
-                yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.GetEncoding("latin1") };
-                yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.UTF32 };
             }
         }
         #endregion

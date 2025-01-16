@@ -18,6 +18,7 @@
         /// </see>
         /// </summary>
         public bool SupressHeaderTitles { get; set; } = false;
-        public bool PrettyPrint { get; set; } = false;
+
+        public bool CompactMode { get; set; } = false;
     }
 }

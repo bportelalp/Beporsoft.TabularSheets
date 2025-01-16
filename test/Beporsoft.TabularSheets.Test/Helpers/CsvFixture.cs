@@ -54,11 +54,24 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             return split[colIndex].Trim();
         }
 
+        public int GetHeaderLenght(int colIndex)
+        {
+            var split = Header.Trim('|').Split(MarkdownTableOptions.Separator);
+            return split[colIndex].Length;
+        }
+
         public string GetCell(int row, int col)
         {
             string line = Lines[row];
             string cell = line.Trim('|').Split(MarkdownTableOptions.Separator)[col].Trim();
             return cell;
+        }
+
+        public int GetCellLength(int row, int col)
+        {
+            string line = Lines[row];
+            string cell = line.Trim('|').Split(MarkdownTableOptions.Separator)[col];
+            return cell.Length;
         }
     }
 }
