@@ -1,17 +1,23 @@
 # Beporsoft.TabularSheets Changelog
 
+## 1.4.0 - 2025-01-16
+
+- Target `net9.0`
+
+- NEW: Added extension methods of `TabularData<T>` to create markdown formatted tables.
+
 ## 1.3.0 - 2023-12-15
 
-* Target `net8.0`.
+- Target `net8.0`.
 
-* NEW: New element `TabularBook` which allows to export multiple sheets inside a single spreadsheet.
+- NEW: New element `TabularBook` which allows to export multiple sheets inside a single spreadsheet.
 
-* NEW: New method for create on existent stream with `TabularSheet`, and for the extension method `ToCsv`.
+- NEW: New method for create on existent stream with `TabularSheet`, and for the extension method `ToCsv`.
 
 
 ## 1.2.2 - 2023-10-31
 
-* FIX: `TabularSheet<T>.Options` is now `public`.
+- FIX: `TabularSheet<T>.Options` is now `public`.
 ---
 
 ## 1.2.1 - 2023-10-16
