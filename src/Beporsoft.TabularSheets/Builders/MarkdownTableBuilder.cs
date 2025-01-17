@@ -7,10 +7,8 @@ namespace Beporsoft.TabularSheets.Builders
     internal sealed class MarkdownTableBuilder<T>
     {
         private const string _separator = "|";
-        private const string _whiteSpace = " ";
-        private const string _headerLineContent = "--";
         private const int _minColumnPadding = 2;
-        private readonly Dictionary<int, int> _lengths = [];
+        private readonly Dictionary<int, int> _colWidths = [];
 
         public MarkdownTableBuilder(TabularData<T> tabularData, MarkdownTableOptions? options)
         {
@@ -26,7 +24,7 @@ namespace Beporsoft.TabularSheets.Builders
             if (!Options.CompactMode)
                 CalculateColumnLengths();
 
-            foreach (var row in CreateHeader())
+            foreach (string row in CreateHeader())
             {
                 yield return row;
             }
@@ -39,14 +37,14 @@ namespace Beporsoft.TabularSheets.Builders
 
         public void Create(string path)
         {
-            using var fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            using FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             WriteStream(fs);
         }
 
         public void WriteStream(Stream stream)
         {
-            using var sw = new StreamWriter(stream);
-            foreach (var mdRow in Create())
+            using StreamWriter sw = new StreamWriter(stream);
+            foreach (string mdRow in Create())
             {
                 sw.WriteLine(mdRow);
             }
@@ -58,12 +56,11 @@ namespace Beporsoft.TabularSheets.Builders
             string headerBodySeparator = _separator;
             foreach (var column in TabularData.Columns)
             {
-                header += _whiteSpace;
+                string value = string.Empty;
                 if (!Options.SupressHeaderTitles)
-                    header += PrintValue(column.Title, column.Index);
-                header += _whiteSpace;
-                header += _separator;
-                headerBodySeparator += _whiteSpace + PrintValue(_headerLineContent, column.Index, '-') + _whiteSpace + _separator;
+                    value = PrintValue(column.Title, column.Index);
+                header += $" {value} {_separator}";
+                headerBodySeparator += $" {PrintValue("--", column.Index, '-')} {_separator}";
             }
             return [header, headerBodySeparator];
         }
@@ -74,7 +71,7 @@ namespace Beporsoft.TabularSheets.Builders
             foreach (var column in TabularData.Columns)
             {
                 string value = column.Apply(row)?.ToString() ?? string.Empty;
-                line += _whiteSpace + PrintValue(value, column.Index) + _whiteSpace;
+                line += $" {PrintValue(value, column.Index)} ";
                 line += _separator;
             }
             return line;
@@ -82,16 +79,16 @@ namespace Beporsoft.TabularSheets.Builders
 
         private void CalculateColumnLengths()
         {
-            _lengths.Clear();
+            _colWidths.Clear();
             foreach (var column in TabularData.Columns)
             {
-                _lengths[column.Index] = column.Title.Length < _minColumnPadding ? _minColumnPadding : column.Title.Length;
+                _colWidths[column.Index] = column.Title.Length < _minColumnPadding ? _minColumnPadding : column.Title.Length;
                 foreach (var row in TabularData.Items)
                 {
                     object value = column.Apply(row);
                     int stringLength = value?.ToString()?.Length ?? 0;
-                    if (stringLength > _lengths[column.Index])
-                        _lengths[column.Index] = stringLength;
+                    if (stringLength > _colWidths[column.Index])
+                        _colWidths[column.Index] = stringLength;
                 }
             }
         }
@@ -101,7 +98,7 @@ namespace Beporsoft.TabularSheets.Builders
             if (Options.CompactMode)
                 return value;
 
-            if (!_lengths.TryGetValue(columnIndex, out var length))
+            if (!_colWidths.TryGetValue(columnIndex, out int length))
                 return value;
 
             return value.PadRight(length, padChar);

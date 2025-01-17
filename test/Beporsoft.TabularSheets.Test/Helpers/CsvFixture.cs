@@ -28,18 +28,20 @@ namespace Beporsoft.TabularSheets.Test.Helpers
         {
             Options = options ?? MarkdownTableOptions.Default;
             Header = lines.First();
+            HeaderSeparator = lines.Skip(1).First();
             Lines = lines.Skip(2).ToList();
         }
 
         public string Header { get; private set; } = null!;
+        public string HeaderSeparator { get; private set; } = null!;
         public List<string> Lines { get; } = new();
         public MarkdownTableOptions Options { get; }
 
         private void Load(Stream stream) {
             using var sr = new StreamReader(stream);
             Header = sr.ReadLine()!;
+            HeaderSeparator = sr.ReadLine()!;
             string? line = null;
-            sr.ReadLine(); // supress header/body separator line.
             do
             {
                 line = sr.ReadLine();
@@ -59,6 +61,19 @@ namespace Beporsoft.TabularSheets.Test.Helpers
             var split = Header.Trim('|').Split(MarkdownTableOptions.Separator);
             return split[colIndex].Length;
         }
+
+        public string GetHeaderSeparatorColumn(int colIndex)
+        {
+            var split = HeaderSeparator.Trim('|').Split(MarkdownTableOptions.Separator);
+            return split[colIndex].Trim();
+        }
+
+        public int GetHeaderSeparatorLenght(int colIndex)
+        {
+            var split = HeaderSeparator.Trim('|').Split(MarkdownTableOptions.Separator);
+            return split[colIndex].Length;
+        }
+
 
         public string GetCell(int row, int col)
         {

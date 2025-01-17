@@ -97,6 +97,16 @@ namespace Beporsoft.TabularSheets.Test
                     Assert.That(name, Is.EqualTo(expectedTitle));
                 });
 
+                string? headerSeparator = mdFixture.GetHeaderSeparatorColumn(col.Index);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(headerSeparator, Is.Not.Empty);
+                    Assert.That(headerSeparator.ToArray(), Is.All.EqualTo('-')); // All are -
+                    Assert.That(headerSeparator.Length, Is.AtLeast(2)); // At least is --
+                    if (assertColumnLength)
+                        Assert.That(mdFixture.GetHeaderSeparatorLenght(col.Index), Is.EqualTo(colLength));
+                });
+
                 for (int i = 0; i < table.Items.Count; i++)
                 {
                     Product item = table.Items[i];
@@ -104,7 +114,7 @@ namespace Beporsoft.TabularSheets.Test
                     Assert.That(cell, Is.Not.Null);
                     object value = col.Apply(item);
                     Assert.That(cell, Is.EqualTo(value.ToString()));
-                    if(assertColumnLength)
+                    if (assertColumnLength)
                         Assert.That(mdFixture.GetCellLength(i, col.Index), Is.EqualTo(colLength));
                 }
             }
