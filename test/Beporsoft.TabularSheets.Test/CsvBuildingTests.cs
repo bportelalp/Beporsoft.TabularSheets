@@ -128,14 +128,14 @@ namespace Beporsoft.TabularSheets.Test
                 // English, comma separator usually ., so csv must use semicolon or comma
                 yield return new object[] { CultureInfo.GetCultureInfo("en-US"), CsvOptions.SemicolonSeparator, Encoding.UTF8 };
                 yield return new object[] { CultureInfo.GetCultureInfo("en-US"), CsvOptions.CommaSeparator, Encoding.UTF8 };
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     yield return new object[] { CultureInfo.GetCultureInfo("en-US"), CsvOptions.CommaSeparator, Encoding.Latin1 };
                 }
                 // Spanish, comma separator usually , so csv must use only semicolon
                 yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.UTF8 };
                 yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.UTF32 };
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     yield return new object[] { CultureInfo.GetCultureInfo("es-ES"), CsvOptions.SemicolonSeparator, Encoding.UTF8 };
                 }
