@@ -47,6 +47,8 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
                 sheet.Create(path);
             else if (fileFormat == ".csv")
                 sheet.ToCsv(path);
+            else if (fileFormat == ".md")
+                sheet.ToMarkdownTable(path);
             else
                 fileFormatNotOk = true;
 
@@ -159,7 +161,7 @@ namespace Beporsoft.TabularSheets.Samples.RestCountries
 
         private static string SelectFileFormat()
         {
-            string[] formats = new string[] { ".xlsx", ".csv" };
+            string[] formats = new string[] { ".xlsx", ".csv", ".md" };
             string? fileFormat = null;
             while (fileFormat is null)
             {
