@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<!--Framework-->
-		<TargetFrameworks>net6.0;net7.0;net8.0;netstandard2.0;net48</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;net8.0;net9.0;netstandard2.0;net48</TargetFrameworks>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>12.0</LangVersion>
@@ -21,7 +21,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
 		<!--Versioning-->
-		<VersionPrefix>1.3.0</VersionPrefix>
+		<VersionPrefix>1.4.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
@@ -35,6 +35,9 @@
 
 		<!--Release notes-->
 		<PackageReleaseNotes>
+      # [1.4.0] - 2025-01-16
+			- NEW: NEW: Added extension methods of TabularData to create markdown formatted tables.
+
 			# [1.3.0] - 2023-12-15
 			- NEW: TabularBook to compose a single spreadsheet with multiple TabularSheets
 			- NEW: Export TabularSheets over Stream.

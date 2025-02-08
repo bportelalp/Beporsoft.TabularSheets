@@ -1,27 +1,21 @@
-﻿using Beporsoft.TabularSheets.Builders.Interfaces;
-using Beporsoft.TabularSheets.Options;
+﻿using Beporsoft.TabularSheets.Options;
 using Beporsoft.TabularSheets.Tools;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beporsoft.TabularSheets.Builders
 {
     internal sealed class CsvBuilder<T>
     {
-        public TabularData<T> TabularData { get; }
-        public CsvOptions Options { get; }
 
         public CsvBuilder(TabularData<T> tabularData, CsvOptions options)
         {
             TabularData = tabularData;
             Options = options;
         }
+
+        public TabularData<T> TabularData { get; }
+        public CsvOptions Options { get; }
 
         public void Create(string path)
         {

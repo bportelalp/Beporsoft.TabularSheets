@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>    
-		<PackageReference Include="Beporsoft.TabularSheets" Version="1.3.0" />
+		<PackageReference Include="Beporsoft.TabularSheets" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
